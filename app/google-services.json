@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "184424419056",
+    "firebase_url": "https://eshc-d80b4-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "eshc-d80b4",
+    "storage_bucket": "eshc-d80b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184424419056:android:2e4068fbeda72e08c93c35",
+        "android_client_info": {
+          "package_name": "com.example.es"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "184424419056-eql75fhls69ub4i3dsnoqtisoduqfftp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1nOzZM_DBlSQL5QxjTdyNUPGS0RXt1Bg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "184424419056-eql75fhls69ub4i3dsnoqtisoduqfftp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">ES</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profile">Профиль</string>
+    <string name="history">История</string>
+    <string name="main">Главный экран</string>
+    <string name="no_connection_message">No Connection</string>
+    <string name="service_unavailable_message">Service Unavailable</string>
+    <string name="null_pointer_exception">NullPointerException</string>
+    <string name="arithmetic_exception">ArithmeticException</string>
+    <string name="something_went_wrong">Something Went Wrong</string>
+
+</resources>
