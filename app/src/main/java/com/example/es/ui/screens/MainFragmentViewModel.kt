@@ -13,19 +13,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainFragmentViewModel @Inject constructor(
-    fetchDataUseCase: FetchDataUseCase,
+    private val fetchDataUseCase: FetchDataUseCase,
     private val mapper: MapDomainToUi,
 ) : ViewModel() {
 
     private var mAllItems = MutableLiveData<List<DataUi>>()
     private var mError = MutableLiveData<ErrorType>()
+
     val allItems: LiveData<List<DataUi>>
         get() = mAllItems
     val error: LiveData<ErrorType>
         get() = mError
 
-    init {
-        when (val result = fetchDataUseCase.execute()) {
+    fun fetchData(phone: String) {
+        when (val result: com.example.es.domain.model.Result = fetchDataUseCase.execute(phone)) {
             is com.example.es.domain.model.Result.Success -> {
                 mAllItems = result.itemsDomain.map { list ->
                     list.map { mapper.mapDomainToUi(it) }
@@ -34,4 +35,15 @@ class MainFragmentViewModel @Inject constructor(
             is com.example.es.domain.model.Result.Fail -> mError.value = result.errorType
         }
     }
+
+//    init {
+//        when (val result = fetchDataUseCase.execute() {
+//            is com.example.es.domain.model.Result.Success -> {
+//                mAllItems = result.itemsDomain.map { list ->
+//                    list.map { mapper.mapDomainToUi(it) }
+//                } as MutableLiveData<List<DataUi>>
+//            }
+//            is com.example.es.domain.model.Result.Fail -> mError.value = result.errorType
+//        }
+//    }
 }

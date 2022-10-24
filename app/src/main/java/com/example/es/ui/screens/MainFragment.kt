@@ -1,11 +1,9 @@
 package com.example.es.ui.screens
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.example.es.R
 import com.example.es.databinding.FragmentMainBinding
@@ -24,12 +22,14 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mBinding.btnNewUser.setOnClickListener {
-            createUser()
-        }
+        vm.fetchData("+7 916 800 00 16")
+
+//        mBinding.btnNewUser.setOnClickListener {
+//            createUser(view)
+//        }
 
         vm.allItems.observe(viewLifecycleOwner) {
-            mBinding.mainTxt.text = it[0].full_name
+            mBinding.txtPhone.text = it[0].phone
         }
 
         vm.error.observe(viewLifecycleOwner) {
@@ -42,9 +42,9 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
         }
     }
 
-        private fun createUser() {
-        val fullName = "Ivanov Iiiiiuuuu"
-        val phone = "+7 916 800 00 20"
+    private fun createUser(view: View) {
+        val fullName = "Ivanov EEEEEEE"
+        val phone = "+7 916 800 00 16"
         val id = ""
         val time = ""
         val lat = "latitude"
@@ -61,9 +61,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
 
         REF_DATABASE_ROOT.child(NODE_USERS).child(phone).updateChildren(data)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                } else {
-                }
+                if (task.isSuccessful) view.showSnackLong(R.string.success_update)
+                else view.showSnackLong(R.string.failure_update)
             }
     }
 }

@@ -4,14 +4,26 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable-v24/ic_dot.xml" value="0.1" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/btn_text_color_selector.xml" value="0.198" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ellipse_13.xml" value="0.131" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_danger.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_history.xml" value="0.1" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_history_outlined.xml" value="0.1" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_holder_camera.xml" value="0.135" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_location.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_more_horiz.xml" value="0.1225" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_outline_window_24.xml" value="0.1" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_phone.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_profile.xml" value="0.1" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_profile_outlined.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_window.xml" value="0.1225" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/inset_draw.xml" value="0.14" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/inset_holder_camer.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/activity_main.xml" value="0.15" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/bottom_nav_main_icon.xml" value="0.1606962663975782" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_history.xml" value="0.1" />
-        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_main.xml" value="0.17844202898550723" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_main.xml" value="0.25" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_profile.xml" value="0.1606962663975782" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/menu/menu_bottom_navigation.xml" value="0.33177083333333335" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/menu/menu_bottom_navigation_view.xml" value="0.22" />

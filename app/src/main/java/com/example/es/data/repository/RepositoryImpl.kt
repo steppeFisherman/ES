@@ -9,9 +9,15 @@ class RepositoryImpl @Inject constructor(
     private val exceptionHandle: ExceptionHandle
 ) : Repository {
 
-    override val allItems: Result
-        get() = try {
-            Result.Success(cloudSource.fetchCloud())
+    //    override val allItems: Result
+//        get() = try {
+//            Result.Success(cloudSource.fetchCloud())
+//        } catch (e: Exception) {
+//            exceptionHandle.handle(e)
+//        }
+    override fun execute(phone: String): Result =
+        try {
+            Result.Success(cloudSource.fetchCloud(phone))
         } catch (e: Exception) {
             exceptionHandle.handle(e)
         }

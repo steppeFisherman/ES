@@ -11,6 +11,8 @@ import com.example.es.databinding.ActivityMainBinding
 import com.example.es.utils.*
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initialise() {
+        Firebase.database.setPersistenceEnabled(true)
         REF_DATABASE_ROOT = FirebaseDatabase.getInstance().reference
 
         val navHostFragment =
