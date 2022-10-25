@@ -10,6 +10,7 @@ interface MapDomainToUi {
         override fun mapDomainToUi(dataDomain: DataDomain): DataUi =
             DataUi(
                 id_cache = dataDomain.id_cache,
+                id = dataDomain.id,
                 phone = dataDomain.phone,
                 full_name = dataDomain.full_name,
                 time = dataDomain.time,

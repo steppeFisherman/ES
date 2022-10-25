@@ -6,6 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DataUi(
     val id_cache: Int,
+    val id: Int,
     val phone: String,
     val full_name: String,
     val time: String,

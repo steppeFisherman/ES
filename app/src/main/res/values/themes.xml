@@ -14,9 +14,21 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!-- Splash Theme -->
+    <style name="splashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_image</item>
+        <item name="android:statusBarColor">@color/white</item>
+    </style>
+
     <style name="ShapeAppearanceOverlay.CircularBorder" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+
+    <style name="ShapeAppearanceOverlay.CircularBorder_8" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8%</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.App.circleImageView" parent="">
@@ -30,4 +42,43 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="cornerRadius">6dp</item>
     </style>
+
+    <style name="shapeImageView">
+        <item name="android:layout_width">96dp</item>
+        <item name="android:layout_height">96dp</item>
+        <item name="android:background">@drawable/inset_elite_logo</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:elevation">@dimen/size_20</item>
+        <item name="android:padding">@dimen/size_1</item>
+    </style>
+
+    <style name="textInputLayout" parent= "Widget.MaterialComponents.TextInputLayout.OutlinedBox" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/margin_10dp</item>
+    </style>
+
+    <style name="button_blue_save">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/margin_16dp</item>
+        <item name="android:background">@drawable/custom_button_save</item>
+        <item name="android:elevation">@dimen/margin_8dp</item>
+        <item name="android:text">@string/menu_save</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="textInputEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/margin_8dp</item>
+        <item name="android:padding">@dimen/margin_8dp</item>
+        <item name="android:elevation">@dimen/margin_8dp</item>
+        <item name="android:drawablePadding">@dimen/margin_8dp</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:inputType">textPersonName|textMultiLine</item>
+        <item name="android:background">@drawable/custom_input</item>
+    </style>
+
 </resources>

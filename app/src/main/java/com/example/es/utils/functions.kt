@@ -1,9 +1,10 @@
 package com.example.es.utils
 
 import android.view.View
+import androidx.annotation.StringRes
 import com.google.android.material.snackbar.Snackbar
 
-fun View.showSnackLong(message: Int) {
+fun View.showSnackLong(@StringRes message: Int) {
     Snackbar.make(this, message, Snackbar.LENGTH_LONG)
         .show()
     this.textAlignment = View.TEXT_ALIGNMENT_CENTER

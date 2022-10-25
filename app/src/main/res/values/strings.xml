@@ -11,5 +11,10 @@
     <string name="null_pointer_exception">NullPointerException</string>
     <string name="arithmetic_exception">ArithmeticException</string>
     <string name="something_went_wrong">Something Went Wrong</string>
-
+    <string name="logIn">войти</string>
+    <string name="menu_save">Сохранить</string>
+    <string name="enter_phone_number">Введите номер телефона</string>
+    <string name="enter_id">Введите id</string>
+    <string name="fill_all_fields">Заполните все поля</string>
+    <string name="enter_correct_phone_password">Введите корректный номер телефона и пароль</string>
 </resources>

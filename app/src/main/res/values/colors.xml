@@ -16,6 +16,11 @@
     <color name="black_textView">#222831</color>
     <color name="stroke_color">#222831</color>
     <color name="grey_category_textView">#C3C4C9</color>
-
+    <color name="deepBlue">#2460A7FF</color>
+    <color name="grey_dark">#47000000</color>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="grey_light">#1E000000</color>
+    <color name="eliteColor">#13436b</color>
 
 </resources>

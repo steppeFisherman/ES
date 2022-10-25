@@ -10,7 +10,8 @@ interface MapCacheToDomain {
     class Base : MapCacheToDomain {
         override fun mapCacheToDomain(dataCache: DataCache): DataDomain =
             DataDomain(
-                id_cache = dataCache.id,
+                id_cache = dataCache.id_cache,
+                id = dataCache.id,
                 phone = dataCache.phone,
                 full_name = dataCache.full_name,
                 time = dataCache.time,

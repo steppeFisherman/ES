@@ -10,7 +10,8 @@ interface MapCloudToCache {
     class Base : MapCloudToCache {
         override fun mapCloudToCache(dataCloud: DataCloud): DataCache =
             DataCache(
-                id = 0,
+                id_cache = 0,
+                id = dataCloud.id,
                 phone = dataCloud.phone,
                 full_name = dataCloud.full_name,
                 time = dataCloud.time,

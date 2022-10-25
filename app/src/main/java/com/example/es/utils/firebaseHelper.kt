@@ -14,6 +14,10 @@ const val CHILD_TIME = "time"
 const val CHILD_PHONE = "phone"
 const val CHILD_LATITUDE = "latitude"
 const val CHILD_LONGITUDE = "longitude"
+const val APP_PREFERENCES = "APP_PREFERENCES"
+const val PREF_BOOLEAN_VALUE = "PREF_BOOLEAN_VALUE"
+const val PREF_PHONE_VALUE = "PREF_PHONE_VALUE"
+const val PREF_ID_VALUE = "PREF_ID_VALUE"
 
 //fun  initFirebase(){
 //    AUTH = FirebaseAuth.getInstance()
