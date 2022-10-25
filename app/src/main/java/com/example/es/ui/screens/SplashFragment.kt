@@ -3,9 +3,8 @@ package com.example.es.ui.screens
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.FrameLayout
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.data.model.cloudModel.DataCloud
@@ -13,6 +12,8 @@ import com.example.es.data.repository.ToDispatch
 import com.example.es.databinding.FragmentSplashBinding
 import com.example.es.ui.BaseFragment
 import com.example.es.utils.*
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -41,9 +42,8 @@ class SplashFragment() : BaseFragment<FragmentSplashBinding>() {
             mBinding.btnLogin.setOnClickListener {
                 val phone = mBinding.editTextPhone.text.toString().trim()
                 val id = mBinding.editTextPassword.text.toString().trim().lowercase()
-                if (phone.isBlank() || id.isBlank()) it.showSnackLong(R.string.fill_all_fields)
+                if (phone.isBlank() || id.isBlank()) it.snackLongTop(R.string.fill_all_fields)
                 else checkIfUserIsLoggedIn(phone = phone, id = id, view = view)
-
             }
         }
     }
@@ -72,7 +72,7 @@ class SplashFragment() : BaseFragment<FragmentSplashBinding>() {
                     bundle.putInt("id_number", data.id)
                     findNavController()
                         .navigate(R.id.action_splashFragment_to_mainFragment, bundle)
-                } else view.showSnackLong(R.string.enter_correct_phone_password)
+                } else view.snackLongTop(R.string.enter_correct_phone_password)
             }
         }
     }
