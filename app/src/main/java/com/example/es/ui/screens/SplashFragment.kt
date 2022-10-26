@@ -3,8 +3,9 @@ package com.example.es.ui.screens
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.*
-import android.widget.FrameLayout
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.data.model.cloudModel.DataCloud
@@ -12,8 +13,7 @@ import com.example.es.data.repository.ToDispatch
 import com.example.es.databinding.FragmentSplashBinding
 import com.example.es.ui.BaseFragment
 import com.example.es.utils.*
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
+import com.redmadrobot.inputmask.MaskedTextChangedListener
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -33,6 +33,26 @@ class SplashFragment() : BaseFragment<FragmentSplashBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        var str = String()
+
+        val listener = MaskedTextChangedListener("+7 ([000]) [000]-[00]-[00]",
+            mBinding.editTextPhone, object : MaskedTextChangedListener.ValueListener {
+                override fun onTextChanged(
+                    maskFilled: Boolean,
+                    extractedValue: String,
+                    formattedValue: String
+                ) {
+                    str = formattedValue
+                    println("str: $str")
+                }
+            })
+        mBinding.editTextPhone.addTextChangedListener(listener)
+        mBinding.editTextPhone.onFocusChangeListener = listener
+
+
+        println("str: $str")
+
         preferences = view.context.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
         firstTimeUser = preferences.getBoolean(PREF_BOOLEAN_VALUE, false)
 
@@ -41,6 +61,7 @@ class SplashFragment() : BaseFragment<FragmentSplashBinding>() {
         } else {
             mBinding.btnLogin.setOnClickListener {
                 val phone = mBinding.editTextPhone.text.toString().trim()
+                println("listener: ${phone}")
                 val id = mBinding.editTextPassword.text.toString().trim().lowercase()
                 if (phone.isBlank() || id.isBlank()) it.snackLongTop(R.string.fill_all_fields)
                 else checkIfUserIsLoggedIn(phone = phone, id = id, view = view)
@@ -50,6 +71,9 @@ class SplashFragment() : BaseFragment<FragmentSplashBinding>() {
 
     private fun checkIfUserIsLoggedIn(phone: String, id: String, view: View) {
 
+        println("dataPhone: ${phone}")
+
+
         var data = DataCloud()
 
         dispatchers.launchIO(scope = scope) {
@@ -58,6 +82,7 @@ class SplashFragment() : BaseFragment<FragmentSplashBinding>() {
                     data = it.result.getValue(DataCloud::class.java) ?: DataCloud()
                     val idExists = it.result.exists()
                     val phoneExists = phone == data.phone
+
                     firstTimeUser = idExists && phoneExists
                     preferences.edit().putBoolean(PREF_BOOLEAN_VALUE, firstTimeUser).apply()
                 }.await()
