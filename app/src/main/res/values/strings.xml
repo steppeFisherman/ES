@@ -17,4 +17,15 @@
     <string name="enter_id">Введите id</string>
     <string name="fill_all_fields">Заполните все поля</string>
     <string name="enter_correct_phone_password">Введите корректный номер телефона и пароль</string>
+
+    <string-array name="list_affine_formats">
+        <item>+1 ([000]) [000]-[00]-[00]</item>
+        <item>+2 ([000]) [000]-[00]-[00]</item>
+        <item>+3 ([000]) [000]-[00]-[00]</item>
+        <item>+4 ([000]) [000]-[00]-[00]</item>
+        <item>+5 ([000]) [000]-[00]-[00]</item>
+        <item>+6 ([000]) [000]-[00]-[00]</item>
+        <item>+8 ([000]) [000]-[00]-[00]</item>
+        <item>+9 ([000]) [000]-[00]-[00]</item>
+    </string-array>
 </resources>

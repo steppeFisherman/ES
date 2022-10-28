@@ -40,13 +40,13 @@ android {
 }
 
 dependencies {
-
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.2'
     def nav_version = "2.4.2"
     def room_version = "2.4.2"
     def hilt_version = "2.40.5"
     def lifecycle_version = "2.4.0"
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.2'
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'

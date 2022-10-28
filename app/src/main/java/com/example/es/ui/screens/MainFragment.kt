@@ -1,5 +1,7 @@
 package com.example.es.ui.screens
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.es.databinding.FragmentMainBinding
 import com.example.es.ui.BaseFragment
+import com.example.es.utils.APP_PREFERENCES
+import com.example.es.utils.PREF_PHONE_VALUE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates
 
@@ -14,6 +18,7 @@ import kotlin.properties.Delegates
 class MainFragment : BaseFragment<FragmentMainBinding>() {
 
     private lateinit var phone: String
+    private lateinit var preferences: SharedPreferences
     private var idNumber by Delegates.notNull<Int>()
     private val vm by viewModels<MainFragmentViewModel>()
 
@@ -23,9 +28,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        phone = arguments?.getString("phone").toString()
-        idNumber = arguments?.getInt("id_number") ?: 0
-
+        preferences = view.context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+        phone = preferences.getString(PREF_PHONE_VALUE," ").toString()
         mBinding.txtPhone.text = phone
 
 //        mBinding.txtPhone.text = data.phone

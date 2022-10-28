@@ -10,22 +10,17 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_photo"
-        android:layout_width="@dimen/size_48"
-        android:layout_height="@dimen/size_48"
-        android:scaleType="centerCrop"
-        android:padding ="@dimen/size_1"
+        style="@style/img_mainFragment"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.CircularBorder"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.CircularBorder"
         app:srcCompat="@drawable/inset_holder_camera"
         app:strokeColor="@color/black_textView"
         app:strokeWidth="@dimen/size_1" />
-    <!--    </androidx.cardview.widget.CardView>-->
 
     <TextView
         android:id="@+id/txt_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/textView"
         android:layout_marginTop="@dimen/margin_8dp"
         android:textColor="@color/black_textView"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,46 +28,39 @@
 
     <TextView
         android:id="@+id/txt_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black_textView"
+        style="@style/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txt_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/textView"
         android:layout_marginTop="@dimen/margin_8dp"
-        android:textColor="@color/black_textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_location" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_location"
-        style="@style/btn"
-        android:layout_width="92dp"
-        android:layout_height="92dp"
+        style="@style/btn_mainFragment"
         android:layout_marginEnd="@dimen/margin_18dp"
         android:layout_marginBottom="@dimen/margin_14dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
         app:layout_constraintEnd_toEndOf="@+id/guideline_vertical"
         app:icon="@drawable/ic_location"
+        app:iconTint="@color/deepskyblue"
         app:iconGravity="textEnd"
         app:iconSize="48dp"
-        app:iconPadding="@dimen/size_0"
-        />
+        app:iconPadding="@dimen/size_0" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_panic"
-        style="@style/btn"
-        android:layout_width="92dp"
-        android:layout_height="92dp"
+        style="@style/btn_mainFragment"
         android:layout_marginStart="@dimen/margin_18dp"
         android:layout_marginBottom="@dimen/margin_14dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
         app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
-        app:icon="@drawable/ic_danger"
+        app:icon="@drawable/ic_panic"
+        app:iconTint="@color/darkred"
         app:iconGravity="textEnd"
         app:iconSize="48dp"
         app:iconPadding="@dimen/size_0"
@@ -80,14 +68,13 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dial"
-        style="@style/btn"
-        android:layout_width="92dp"
-        android:layout_height="92dp"
+        style="@style/btn_mainFragment"
         android:layout_marginTop="@dimen/margin_10dp"
         app:layout_constraintEnd_toEndOf="@+id/guideline_vertical"
         app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
         app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal"
         app:icon="@drawable/ic_phone"
+        app:iconTint="@color/darkgreen"
         app:iconGravity="textEnd"
         app:iconSize="48dp"
         app:iconPadding="@dimen/size_0"

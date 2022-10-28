@@ -2,20 +2,21 @@
     <!-- Base application theme. -->
     <style name="Theme.ES" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryVariant">@color/grey_bottomNav_icon</item>
+        <item name="colorPrimary">@color/darkred</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor"
+            tools:targetApi="l">@color/status_bar</item>
         <!-- Customize your theme here. -->
     </style>
 
     <!-- Splash Theme -->
-    <style name="splashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="splashTheme" parent="Theme.ES">
         <item name="android:windowBackground">@drawable/splash_image</item>
         <item name="android:statusBarColor">@color/white</item>
     </style>
@@ -24,7 +25,6 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
-
 
     <style name="ShapeAppearanceOverlay.CircularBorder_8" parent="">
         <item name="cornerFamily">rounded</item>
@@ -36,19 +36,26 @@
         <item name="cornerSize">50%</item>
     </style>
 
-    <style name="btn" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textColor">@drawable/btn_text_color_selector</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="img_mainFragment" parent="ShapeAppearanceOverlay.CircularBorder">
+        <item name="android:layout_width">@dimen/size_48</item>
+        <item name="android:layout_height">@dimen/size_48</item>
+        <item name="android:padding">@dimen/size_1</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="btn_mainFragment">
+        <item name="android:backgroundTint">@drawable/btn_text_color_selector</item>
+        <item name="android:layout_width">@dimen/size_92</item>
+        <item name="android:layout_height">@dimen/size_92</item>
         <item name="cornerRadius">6dp</item>
     </style>
 
     <style name="shapeImageView">
-        <item name="android:layout_width">96dp</item>
-        <item name="android:layout_height">96dp</item>
+        <item name="android:layout_width">92dp</item>
+        <item name="android:layout_height">92dp</item>
         <item name="android:background">@drawable/inset_elite_logo</item>
         <item name="android:scaleType">centerCrop</item>
-        <item name="android:elevation">@dimen/size_20</item>
+        <item name="android:elevation">@dimen/size_18</item>
         <item name="android:padding">@dimen/size_1</item>
     </style>
 
@@ -79,6 +86,13 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:inputType">textPersonName|textMultiLine</item>
         <item name="android:background">@drawable/custom_input</item>
+    </style>
+
+    <style name="textView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black_textView</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
     </style>
 
 </resources>

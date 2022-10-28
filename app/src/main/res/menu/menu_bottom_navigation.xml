@@ -5,16 +5,16 @@
     <item
         android:id="@+id/mainFragment"
         android:icon="@drawable/ic_window"
-        android:title="@string/main"
-        app:showAsAction="always" />
+        android:title=""
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_profile"
-        android:title="@string/profile"
+        android:title=""
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/historyFragment"
         android:icon="@drawable/ic_history"
-        android:title="@string/history"
-        app:showAsAction="always" />
+        android:title=""
+        app:showAsAction="ifRoom" />
 </menu>

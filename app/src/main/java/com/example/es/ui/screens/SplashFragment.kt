@@ -13,18 +13,18 @@ import com.example.es.data.repository.ToDispatch
 import com.example.es.databinding.FragmentSplashBinding
 import com.example.es.ui.BaseFragment
 import com.example.es.utils.*
-import com.redmadrobot.inputmask.MaskedTextChangedListener
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.tasks.await
 
-class SplashFragment() : BaseFragment<FragmentSplashBinding>() {
+class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
     private val scope = CoroutineScope(Job() + exceptionHandler)
     private val dispatchers: ToDispatch = ToDispatch.Base()
     private var firstTimeUser = false
+    private var extracted = String()
     private lateinit var preferences: SharedPreferences
 
     override fun initBinding(inflater: LayoutInflater, container: ViewGroup?) =
@@ -33,71 +33,47 @@ class SplashFragment() : BaseFragment<FragmentSplashBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        var str = String()
-
-        val listener = MaskedTextChangedListener("+7 ([000]) [000]-[00]-[00]",
-            mBinding.editTextPhone, object : MaskedTextChangedListener.ValueListener {
-                override fun onTextChanged(
-                    maskFilled: Boolean,
-                    extractedValue: String,
-                    formattedValue: String
-                ) {
-                    str = formattedValue
-                    println("str: $str")
-                }
-            })
-        mBinding.editTextPhone.addTextChangedListener(listener)
-        mBinding.editTextPhone.onFocusChangeListener = listener
-
-
-        println("str: $str")
-
         preferences = view.context.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
-        firstTimeUser = preferences.getBoolean(PREF_BOOLEAN_VALUE, false)
 
-        if (firstTimeUser) {
-            findNavController().navigate(R.id.action_splashFragment_to_mainFragment)
-        } else {
-            mBinding.btnLogin.setOnClickListener {
-                val phone = mBinding.editTextPhone.text.toString().trim()
-                println("listener: ${phone}")
-                val id = mBinding.editTextPassword.text.toString().trim().lowercase()
-                if (phone.isBlank() || id.isBlank()) it.snackLongTop(R.string.fill_all_fields)
-                else checkIfUserIsLoggedIn(phone = phone, id = id, view = view)
-            }
+        inputMaskSetUp()
+
+        mBinding.btnLogin.setOnClickListener {
+            val phoneNumber = mBinding.editTextPhone.text.toString().trim()
+            val id = mBinding.editTextPassword.text.toString().trim()
+
+            val splitPhoneNumber = phoneNumber.split(" ")
+            val phoneNumberToSave = splitPhoneNumber[0] + extracted
+
+            if (phoneNumber.isBlank() || id.isBlank()) it.snackLongTop(R.string.fill_all_fields)
+            else checkIfUserExists(phone = phoneNumberToSave, id = id, view = view)
         }
     }
 
-    private fun checkIfUserIsLoggedIn(phone: String, id: String, view: View) {
+    private fun inputMaskSetUp() {
+        val listener = InputMaskHandle(mBinding.editTextPhone,
+            ValueListener { extractedValue -> extracted = extractedValue })
 
-        println("dataPhone: ${phone}")
+        mBinding.editTextPhone.addTextChangedListener(listener)
+        mBinding.editTextPhone.onFocusChangeListener = listener
+    }
 
-
-        var data = DataCloud()
+    private fun checkIfUserExists(phone: String, id: String, view: View) {
 
         dispatchers.launchIO(scope = scope) {
             REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
                 .addOnCompleteListener() {
-                    data = it.result.getValue(DataCloud::class.java) ?: DataCloud()
+                    val data = it.result.getValue(DataCloud::class.java) ?: DataCloud()
                     val idExists = it.result.exists()
                     val phoneExists = phone == data.phone
 
                     firstTimeUser = idExists && phoneExists
                     preferences.edit().putBoolean(PREF_BOOLEAN_VALUE, firstTimeUser).apply()
                 }.await()
+
             dispatchers.launchUI(scope) {
-                if (firstTimeUser) {
-
-                    preferences.edit().putString(PREF_PHONE_VALUE, phone).apply()
-                    preferences.edit().putInt(PREF_ID_VALUE, id.toInt()).apply()
-
-                    val bundle = Bundle()
-                    bundle.putString("phone", data.phone)
-                    bundle.putInt("id_number", data.id)
-                    findNavController()
-                        .navigate(R.id.action_splashFragment_to_mainFragment, bundle)
-                } else view.snackLongTop(R.string.enter_correct_phone_password)
+                if (firstTimeUser) findNavController()
+                    .navigate(R.id.action_splashFragment_to_mainFragment)
+                else view.snackLongTop(R.string.enter_correct_phone_password)
             }
         }
     }
