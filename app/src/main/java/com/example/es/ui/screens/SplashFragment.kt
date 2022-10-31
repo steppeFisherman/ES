@@ -6,26 +6,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
-import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.data.repository.ToDispatch
 import com.example.es.databinding.FragmentSplashBinding
 import com.example.es.ui.BaseFragment
+import com.example.es.ui.MainActivityViewModel
 import com.example.es.utils.*
+import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
+    @Inject
+    lateinit var connectionLiveData: ConnectionLiveData
+    private lateinit var mSnack: Snackbar
     private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
     private val scope = CoroutineScope(Job() + exceptionHandler)
     private val dispatchers: ToDispatch = ToDispatch.Base()
-    private var firstTimeUser = false
+    private var userExists = false
     private var extracted = String()
+    private var phoneNumberToSave = String()
+    private var id = String()
     private lateinit var preferences: SharedPreferences
+
+    private val activityViewModel by activityViewModels<MainActivityViewModel>()
+
 
     override fun initBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentSplashBinding.inflate(inflater, container, false)
@@ -35,17 +47,47 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
         preferences = view.context.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
 
+        activityViewModel.user.observe(viewLifecycleOwner) { dataUi ->
+            val idExists = dataUi.id.toString()
+            val phoneExists = dataUi.phone_user
+
+            userExists = (idExists == id && phoneExists == phoneNumberToSave)
+            preferences.edit().putBoolean(PREF_BOOLEAN_VALUE, userExists).apply()
+            preferences.edit().putString(PREF_ID_VALUE, idExists).apply()
+
+            if (userExists) {
+                findNavController()
+                    .navigate(R.id.action_splashFragment_to_mainFragment)
+            } else {
+                view.snackLongTop(R.string.enter_correct_phone_password)
+            }
+        }
+
+        activityViewModel.error.observe(viewLifecycleOwner) { errorType ->
+            when (errorType.ordinal) {
+                0 -> view.snackLong(R.string.no_connection_exception_message)
+                1 -> view.snackLong(R.string.firebase_exception_message)
+                2 -> view.snackLong(R.string.generic_exception_message)
+                3 -> view.snackLong(R.string.http_exception_message)
+            }
+        }
+
+        mSnack = Snackbar
+            .make(view, R.string.check_internet_connection, Snackbar.LENGTH_INDEFINITE)
+
         inputMaskSetUp()
 
         mBinding.btnLogin.setOnClickListener {
             val phoneNumber = mBinding.editTextPhone.text.toString().trim()
-            val id = mBinding.editTextPassword.text.toString().trim()
+            id = mBinding.editTextPassword.text.toString().trim()
 
             val splitPhoneNumber = phoneNumber.split(" ")
-            val phoneNumberToSave = splitPhoneNumber[0] + extracted
+            phoneNumberToSave = splitPhoneNumber[0] + extracted
 
             if (phoneNumber.isBlank() || id.isBlank()) it.snackLongTop(R.string.fill_all_fields)
-            else checkIfUserExists(phone = phoneNumberToSave, id = id, view = view)
+            else {
+                checkIfUserExists(phone = phoneNumberToSave, id = id, view = view)
+            }
         }
     }
 
@@ -57,24 +99,6 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
         mBinding.editTextPhone.onFocusChangeListener = listener
     }
 
-    private fun checkIfUserExists(phone: String, id: String, view: View) {
-
-        dispatchers.launchIO(scope = scope) {
-            REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
-                .addOnCompleteListener() {
-                    val data = it.result.getValue(DataCloud::class.java) ?: DataCloud()
-                    val idExists = it.result.exists()
-                    val phoneExists = phone == data.phone
-
-                    firstTimeUser = idExists && phoneExists
-                    preferences.edit().putBoolean(PREF_BOOLEAN_VALUE, firstTimeUser).apply()
-                }.await()
-
-            dispatchers.launchUI(scope) {
-                if (firstTimeUser) findNavController()
-                    .navigate(R.id.action_splashFragment_to_mainFragment)
-                else view.snackLongTop(R.string.enter_correct_phone_password)
-            }
-        }
-    }
+    private fun checkIfUserExists(phone: String, id: String, view: View) =
+        activityViewModel.fetchData(id = id)
 }

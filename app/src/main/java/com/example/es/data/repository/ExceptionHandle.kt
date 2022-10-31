@@ -1,18 +1,18 @@
 package com.example.es.data.repository
 
 import com.example.es.domain.model.ErrorType
+import com.example.es.domain.model.ResultUser
 import com.google.firebase.FirebaseException
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import java.net.UnknownHostException
 
 interface ExceptionHandle {
 
-    fun handle(e: Exception): com.example.es.domain.model.Result
+    fun handle(exception: Exception?): ResultUser
 
     class Base : ExceptionHandle {
-        override fun handle(e: Exception): com.example.es.domain.model.Result =
-            com.example.es.domain.model.Result.Fail(
-            when (e) {
+        override fun handle(exception: Exception?): ResultUser = ResultUser.Fail(
+            when (exception) {
                 is UnknownHostException -> ErrorType.NO_CONNECTION
                 is FirebaseException -> ErrorType.FIREBASE_EXCEPTION
                 is HttpException -> ErrorType.HTTP_EXCEPTION

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
@@ -13,6 +14,7 @@ import com.example.es.R
 import com.example.es.databinding.ActivityMainBinding
 import com.example.es.utils.APP_PREFERENCES
 import com.example.es.utils.PREF_BOOLEAN_VALUE
+import com.example.es.utils.PREF_ID_VALUE
 import com.example.es.utils.REF_DATABASE_ROOT
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.FirebaseDatabase
@@ -23,11 +25,14 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navControllerMain: NavController
+
     private lateinit var destinationChangedListener:
             NavController.OnDestinationChangedListener
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var preferences: SharedPreferences
-    private var firstTimeUser = false
+    private var userExists = false
+    private var userId = ""
+    private val vm by viewModels<MainActivityViewModel>()
 
 
 //    private val usersService: UsersService
@@ -49,7 +54,6 @@ class MainActivity : AppCompatActivity() {
         checkUserLoggedIn()
         displayBottomNav()
 //        usersService.addListener(usersListener)
-//        createUser(binding.root)
 
     }
 
@@ -64,10 +68,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUserLoggedIn() {
         preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-        firstTimeUser = preferences.getBoolean(PREF_BOOLEAN_VALUE, false)
-        if (!firstTimeUser) {
+        userExists = preferences.getBoolean(PREF_BOOLEAN_VALUE, false)
+        userId = preferences.getString(PREF_ID_VALUE, "").toString()
+        if (!userExists) {
             navControllerMain.navigate(R.id.action_mainFragment_to_splashFragment)
-        } else return
+        } else {
+            vm.fetchData(id = userId)
+        }
     }
 
     private fun displayBottomNav() {
@@ -90,35 +97,42 @@ class MainActivity : AppCompatActivity() {
         navControllerMain.removeOnDestinationChangedListener(destinationChangedListener)
     }
 
+
+//
+//    override fun checkConnection() {
+//        connectionLiveData.checkValidNetworks()
+//        connectionLiveData.observe(this) { isNetWorkAvailable ->
+//            when (isNetWorkAvailable) {
+//                false -> binding.root
+//                    .snackIndefiniteTop(R.string.check_internet_connection)
+//                true -> binding.root
+//                    .snackIndefiniteTop(R.string.check_internet_connection,false)
+//            }
+//        }
+//    }
+
 //    override fun onDestroy() {
 //        super.onDestroy()
 //        usersService.removeListener(usersListener)
 //    }
-//
-//    private fun createUser(view: View) {
-//        REF_DATABASE_ROOT.child(NODE_USERS).updateChildren(mapDataCloud)
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) view.showSnackLong(mapDataCloud.size)
-//                else view.showSnackLong(R.string.failure_update)
-//            }
-//    }
-//
-//
+
+
 //    private val usersListener: UsersListener = {
-//       it.forEach { dataCloud ->
-//           val data = mutableMapOf<String, Any>()
-//        data[CHILD_ID] = dataCloud.id
-//        data[CHILD_TIME] = dataCloud.time
-//        data[CHILD_FULL_NAME] = dataCloud.full_name
-//        data[CHILD_PHONE] = dataCloud.phone
-//        data[CHILD_LATITUDE] = dataCloud.latitude
-//        data[CHILD_LONGITUDE] = dataCloud.longitude
+//        it.forEach { dataCloud ->
+//            mapDataCloud[CHILD_ID] = dataCloud.id
+//            mapDataCloud[CHILD_FULL_NAME] = dataCloud.full_name
+//            mapDataCloud[CHILD_PHONE_USER] = dataCloud.phone_user
+//            mapDataCloud[CHILD_PHONE_OPERATOR] = dataCloud.phone_operator
+//            mapDataCloud[CHILD_PHOTO] = dataCloud.photo
+//            mapDataCloud[CHILD_TIME] = dataCloud.time
+//            mapDataCloud[CHILD_LATITUDE] = dataCloud.latitude
+//            mapDataCloud[CHILD_LONGITUDE] = dataCloud.longitude
+//            mapDataCloud[CHILD_ALARM] = dataCloud.alarm
+//            mapDataCloud[CHILD_NOTIFY] = dataCloud.notify
 //
-//                   REF_DATABASE_ROOT.child(NODE_USERS).child(dataCloud.id.toString()).updateChildren(data)
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) view.showSnackLong(mapDataCloud.size)
-//                else view.showSnackLong(R.string.failure_update)
-//            }
-//       }
+//            REF_DATABASE_ROOT.child(NODE_USERS).child(dataCloud.id.toString())
+//                .updateChildren(mapDataCloud)
+//                .addOnCompleteListener { task -> }
+//        }
 //    }
 }

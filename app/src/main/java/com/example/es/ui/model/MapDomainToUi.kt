@@ -9,13 +9,17 @@ interface MapDomainToUi {
     class Base : MapDomainToUi {
         override fun mapDomainToUi(dataDomain: DataDomain): DataUi =
             DataUi(
-                id_cache = dataDomain.id_cache,
                 id = dataDomain.id,
-                phone = dataDomain.phone,
+                id_cache = dataDomain.id_cache,
                 full_name = dataDomain.full_name,
+                phone_user = dataDomain.phone_user,
+                phone_operator = dataDomain.phone_operator,
+                photo = dataDomain.photo,
                 time = dataDomain.time,
                 latitude = dataDomain.latitude,
                 longitude = dataDomain.longitude,
+                alarm = dataDomain.alarm,
+                notify = dataDomain.notify
             )
     }
 }

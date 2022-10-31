@@ -1,15 +1,15 @@
 package com.example.es.data.model
 
-import com.example.es.data.model.cacheModel.DataCache
 import com.example.es.data.model.cloudModel.DataCloud
+import com.example.es.domain.model.DataDomain
 
-interface MapCloudToCache {
+interface MapCloudToDomain {
 
-    fun mapCloudToCache(dataCloud: DataCloud): DataCache
+    fun mapCloudToDomain(dataCloud: DataCloud): DataDomain
 
-    class Base : MapCloudToCache {
-        override fun mapCloudToCache(dataCloud: DataCloud): DataCache =
-            DataCache(
+    class Base : MapCloudToDomain {
+        override fun mapCloudToDomain(dataCloud: DataCloud): DataDomain =
+            DataDomain(
                 id = dataCloud.id,
                 id_cache = 0,
                 full_name = dataCloud.full_name,

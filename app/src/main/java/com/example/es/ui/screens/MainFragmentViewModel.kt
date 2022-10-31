@@ -3,8 +3,7 @@ package com.example.es.ui.screens
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
-import com.example.es.domain.FetchDataUseCase
+import com.example.es.domain.FetchUserUseCase
 import com.example.es.domain.model.ErrorType
 import com.example.es.ui.model.DataUi
 import com.example.es.ui.model.MapDomainToUi
@@ -13,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainFragmentViewModel @Inject constructor(
-    private val fetchDataUseCase: FetchDataUseCase,
+    private val fetchUserUseCase: FetchUserUseCase,
     private val mapper: MapDomainToUi,
 ) : ViewModel() {
 
@@ -25,16 +24,16 @@ class MainFragmentViewModel @Inject constructor(
     val error: LiveData<ErrorType>
         get() = mError
 
-    fun fetchData(phone: String) {
-        when (val result: com.example.es.domain.model.Result = fetchDataUseCase.execute(phone)) {
-            is com.example.es.domain.model.Result.Success -> {
-                mAllItems = result.itemsDomain.map { list ->
-                    list.map { mapper.mapDomainToUi(it) }
-                } as MutableLiveData<List<DataUi>>
-            }
-            is com.example.es.domain.model.Result.Fail -> mError.value = result.errorType
-        }
-    }
+//    fun fetchData(phone: String) {
+//        when (val result: com.example.es.domain.model.Result = fetchDataUseCase.execute(phone)) {
+//            is com.example.es.domain.model.Result.Success -> {
+//                mAllItems = result.itemsDomain.map { list ->
+//                    list.map { mapper.mapDomainToUi(it) }
+//                } as MutableLiveData<List<DataUi>>
+//            }
+//            is com.example.es.domain.model.Result.Fail -> mError.value = result.errorType
+//        }
+//    }
 
 //    init {
 //        when (val result = fetchDataUseCase.execute() {

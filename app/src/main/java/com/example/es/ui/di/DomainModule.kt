@@ -1,6 +1,6 @@
 package com.example.es.ui.di
 
-import com.example.es.domain.FetchDataUseCase
+import com.example.es.domain.FetchUserUseCase
 import com.example.es.domain.Repository
 import com.example.es.ui.model.MapDomainToUi
 import dagger.Module
@@ -13,8 +13,8 @@ import dagger.hilt.android.components.ViewModelComponent
 class DomainModule {
 
     @Provides
-    fun provideFetchDataUseCase(repository: Repository): FetchDataUseCase =
-        FetchDataUseCase.Base(repository = repository)
+    fun provideFetchDataUseCase(repository: Repository): FetchUserUseCase =
+        FetchUserUseCase.Base(repository = repository)
 
     @Provides
     fun provideMapDomainToUi(): MapDomainToUi = MapDomainToUi.Base()

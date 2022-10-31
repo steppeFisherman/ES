@@ -59,6 +59,15 @@
         <item name="android:padding">@dimen/size_1</item>
     </style>
 
+    <style name="profileImageShape">
+        <item name="android:layout_width">@dimen/size_92</item>
+        <item name="android:layout_height">@dimen/size_92</item>
+        <item name="android:layout_margin">@dimen/margin_16dp</item>
+        <item name="android:background">@drawable/holder</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:padding">@dimen/size_1</item>
+    </style>
+
     <style name="textInputLayout" parent= "Widget.MaterialComponents.TextInputLayout.OutlinedBox" >
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -70,8 +79,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/margin_16dp</item>
         <item name="android:background">@drawable/custom_button_save</item>
-        <item name="android:elevation">@dimen/margin_8dp</item>
-        <item name="android:text">@string/menu_save</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
@@ -93,6 +100,15 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black_textView</item>
         <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+
+    <!-- ProfileDialogTheme -->
+    <style name="profileDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyle</item>
+    </style>
+
+    <style name="bottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
 </resources>

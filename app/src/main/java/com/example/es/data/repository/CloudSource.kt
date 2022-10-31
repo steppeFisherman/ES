@@ -1,47 +1,41 @@
 package com.example.es.data.repository
 
-import androidx.lifecycle.MutableLiveData
 import com.example.es.data.model.MapCacheToDomain
 import com.example.es.data.model.MapCloudToCache
+import com.example.es.data.model.MapCloudToDomain
 import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.data.room.AppRoomDao
-import com.example.es.domain.model.DataDomain
+import com.example.es.domain.model.ResultUser
 import com.example.es.utils.NODE_USERS
-import com.example.es.utils.SnapShotListener
-import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import com.example.es.utils.REF_DATABASE_ROOT
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 interface CloudSource {
 
-    fun fetchCloud(phone: String): MutableLiveData<List<DataDomain>>
+    suspend fun fetchCloud(id: String): ResultUser
 
     class InitialFetchFromCache @Inject constructor(
         private val appDao: AppRoomDao,
         private val mapperCacheToDomain: MapCacheToDomain,
         private val mapperCloudToCache: MapCloudToCache,
-        private val dispatchers: ToDispatch
+        private val mapperCloudToDomain: MapCloudToDomain,
+        private val dispatchers: ToDispatch,
+        private val exceptionHandle: ExceptionHandle
     ) : CloudSource {
 
-        private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
-        private val scope = CoroutineScope(Job() + exceptionHandler)
+        private lateinit var result: ResultUser
 
-        override fun fetchCloud(phone: String): MutableLiveData<List<DataDomain>> {
-
-            val item = MutableLiveData<List<DataDomain>>()
-//            val phone = "+7 916 800 00 16"
-
-            FirebaseDatabase.getInstance().reference
-                .child(NODE_USERS).child(phone)
-                .addValueEventListener(SnapShotListener { snapshot ->
-                    val dataCloud =
-                        snapshot.getValue(DataCloud::class.java) ?: DataCloud()
-                    val dataCache = mapperCloudToCache.mapCloudToCache(dataCloud)
-                    item.value = listOf(mapperCacheToDomain.mapCacheToDomain(dataCache))
-                })
-            return item
+        override suspend fun fetchCloud(id: String): ResultUser {
+            REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
+                .addOnCompleteListener() { task ->
+                    result = if (task.isSuccessful) {
+                        val dataCloud = task.result.getValue(DataCloud::class.java) ?: DataCloud()
+                        val mapCloudToDomain = mapperCloudToDomain.mapCloudToDomain(dataCloud)
+                        ResultUser.Success(mapCloudToDomain)
+                    } else exceptionHandle.handle(exception = task.exception)
+                }.await()
+            return result
         }
     }
 }

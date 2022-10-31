@@ -32,7 +32,7 @@ fun View.snackLongTop(@StringRes message: Int) {
     snackBar.show()
 }
 
-fun View.snackIndefiniteTop(@StringRes message: Int) {
+fun View.snackIndefiniteTop(@StringRes message: Int, show: Boolean = true) {
     val snackBar = Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
     val layoutParams = FrameLayout.LayoutParams(snackBar.view.layoutParams)
 
