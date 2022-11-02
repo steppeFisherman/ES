@@ -7,6 +7,7 @@
     <string name="success_update">Данные успешно обновлены</string>
     <string name="failure_update">Не удалось обновить данные</string>
     <string name="http_exception_message">Что то пошло не так, ошибка сервера</string>
+    <string name="user_not_registered_exception_message">Пользователь не зарегистрирован</string>
     <string name="firebase_exception_message">Что то пошло не так, ошибка базы данных</string>
     <string name="no_connection_exception_message">Что то пошло не так, нет соединения</string>
     <string name="arithmetic_exception">ArithmeticException</string>

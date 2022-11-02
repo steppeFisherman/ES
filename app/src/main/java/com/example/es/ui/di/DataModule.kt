@@ -12,6 +12,7 @@ import com.example.es.data.room.AppRoomDao
 import com.example.es.data.room.AppRoomDatabase
 import com.example.es.domain.Repository
 import com.example.es.utils.ConnectionLiveData
+import com.example.es.utils.SnackBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +28,10 @@ class DataModule {
     @Singleton
     fun provideConnectionLiveData(@ApplicationContext context: Context): ConnectionLiveData =
         ConnectionLiveData(context = context)
+
+    @Provides
+    @Singleton
+    fun provideSnackBuilder(): SnackBuilder = SnackBuilder.Base()
 
     @Provides
     @Singleton

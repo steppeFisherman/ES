@@ -32,9 +32,9 @@ class MainActivityViewModel @Inject constructor(
         mError.value = ErrorType.GENERIC_ERROR
     }
 
-    fun fetchData(id: String) {
+    fun fetchData(id: String, phone: String) {
         viewModelScope.launch(exceptionHandler) {
-            when (val result: ResultUser = fetchUserUseCase.execute(id = id)) {
+            when (val result: ResultUser = fetchUserUseCase.execute(id = id, phone = phone)) {
                 is ResultUser.Success -> {
                     val dataDomain = result.userDomain
                     mapper.mapDomainToUi(dataDomain)

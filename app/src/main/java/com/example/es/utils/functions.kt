@@ -32,7 +32,7 @@ fun View.snackLongTop(@StringRes message: Int) {
     snackBar.show()
 }
 
-fun View.snackIndefiniteTop(@StringRes message: Int, show: Boolean = true) {
+fun View.snowSnackIndefiniteTop(@StringRes message: Int) {
     val snackBar = Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
     val layoutParams = FrameLayout.LayoutParams(snackBar.view.layoutParams)
 
@@ -43,4 +43,17 @@ fun View.snackIndefiniteTop(@StringRes message: Int, show: Boolean = true) {
     snackBar.view.layoutParams = layoutParams
     snackBar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
     snackBar.show()
+}
+
+fun View.dismissSnackIndefiniteTop(@StringRes message: Int) {
+    val snackBar = Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
+    val layoutParams = FrameLayout.LayoutParams(snackBar.view.layoutParams)
+
+    layoutParams.gravity = Gravity.TOP
+    layoutParams.marginStart = 40
+    layoutParams.marginEnd = 40
+    snackBar.view.setPadding(0, 8, 0, 8)
+    snackBar.view.layoutParams = layoutParams
+    snackBar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
+    snackBar.dismiss()
 }

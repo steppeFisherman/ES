@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 interface CloudSource {
 
-    suspend fun fetchCloud(id: String): ResultUser
+    suspend fun fetchCloud(id: String, phone: String): ResultUser
 
     class InitialFetchFromCache @Inject constructor(
         private val appDao: AppRoomDao,
@@ -26,7 +26,7 @@ interface CloudSource {
 
         private lateinit var result: ResultUser
 
-        override suspend fun fetchCloud(id: String): ResultUser {
+        override suspend fun fetchCloud(id: String, phone: String): ResultUser {
             REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
                 .addOnCompleteListener() { task ->
                     result = if (task.isSuccessful) {

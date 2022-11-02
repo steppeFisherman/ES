@@ -1,10 +1,13 @@
 package com.example.es.utils
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 
 /**
@@ -41,8 +44,10 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
           Source: https://developer.android.com/reference/android/net/ConnectivityManager.NetworkCallback#onAvailable(android.net.Network)
          */
         override fun onAvailable(network: Network) {
+            Log.d(TAG, "onAvailable: ${network}")
             val networkCapabilities = cm.getNetworkCapabilities(network)
             val hasInternetCapability = networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            Log.d(TAG, "onAvailable: ${network}, $hasInternetCapability")
             if (hasInternetCapability == true) {
                 validNetworks.add(network)
             }
@@ -54,6 +59,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
           Source: https://developer.android.com/reference/android/net/ConnectivityManager.NetworkCallback#onLost(android.net.Network)
          */
         override fun onLost(network: Network) {
+            Log.d(TAG, "onLost: ${network}")
             validNetworks.remove(network)
             checkValidNetworks()
         }

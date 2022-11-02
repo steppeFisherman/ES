@@ -13,5 +13,6 @@ class RepositoryImpl @Inject constructor(
 //    private val exceptionHandler = CoroutineExceptionHandler { _, throwable -> }
 //    private val scope = CoroutineScope(Job() + exceptionHandler)
 
-    override suspend fun execute(id: String): ResultUser = cloudSource.fetchCloud(id = id)
+    override suspend fun execute(id: String, phone: String): ResultUser =
+        cloudSource.fetchCloud(id = id, phone = phone)
 }
