@@ -7,19 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
-import com.example.es.data.repository.ToDispatch
 import com.example.es.databinding.FragmentSplashBinding
 import com.example.es.ui.BaseFragment
-import com.example.es.ui.MainActivityViewModel
 import com.example.es.utils.*
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -31,52 +27,43 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
     @Inject
     lateinit var snackTopBuilder: SnackBuilder
 
-    private lateinit var snack: Snackbar
-    private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
-    private val scope = CoroutineScope(Job() + exceptionHandler)
-    private val dispatchers: ToDispatch = ToDispatch.Base()
-
-    private var userExists = false
     private var extracted = ""
-
-    //    private var phoneNumberToSave = ""
     private var idEntered = ""
     private var phoneEntered = ""
     private lateinit var preferences: SharedPreferences
+    private lateinit var snack: Snackbar
 
-    private val activityViewModel by activityViewModels<MainActivityViewModel>()
+    private val vm by activityViewModels<SplashFragmentViewModel>()
 
     override fun initBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentSplashBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initialise()
+        inputMaskSetUp()
 
-        activityViewModel.user.observe(viewLifecycleOwner) { dataUi ->
+        vm.userAuth.observe(viewLifecycleOwner) { dataUi ->
+            binding.progressBar.visibility = View.GONE
             val idFetched = dataUi.id.toString()
             val phoneFetched = dataUi.phone_user
-            val nameFetched = dataUi.full_name
 
-            userExists = (idFetched == idEntered && phoneFetched == phoneEntered)
+            val userExists = (idFetched == idEntered && phoneFetched == phoneEntered)
             preferences.edit().putBoolean(PREF_BOOLEAN_VALUE, userExists).apply()
-//            preferences.edit().putString(PREF_ID_VALUE, idExists).apply()
-//            preferences.edit().putString(PREF_PHONE_VALUE, phoneExists).apply()
-//
-            if (userExists) {
-                preferences.edit().putString(PREF_ID_VALUE, idFetched).apply()
-                preferences.edit().putString(PREF_PHONE_VALUE, phoneFetched).apply()
-                preferences.edit().putString(PREF_FULL_NAME_VALUE, nameFetched).apply()
 
+            if (userExists) {
+                preferences.edit().putString(PREF_ID_VALUE, idEntered).apply()
+                val bundle = Bundle()
+                bundle.putParcelable(MainFragment.ARGS, dataUi)
                 findNavController()
-                    .navigate(R.id.action_splashFragment_to_mainFragment)
+                    .navigate(R.id.action_splashFragment_to_mainFragment, bundle)
             } else {
                 view.snackLongTop(R.string.enter_correct_phone_password)
             }
         }
 
-        activityViewModel.error.observe(viewLifecycleOwner) { errorType ->
+        vm.error.observe(viewLifecycleOwner) { errorType ->
+            binding.progressBar.visibility = View.GONE
             when (errorType.ordinal) {
                 0 -> view.snackLongTop(R.string.no_connection_exception_message)
                 1 -> view.snackLongTop(R.string.firebase_exception_message)
@@ -86,27 +73,28 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
             }
         }
 
-        inputMaskSetUp()
-
         binding.btnLogin.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
             val phone = binding.editTextPhone.text.toString().trim()
-            idEntered = binding.editTextPassword.text.toString().trim()
-
             val splitPhone = phone.split(" ")
             phoneEntered = splitPhone[0] + extracted
+            idEntered = binding.editTextPassword.text.toString().trim()
 
             if (phoneEntered.isBlank() || idEntered.isBlank()) it.snackLongTop(R.string.fill_all_fields)
             else {
                 checkNetworks(connectionLiveData) { isNetWorkAvailable ->
                     when (isNetWorkAvailable) {
-                        false -> snack.show()
+                        false -> {
+                            it.isEnabled = false
+                            snack.show()
+                        }
                         true -> {
-                            activityViewModel.fetchData(id = idEntered, phone = phoneEntered)
+                            it.isEnabled = true
+                            vm.fetchData(id = idEntered, phone = phoneEntered)
                             snack.dismiss()
                         }
                     }
                 }
-
             }
         }
     }
@@ -129,7 +117,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
         connection: ConnectionLiveData,
         connected: (Boolean) -> Unit
     ): Boolean {
-        var isNetWorkAvailable: Boolean = true
+        var isNetWorkAvailable = true
         connection.checkValidNetworks()
         connection.observe(viewLifecycleOwner) {
             isNetWorkAvailable = it
@@ -138,3 +126,5 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
         return isNetWorkAvailable
     }
 }
+
+

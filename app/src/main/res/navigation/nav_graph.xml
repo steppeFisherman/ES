@@ -17,6 +17,7 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <argument android:name="mainFragmentArgs" />
     </fragment>
     <dialog
         android:id="@+id/profileFragment"

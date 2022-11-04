@@ -1,18 +1,28 @@
 package com.example.es.ui.screens
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.databinding.FragmentProfileBinding
 import com.example.es.ui.BaseBottomSheetDialogFragment
-import com.example.es.utils.*
+import com.example.es.utils.APP_PREFERENCES
+import com.example.es.utils.PREF_URI_VALUE
+import com.example.es.utils.snackLongTop
+import com.github.dhaval2404.imagepicker.ImagePicker
 
-class ProfileFragment : BaseBottomSheetDialogFragment<FragmentProfileBinding>() {
+interface PhotoListener {
+    fun photoListener(photo: String)
+}
+
+class ProfileFragment() : BaseBottomSheetDialogFragment<FragmentProfileBinding>() {
 
     private lateinit var preferences: SharedPreferences
 
@@ -32,12 +42,45 @@ class ProfileFragment : BaseBottomSheetDialogFragment<FragmentProfileBinding>() 
 
         preferences = view.context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
 
+        val uri = preferences.getString(PREF_URI_VALUE, "")
+        if (uri?.isBlank() == true) binding.profileImage
+            .setImageResource(R.drawable.inset_holder_camera)
+        else binding.profileImage.setImageURI(uri?.toUri())
+
         binding.btnLogout.setOnClickListener {
-            preferences.edit().putBoolean(PREF_BOOLEAN_VALUE, false).apply()
-            preferences.edit().putString(PREF_ID_VALUE, "").apply()
-            preferences.edit().putString(PREF_PHONE_VALUE, "").apply()
+            preferences.edit().clear().apply()
             findNavController()
                 .navigate(R.id.action_profileFragment_to_splashFragment)
         }
+
+        binding.profileImage.setOnClickListener {
+            selectImage()
+        }
+    }
+
+    private fun selectImage() {
+        ImagePicker.with(this)
+            .crop()
+            .compress(1024)
+            .maxResultSize(1080, 1080)
+            .start()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                val uri = data?.data?.path
+                binding.profileImage.setImageURI(uri?.toUri())
+                preferences.edit().putString(PREF_URI_VALUE, uri).apply()
+                (requireActivity() as PhotoListener).photoListener(uri.toString())
+            }
+            ImagePicker.RESULT_ERROR -> binding.root.snackLongTop(ImagePicker.getError(data))
+            else -> binding.root.snackLongTop(R.string.cancel)
+        }
     }
 }
+
+
+

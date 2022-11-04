@@ -64,7 +64,7 @@ class DataModule {
         mapCloudToDomain: MapCloudToDomain,
         dispatchers: ToDispatch,
         exceptionHandle: ExceptionHandle
-    ): CloudSource = CloudSource.InitialFetchFromCache(
+    ): CloudSource = CloudSource.InitialFetch(
         appDao = appDao,
         mapperCacheToDomain = mapCacheToDomain,
         mapperCloudToCache = mapCloudToCache,

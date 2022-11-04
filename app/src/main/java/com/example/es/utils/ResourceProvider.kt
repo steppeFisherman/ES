@@ -3,11 +3,11 @@ package com.example.es.utils
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import androidx.annotation.ArrayRes
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.StringRes
+import android.graphics.drawable.Drawable
+import androidx.annotation.*
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.example.es.R
 
 interface ResourceProvider {
@@ -15,6 +15,7 @@ interface ResourceProvider {
     fun getString(context: Context, @StringRes id: Int): String
     fun getStringArray(context: Context, @ArrayRes id: Int): Array<String>
     fun getColor(context: Context, @ColorRes id: Int): ColorStateList
+    fun getDrawable(context: Context, @DrawableRes id: Int): Drawable?
 
     class Base : ResourceProvider {
         override fun getString(context: Context, id: Int) = context.getString(id)
@@ -23,5 +24,8 @@ interface ResourceProvider {
 
         override fun getColor(context: Context, id: Int): ColorStateList =
             AppCompatResources.getColorStateList(context, id)
+
+        override fun getDrawable(context: Context, id: Int): Drawable? =
+            ContextCompat.getDrawable(context, id)
     }
 }

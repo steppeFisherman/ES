@@ -15,25 +15,28 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainFragmentViewModel @Inject constructor(
+class SplashFragmentViewModel @Inject constructor(
     private val fetchUserUseCase: FetchUserUseCase,
     private val mapper: MapDomainToUi,
 ) : ViewModel() {
-
-    private var mUser = MutableLiveData<DataUi>()
+    private var mUserAuth = MutableLiveData<DataUi>()
     private var mError = MutableLiveData<ErrorType>()
+    private var mLoading = MutableLiveData<ResultUser.Loading>()
 
-    val user: LiveData<DataUi>
-        get() = mUser
+    val userAuth: LiveData<DataUi>
+        get() = mUserAuth
     val error: LiveData<ErrorType>
         get() = mError
+    val loading: LiveData<ResultUser.Loading>
+        get() = mLoading
 
     private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
 
-    fun fetchExistedUser(id: String) {
+    fun fetchData(id: String, phone: String) {
+        mLoading.value = ResultUser.Loading(true)
         viewModelScope.launch(exceptionHandler) {
-            when (val result = fetchUserUseCase.fetchExisted(id = id)) {
-                is ResultUser.Success -> mUser.value = mapper.mapDomainToUi(result.user)
+            when (val result: ResultUser = fetchUserUseCase.executeAuth(id, phone)) {
+                is ResultUser.Success -> mUserAuth.value = mapper.mapDomainToUi(result.user)
                 is ResultUser.Fail -> mError.value = result.error
                 else -> {}
             }
