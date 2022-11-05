@@ -10,6 +10,7 @@
 
     <color name="main_screen">#FBFBFB</color>
     <color name="bottomNav_background">#F0F0F0</color>
+    <color name="grey_disabled">#6D8F8F8F</color>
     <color name="bottomNav_background_blue">#010035</color>
     <color name="grey_bottomNav_icon">#7B7B7B</color>
     <color name="red">#FD3A69</color>

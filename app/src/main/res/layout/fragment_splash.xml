@@ -70,9 +70,9 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_login"
-                style="@style/button_blue_save"
+                style="@style/AppMaterialButton"
                 android:text="@string/logIn"
-                app:backgroundTint="@null" />
+                />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

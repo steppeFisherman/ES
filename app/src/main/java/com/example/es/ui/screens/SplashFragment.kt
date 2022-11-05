@@ -13,8 +13,6 @@ import com.example.es.databinding.FragmentSplashBinding
 import com.example.es.ui.BaseFragment
 import com.example.es.utils.*
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -73,25 +71,26 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
             }
         }
 
-        binding.btnLogin.setOnClickListener {
-            binding.progressBar.visibility = View.VISIBLE
-            val phone = binding.editTextPhone.text.toString().trim()
-            val splitPhone = phone.split(" ")
-            phoneEntered = splitPhone[0] + extracted
-            idEntered = binding.editTextPassword.text.toString().trim()
+        checkNetworks(connectionLiveData) { isNetWorkAvailable ->
+            when (isNetWorkAvailable) {
+                false -> {
+                    binding.btnLogin.isEnabled = false
+                    snack.show()
+                }
+                true -> {
+                    snack.dismiss()
+                    binding.btnLogin.isEnabled = true
 
-            if (phoneEntered.isBlank() || idEntered.isBlank()) it.snackLongTop(R.string.fill_all_fields)
-            else {
-                checkNetworks(connectionLiveData) { isNetWorkAvailable ->
-                    when (isNetWorkAvailable) {
-                        false -> {
-                            it.isEnabled = false
-                            snack.show()
-                        }
-                        true -> {
-                            it.isEnabled = true
+                    binding.btnLogin.setOnClickListener {
+                        val phone = binding.editTextPhone.text.toString().trim()
+                        val splitPhone = phone.split(" ")
+                        phoneEntered = splitPhone[0] + extracted
+                        idEntered = binding.editTextPassword.text.toString().trim()
+
+                        if (phoneEntered.isBlank() || idEntered.isBlank()) it.snackLongTop(R.string.fill_all_fields)
+                        else {
                             vm.fetchData(id = idEntered, phone = phoneEntered)
-                            snack.dismiss()
+                            binding.progressBar.visibility = View.VISIBLE
                         }
                     }
                 }
