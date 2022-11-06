@@ -18,10 +18,6 @@ import com.example.es.utils.PREF_URI_VALUE
 import com.example.es.utils.snackLongTop
 import com.github.dhaval2404.imagepicker.ImagePicker
 
-interface PhotoListener {
-    fun photoListener(photo: String)
-}
-
 class ProfileFragment() : BaseBottomSheetDialogFragment<FragmentProfileBinding>() {
 
     private lateinit var preferences: SharedPreferences
@@ -80,7 +76,13 @@ class ProfileFragment() : BaseBottomSheetDialogFragment<FragmentProfileBinding>(
             else -> binding.root.snackLongTop(R.string.cancel)
         }
     }
+
+    interface PhotoListener {
+        fun photoListener(photo: String)
+    }
 }
+
+
 
 
 

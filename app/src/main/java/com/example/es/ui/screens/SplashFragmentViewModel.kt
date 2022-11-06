@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.es.domain.FetchUserUseCase
+import com.example.es.domain.usecases.FetchUseCase
+import com.example.es.domain.model.DataDomain
 import com.example.es.domain.model.ErrorType
 import com.example.es.domain.model.ResultUser
 import com.example.es.ui.model.DataUi
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashFragmentViewModel @Inject constructor(
-    private val fetchUserUseCase: FetchUserUseCase,
+    private val fetchUseCase: FetchUseCase,
     private val mapper: MapDomainToUi,
 ) : ViewModel() {
     private var mUserAuth = MutableLiveData<DataUi>()
@@ -35,8 +36,9 @@ class SplashFragmentViewModel @Inject constructor(
     fun fetchData(id: String, phone: String) {
         mLoading.value = ResultUser.Loading(true)
         viewModelScope.launch(exceptionHandler) {
-            when (val result: ResultUser = fetchUserUseCase.executeAuth(id, phone)) {
-                is ResultUser.Success -> mUserAuth.value = mapper.mapDomainToUi(result.user)
+            when (val result: ResultUser = fetchUseCase.executeAuth(id, phone)) {
+                is ResultUser.Success<*> -> mUserAuth.value =
+                    mapper.mapDomainToUi(result.user as DataDomain)
                 is ResultUser.Fail -> mError.value = result.error
                 else -> {}
             }

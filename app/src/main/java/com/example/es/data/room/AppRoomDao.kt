@@ -11,15 +11,15 @@ import com.example.es.data.model.cacheModel.DataCache
 interface AppRoomDao {
 
     @Query("SELECT * FROM item_table")
-    fun fetchAllItems(): LiveData<List<DataCache>>
+    fun fetchAllUsers(): LiveData<List<DataCache>>
 
     @Query("SELECT * FROM item_table")
-    suspend fun fetchAllItemsBySuspend(): List<DataCache>
+    suspend fun fetchAllUsersBySuspend(): List<DataCache>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertItem(dataCache: DataCache)
+    suspend fun insertUser(dataCache: DataCache)
 
     @Query("DELETE FROM item_table")
-    suspend fun deleteItem()
+    suspend fun deleteUser()
 
 }

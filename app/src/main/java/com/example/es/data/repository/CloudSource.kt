@@ -7,8 +7,12 @@ import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.data.room.AppRoomDao
 import com.example.es.domain.model.ErrorType
 import com.example.es.domain.model.ResultUser
+import com.example.es.utils.CHILD_LATITUDE
 import com.example.es.utils.NODE_USERS
 import com.example.es.utils.REF_DATABASE_ROOT
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -16,8 +20,9 @@ interface CloudSource {
 
     suspend fun fetchAuth(id: String, phone: String): ResultUser
     suspend fun fetchExisted(id: String): ResultUser
+    suspend fun postLocation(id: String, latitude: String, longitude: String): ResultUser
 
-    class InitialFetch @Inject constructor(
+    class Base @Inject constructor(
         private val appDao: AppRoomDao,
         private val mapperCacheToDomain: MapCacheToDomain,
         private val mapperCloudToCache: MapCloudToCache,
@@ -25,6 +30,9 @@ interface CloudSource {
         private val dispatchers: ToDispatch,
         private val exceptionHandle: ExceptionHandle
     ) : CloudSource {
+
+        private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
+        private val scope = CoroutineScope(Job() + exceptionHandler)
 
         private lateinit var result: ResultUser
 
@@ -51,6 +59,34 @@ interface CloudSource {
                     } else {
                         exceptionHandle.handle(exception = task.exception)
                     }
+                }.await()
+            return result
+        }
+
+        override suspend fun postLocation(
+            id: String,
+            latitude: String,
+            longitude: String
+        ): ResultUser {
+
+            REF_DATABASE_ROOT.child(NODE_USERS).child(id).child(CHILD_LATITUDE).setValue(latitude)
+                .addOnCompleteListener { setValue ->
+                    if (setValue.isSuccessful) {
+                        REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
+                            .addOnCompleteListener { getValue ->
+                                if (getValue.isSuccessful) {
+                                    val dataCloud =
+                                        getValue.result.getValue(DataCloud::class.java)
+                                            ?: DataCloud()
+                                    val dataCache = mapperCloudToCache.mapCloudToCache(dataCloud)
+
+                                    dispatchers.launchIO(scope = scope) {
+                                        appDao.insertUser(dataCache)
+                                    }
+                                } else result =
+                                    exceptionHandle.handle(exception = getValue.exception)
+                            }
+                    } else result = exceptionHandle.handle(exception = setValue.exception)
                 }.await()
             return result
         }

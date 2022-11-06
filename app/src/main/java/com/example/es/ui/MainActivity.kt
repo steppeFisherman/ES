@@ -11,7 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.es.R
 import com.example.es.databinding.ActivityMainBinding
 import com.example.es.ui.screens.MainFragment
-import com.example.es.ui.screens.PhotoListener
+import com.example.es.ui.screens.ProfileFragment
 import com.example.es.utils.APP_PREFERENCES
 import com.example.es.utils.PREF_BOOLEAN_VALUE
 import com.example.es.utils.REF_DATABASE_ROOT
@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), PhotoListener {
+class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navControllerMain: NavController

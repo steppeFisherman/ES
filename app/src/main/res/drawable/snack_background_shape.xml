@@ -11,7 +11,7 @@
         <!-- Insert your shape here: -->
         <shape
             android:shape="rectangle"
-            android:tint="@color/darkred">
+            android:tint="@color/dark_red">
 
             <!-- Padding for inner text-->
             <padding

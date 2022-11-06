@@ -47,6 +47,12 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
                 4 -> view.snackLong(R.string.generic_exception_message)
             }
         }
+
+        var count = 0
+        binding.btnLocation.setOnClickListener {
+            if (userId.isNotBlank())
+                vm.postLocation(id = userId, latitude = "latitude: ${count++}", longitude = "longitude")
+        }
     }
 
     override fun onResume() {

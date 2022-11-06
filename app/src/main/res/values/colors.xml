@@ -25,8 +25,8 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="grey_light">#1E000000</color>
     <color name="eliteColor">#13436b</color>
-    <color name="darkgreen">#006400</color>
-    <color name="deepskyblue">#00BFFF</color>
-    <color name="darkred">#800000</color>
+    <color name="dark_green">#006400</color>
+    <color name="deep_sky_blue">#00BFFF</color>
+    <color name="dark_red">#800000</color>
     <color name="status_bar">#FBFBFB</color>
 </resources>

@@ -6,6 +6,7 @@ import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
     private val cloudSource: CloudSource,
+    private val cacheSource: CacheSource,
     private val exceptionHandle: ExceptionHandle,
     private val dispatchers: ToDispatch
 ) : Repository {
@@ -19,11 +20,11 @@ class RepositoryImpl @Inject constructor(
     override suspend fun fetchExisted(id: String): ResultUser =
         cloudSource.fetchExisted(id = id)
 
+    override suspend fun postLocation(id: String,latitude: String, longitude: String): ResultUser =
+        cloudSource.postLocation(id,latitude,longitude)
 
-//        try {
-//            cloudSource.fetchCloud(id = id, phone = phone)
-//        }catch (e: Exception){
-//            exceptionHandle.handle(exception = e)
-//        }
+    override val usersCached: ResultUser
+        get() = cacheSource.fetchCached()
+
 }
 

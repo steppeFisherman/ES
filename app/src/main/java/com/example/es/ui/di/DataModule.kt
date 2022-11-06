@@ -4,10 +4,7 @@ import android.content.Context
 import com.example.es.data.model.MapCacheToDomain
 import com.example.es.data.model.MapCloudToCache
 import com.example.es.data.model.MapCloudToDomain
-import com.example.es.data.repository.CloudSource
-import com.example.es.data.repository.ExceptionHandle
-import com.example.es.data.repository.RepositoryImpl
-import com.example.es.data.repository.ToDispatch
+import com.example.es.data.repository.*
 import com.example.es.data.room.AppRoomDao
 import com.example.es.data.room.AppRoomDatabase
 import com.example.es.domain.Repository
@@ -57,14 +54,18 @@ class DataModule {
     fun provideDispatchers(): ToDispatch = ToDispatch.Base()
 
     @Provides
+    fun provideExceptionHandle(): ExceptionHandle =
+        ExceptionHandle.Base()
+
+    @Provides
     fun provideCloudSource(
         appDao: AppRoomDao,
         mapCacheToDomain: MapCacheToDomain,
         mapCloudToCache: MapCloudToCache,
         mapCloudToDomain: MapCloudToDomain,
         dispatchers: ToDispatch,
-        exceptionHandle: ExceptionHandle
-    ): CloudSource = CloudSource.InitialFetch(
+        exceptionHandle: ExceptionHandle,
+    ): CloudSource = CloudSource.Base(
         appDao = appDao,
         mapperCacheToDomain = mapCacheToDomain,
         mapperCloudToCache = mapCloudToCache,
@@ -74,17 +75,32 @@ class DataModule {
     )
 
     @Provides
-    fun provideExceptionHandle(): ExceptionHandle =
-        ExceptionHandle.Base()
+    fun provideCacheSource(
+        appDao: AppRoomDao,
+        mapCacheToDomain: MapCacheToDomain,
+        mapCloudToCache: MapCloudToCache,
+        mapCloudToDomain: MapCloudToDomain,
+        dispatchers: ToDispatch,
+        exceptionHandle: ExceptionHandle,
+    ): CacheSource = CacheSource.Base(
+        appDao = appDao,
+        mapperCacheToDomain = mapCacheToDomain,
+        mapperCloudToCache = mapCloudToCache,
+        mapperCloudToDomain = mapCloudToDomain,
+        dispatchers = dispatchers,
+        exceptionHandle = exceptionHandle
+    )
 
     @Provides
     @Singleton
     fun provideRepository(
         cloudSource: CloudSource,
+        cacheSource: CacheSource,
         exceptionHandle: ExceptionHandle,
         dispatchers: ToDispatch,
     ): Repository = RepositoryImpl(
         cloudSource = cloudSource,
+        cacheSource = cacheSource,
         exceptionHandle = exceptionHandle,
         dispatchers = dispatchers
     )
