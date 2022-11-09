@@ -44,8 +44,8 @@
 
     <style name="btn_mainFragment">
         <item name="android:backgroundTint">@drawable/btn_text_color_selector</item>
-        <item name="android:layout_width">@dimen/size_92</item>
-        <item name="android:layout_height">@dimen/size_92</item>
+        <item name="android:layout_width">@dimen/size_96</item>
+        <item name="android:layout_height">@dimen/size_96</item>
         <item name="cornerRadius">6dp</item>
     </style>
 
