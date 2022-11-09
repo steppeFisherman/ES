@@ -18,7 +18,7 @@ class UsersService {
                 phone_user = (it + 10).toString(),
                 phone_operator = "+74955802688",
                 photo = "",
-                time = "",
+                time_location = "",
                 latitude = "",
                 longitude = "",
                 alarm = false,

@@ -16,7 +16,7 @@ interface MapCloudToDomain {
                 phone_user = dataCloud.phone_user,
                 phone_operator = dataCloud.phone_operator,
                 photo = dataCloud.photo,
-                time = dataCloud.time,
+                time_location = dataCloud.time_location,
                 latitude = dataCloud.latitude,
                 longitude = dataCloud.longitude,
                 alarm = dataCloud.alarm,

@@ -1,7 +1,9 @@
 package com.example.es.domain.usecases
 
 import com.example.es.domain.Repository
+import com.example.es.domain.model.DataDomain
 import com.example.es.domain.model.ResultUser
+import com.example.es.domain.model.ResultUserLiveData
 import javax.inject.Inject
 
 interface FetchUseCase {

@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.es.data.model.MapCacheToDomain
 import com.example.es.data.model.MapCloudToCache
 import com.example.es.data.model.MapCloudToDomain
+import com.example.es.data.model.MapDomainToCloud
 import com.example.es.data.repository.*
 import com.example.es.data.room.AppRoomDao
 import com.example.es.data.room.AppRoomDatabase
@@ -51,6 +52,11 @@ class DataModule {
         MapCloudToDomain.Base()
 
     @Provides
+    @Singleton
+    fun provideMapDomainToCloud(): MapDomainToCloud =
+        MapDomainToCloud.Base()
+
+    @Provides
     fun provideDispatchers(): ToDispatch = ToDispatch.Base()
 
     @Provides
@@ -63,6 +69,7 @@ class DataModule {
         mapCacheToDomain: MapCacheToDomain,
         mapCloudToCache: MapCloudToCache,
         mapCloudToDomain: MapCloudToDomain,
+        mapDomainToCloud: MapDomainToCloud,
         dispatchers: ToDispatch,
         exceptionHandle: ExceptionHandle,
     ): CloudSource = CloudSource.Base(
@@ -70,6 +77,7 @@ class DataModule {
         mapperCacheToDomain = mapCacheToDomain,
         mapperCloudToCache = mapCloudToCache,
         mapperCloudToDomain = mapCloudToDomain,
+        mapperDomainToCloud = mapDomainToCloud,
         dispatchers = dispatchers,
         exceptionHandle = exceptionHandle
     )

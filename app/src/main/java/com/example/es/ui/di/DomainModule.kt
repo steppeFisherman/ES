@@ -4,6 +4,7 @@ import com.example.es.domain.usecases.FetchUseCase
 import com.example.es.domain.Repository
 import com.example.es.domain.usecases.PostUseCase
 import com.example.es.ui.model.MapDomainToUi
+import com.example.es.ui.model.MapUiToDomain
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,4 +24,7 @@ class DomainModule {
 
     @Provides
     fun provideMapDomainToUi(): MapDomainToUi = MapDomainToUi.Base()
+
+    @Provides
+    fun provideMapUiToDomain(): MapUiToDomain = MapUiToDomain.Base()
 }

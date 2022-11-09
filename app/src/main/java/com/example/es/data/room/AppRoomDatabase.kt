@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.es.data.model.cacheModel.DataCache
+import com.example.es.utils.DateLongConverter
 
 @Database(entities = [DataCache::class], version = 1, exportSchema = false)
+@TypeConverters(DateLongConverter::class)
 abstract class AppRoomDatabase : RoomDatabase() {
 
     abstract fun getAppRoomDao(): AppRoomDao

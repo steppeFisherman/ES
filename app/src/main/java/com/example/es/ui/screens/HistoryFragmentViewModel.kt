@@ -1,7 +1,6 @@
 package com.example.es.ui.screens
 
 import androidx.lifecycle.*
-import com.example.es.domain.model.DataDomain
 import com.example.es.domain.model.ErrorType
 import com.example.es.domain.model.ResultUser
 import com.example.es.domain.usecases.FetchUseCase
@@ -31,10 +30,8 @@ class HistoryFragmentViewModel @Inject constructor(
         val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
         viewModelScope.launch(exceptionHandler) {
             when (val result = fetchUseCase.fetchCached()) {
-                is ResultUser.Success<*> -> {
-                    val data: MutableLiveData<List<DataDomain>> =
-                        result.user as MutableLiveData<List<DataDomain>>
-                    mUsers = data.map { list ->
+                is ResultUser.SuccessLiveDAta -> {
+                    mUsers = result.userLiveData.map { list ->
                         list.map { dataDomain ->
                             mapper.mapDomainToUi(dataDomain)
                         }

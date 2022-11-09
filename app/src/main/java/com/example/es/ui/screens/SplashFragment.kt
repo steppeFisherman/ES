@@ -51,6 +51,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
             if (userExists) {
                 preferences.edit().putString(PREF_ID_VALUE, idEntered).apply()
+                preferences.edit().putString(PREF_PHONE_VALUE, phoneEntered).apply()
                 val bundle = Bundle()
                 bundle.putParcelable(MainFragment.ARGS, dataUi)
                 findNavController()
@@ -64,10 +65,11 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
             binding.progressBar.visibility = View.GONE
             when (errorType.ordinal) {
                 0 -> view.snackLongTop(R.string.no_connection_exception_message)
-                1 -> view.snackLongTop(R.string.firebase_exception_message)
+                1 -> view.snackLongTop(R.string.database_exception_message)
                 2 -> view.snackLongTop(R.string.http_exception_message)
                 3 -> view.snackLongTop(R.string.user_not_registered_exception_message)
-                4 -> view.snackLongTop(R.string.generic_exception_message)
+                4 -> view.snackLong(R.string.database_exception_message)
+                5 -> view.snackLongTop(R.string.generic_exception_message)
             }
         }
 

@@ -18,7 +18,7 @@ interface MapCacheToDomain {
                 phone_user = dataCache.phone_user,
                 phone_operator = dataCache.phone_operator,
                 photo = dataCache.photo,
-                time = dataCache.time,
+                time_location = dataCache.time_location,
                 latitude = dataCache.latitude,
                 longitude = dataCache.longitude,
                 alarm = dataCache.alarm,

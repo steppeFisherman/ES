@@ -23,7 +23,8 @@ class HistoryFragmentAdapter(private val loadImage: LoadImage) :
 
         holder.binding.apply {
             loadImage.load(holder.binding.profileImage, "")
-            holder.binding.txtName.text = mList[position].latitude
+            holder.binding.txtName.text = mList[position].full_name
+            holder.binding.txtLatitude.text = mList[position].time_location
             holder.binding.txtPhone.text = mList[position].phone_user
         }
     }

@@ -36,6 +36,15 @@
             tools:text="Title" />
 
         <TextView
+            android:id="@+id/txt_latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_8dp"
+            android:layout_marginEnd="@dimen/margin_8dp"
+            android:layout_marginBottom="@dimen/margin_8dp"
+            tools:text="Description" />
+
+        <TextView
             android:id="@+id/txt_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

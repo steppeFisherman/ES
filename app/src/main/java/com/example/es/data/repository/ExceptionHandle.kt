@@ -1,5 +1,6 @@
 package com.example.es.data.repository
 
+import android.database.sqlite.SQLiteException
 import com.example.es.domain.model.ErrorType
 import com.example.es.domain.model.ResultUser
 import com.google.firebase.FirebaseException
@@ -19,6 +20,7 @@ interface ExceptionHandle {
                 is FirebaseException -> ErrorType.FIREBASE_EXCEPTION
                 is HttpException -> ErrorType.HTTP_EXCEPTION
                 is FirebaseAuthException -> ErrorType.USER_NOT_REGISTERED
+                is SQLiteException -> ErrorType.SQL_EXCEPTION
                 else -> ErrorType.GENERIC_ERROR
             }
         )

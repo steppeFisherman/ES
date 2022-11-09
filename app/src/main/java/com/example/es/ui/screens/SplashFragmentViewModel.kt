@@ -37,7 +37,7 @@ class SplashFragmentViewModel @Inject constructor(
         mLoading.value = ResultUser.Loading(true)
         viewModelScope.launch(exceptionHandler) {
             when (val result: ResultUser = fetchUseCase.executeAuth(id, phone)) {
-                is ResultUser.Success<*> -> mUserAuth.value =
+                is ResultUser.Success -> mUserAuth.value =
                     mapper.mapDomainToUi(result.user as DataDomain)
                 is ResultUser.Fail -> mError.value = result.error
                 else -> {}

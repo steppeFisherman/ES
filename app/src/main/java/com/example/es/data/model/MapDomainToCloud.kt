@@ -1,16 +1,16 @@
-package com.example.es.ui.model
+package com.example.es.data.model
 
+import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.domain.model.DataDomain
 
-interface MapDomainToUi {
+interface MapDomainToCloud {
 
-    fun mapDomainToUi(dataDomain: DataDomain): DataUi
+    fun mapDomainToCloud(dataDomain: DataDomain): DataCloud
 
-    class Base : MapDomainToUi {
-        override fun mapDomainToUi(dataDomain: DataDomain): DataUi =
-            DataUi(
+    class Base : MapDomainToCloud {
+        override fun mapDomainToCloud(dataDomain: DataDomain): DataCloud =
+            DataCloud(
                 id = dataDomain.id,
-                id_cache = dataDomain.id_cache,
                 full_name = dataDomain.full_name,
                 phone_user = dataDomain.phone_user,
                 phone_operator = dataDomain.phone_operator,
@@ -19,7 +19,9 @@ interface MapDomainToUi {
                 latitude = dataDomain.latitude,
                 longitude = dataDomain.longitude,
                 alarm = dataDomain.alarm,
-                notify = dataDomain.notify
+                notify = dataDomain.notify,
             )
     }
 }
+
+
