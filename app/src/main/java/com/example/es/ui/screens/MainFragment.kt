@@ -5,85 +5,78 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.databinding.FragmentMainBinding
-import com.example.es.ui.BaseFragment
-import com.example.es.ui.model.DataUi
 import com.example.es.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class MainFragment : BaseFragment<FragmentMainBinding>() {
+class MainFragment : Fragment() {
 
-    private lateinit var preferences: SharedPreferences
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = checkNotNull(_binding)
+    private var phoneOperator = ""
+    private var isAttachedToActivity: Boolean = false
     private val vm by activityViewModels<MainFragmentViewModel>()
+    private lateinit var preferences: SharedPreferences
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("AAA", "onCreate")
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        isAttachedToActivity = true
     }
 
-    override fun initBinding(inflater: LayoutInflater, container: ViewGroup?) =
-        FragmentMainBinding.inflate(inflater, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentMainBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("AAA", "onViewCreated")
 
-        initialise(view)
-
+        preferences = view.context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
         val userId = preferences.getString(PREF_ID_VALUE, "").toString()
         val userPhone = preferences.getString(PREF_PHONE_VALUE, "").toString()
-        val dataUi = DataUi()
-        if (userId.isNotBlank()){
+
+        if (userId.isNotBlank()) {
+
             vm.fetchExistedUser(id = userId)
+
             REF_DATABASE_ROOT.child(NODE_USERS).child(userId)
-                .addValueEventListener(SnapShotListener{ snapShot ->
-                        val dataCloud = snapShot.getValue(DataCloud::class.java)
-                                ?: DataCloud()
-                        if (userPhone == dataCloud.phone_user) {
+                .addValueEventListener(SnapShotListener { snapShot ->
+                    if (snapShot.exists()) {
+                        val dataCloud = snapShot.getValue(DataCloud::class.java) ?: DataCloud()
+                        val ddd = dataCloud.phone_user
+                        if (userPhone == ddd) {
+                            phoneOperator = dataCloud.phone_operator
+                            binding.txtPhone.text = dataCloud.phone_user
+                            binding.txtName.text = dataCloud.full_name
                             binding.txtLocation.text = dataCloud.latitude
                             binding.txtTime.text = dataCloud.time_location
-                        }else {
-                            findNavController()
-                                .navigate(R.id.action_mainFragment_to_splashFragment)
-                            preferences.edit().clear().apply()
+                        } else if (isAttachedToActivity) {
+                            (requireActivity() as Navigator)
+                                .navigateAndPrefClear(
+                                    R.id.action_mainFragment_to_splashFragment,
+                                    true
+                                )
                         }
+                    }
                 })
         }
 
-        vm.user.observe(viewLifecycleOwner) { data ->
-            binding.progressBar.visible(false)
-            dataUi.id = data.id
-            dataUi.full_name = data.full_name
-            dataUi.phone_user = data.phone_user
-            dataUi.phone_operator = data.phone_operator
-            dataUi.photo = data.photo
-            dataUi.time_location = data.time_location
-            dataUi.latitude = data.latitude
-            dataUi.longitude = data.longitude
-            dataUi.alarm = data.alarm
-            dataUi.notify = data.notify
-
-            binding.txtPhone.text = data.phone_user
-            binding.txtName.text = data.full_name
-//            binding.txtLocation.text = data.latitude
-//            binding.txtTime.text = data.time_location
-        }
-
         vm.error.observe(viewLifecycleOwner) { errorType ->
-            binding.progressBar.visible(false)
             when (errorType.ordinal) {
                 0 -> view.snackLong(R.string.no_connection_exception_message)
                 1 -> view.snackLong(R.string.database_exception_message)
@@ -95,38 +88,32 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
         }
 
         binding.btnLocation.setOnClickListener {
-          val dateDate = Calendar.getInstance(Locale.getDefault()).time
+            val dateDate = Calendar.getInstance(Locale.getDefault()).time
             val dateString = DateFormat.getDateTimeInstance().format(dateDate)
-            dataUi.time_location = dateString
-            vm.postLocation(id = userId, dataUi = dataUi)
+            val map = mutableMapOf<String, Any>()
+            map[CHILD_TIME] = dateString
+            map[CHILD_LATITUDE] = dateString
+            vm.postLocation(id = userId, map)
         }
 
         binding.btnDial.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
-            intent.data = Uri.parse("tel:${dataUi.phone_operator}")
+            intent.data = Uri.parse("tel:${phoneOperator}")
             ContextCompat.startActivity(view.context, intent, null)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d("AAA", "onResume")
-
         val uri = preferences.getString(PREF_URI_VALUE, "")
         if (uri?.isBlank() == true) binding.imgPhoto
             .setImageResource(R.drawable.inset_holder_camera)
         else binding.imgPhoto.setImageURI(uri?.toUri())
     }
 
-    private fun initialise(view: View) {
-        preferences = view.context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-        binding.progressBar.visible(true)
-        val args: DataUi? = arguments?.getParcelable(ARGS)
-        if (args != null) {
-            binding.progressBar.visible(false)
-            binding.txtPhone.text = args.phone_user
-            binding.txtLocation.text = args.full_name
-        }
+    override fun onDetach() {
+        super.onDetach()
+        isAttachedToActivity = false
     }
 
     companion object {
@@ -137,45 +124,5 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
             return fragment
         }
     }
-
-
-    override fun onStart() {
-        super.onStart()
-        Log.d("AAA", "onStart")
-
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d("AAA", "onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d("AAA", "onStop")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d("AAA", "onDestroyView")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("AAA", "onDestroy")
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        Log.d("AAA", "onAttach")
-
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d("AAA", "onDetach")
-
-    }
-
 }
 

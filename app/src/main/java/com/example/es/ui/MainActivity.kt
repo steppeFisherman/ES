@@ -1,6 +1,7 @@
 package com.example.es.ui
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import com.example.es.databinding.ActivityMainBinding
 import com.example.es.ui.screens.MainFragment
 import com.example.es.ui.screens.ProfileFragment
 import com.example.es.utils.APP_PREFERENCES
+import com.example.es.utils.Navigator
 import com.example.es.utils.PREF_BOOLEAN_VALUE
 import com.example.es.utils.REF_DATABASE_ROOT
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -20,13 +22,14 @@ import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener {
+class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener, Navigator {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var navControllerMain: NavController
+    lateinit var navControllerMain: NavController
     private lateinit var destinationChangedListener:
             NavController.OnDestinationChangedListener
     private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var preferences: SharedPreferences
 
 //    private val usersService: UsersService
 //        get() = (applicationContext as App).usersService
@@ -57,10 +60,10 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener {
         navControllerMain = navHostFragment.navController
         bottomNavigationView = binding.bottomNavigation
         bottomNavigationView.setupWithNavController(navControllerMain)
+        preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
     }
 
     private fun checkUserLoggedIn() {
-        val preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
         val userLoggedIn = preferences.getBoolean(PREF_BOOLEAN_VALUE, false)
         if (!userLoggedIn) {
             navControllerMain.navigate(R.id.action_mainFragment_to_splashFragment)
@@ -89,6 +92,13 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener {
 
     override fun photoListener(photo: String) {
         MainFragment.newInstance(photo)
+    }
+
+    override fun navigateAndPrefClear(resId: Int , prefClear: Boolean) {
+        if (prefClear) {
+            navControllerMain.navigate(resId)
+            preferences.edit().clear().apply()
+        } else navControllerMain.navigate(resId)
     }
 }
 

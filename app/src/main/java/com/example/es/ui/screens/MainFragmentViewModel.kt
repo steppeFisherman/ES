@@ -48,11 +48,9 @@ class MainFragmentViewModel @Inject constructor(
         }
     }
 
-    fun postLocation(id: String, dataUi: DataUi) {
-        mLoading.value = ResultUser.Loading(true)
+    fun postLocation(id: String, map: MutableMap<String, Any>) {
         viewModelScope.launch(exceptionHandler) {
-            val dataDomain = mapperToDomain.mapUiToDomain(dataUi)
-            val result = postUseCase.postLocation(id, dataDomain)
+            val result = postUseCase.postLocation(id, map)
             when (result) {
                 is ResultUser.Success -> mUser.value = mapperToUi.mapDomainToUi(result.user)
                 is ResultUser.Fail -> mError.value = result.error
@@ -60,15 +58,4 @@ class MainFragmentViewModel @Inject constructor(
             }
         }
     }
-
-
-//        mLoading.value = ResultUser.Loading(true)
-//        viewModelScope.launch(exceptionHandler) {
-//            when (val result = postUseCase.postLocation(id, latitude, longitude)) {
-//                is ResultUser.Success -> mUser.value = mapper.mapDomainToUi(result.user)
-//                is ResultUser.Fail -> mError.value = result.error
-//                else -> {}
-//            }
-//        }
-
 }

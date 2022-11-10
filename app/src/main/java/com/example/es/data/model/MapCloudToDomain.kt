@@ -11,7 +11,7 @@ interface MapCloudToDomain {
         override fun mapCloudToDomain(dataCloud: DataCloud): DataDomain =
             DataDomain(
                 id = dataCloud.id,
-                id_cache = 0,
+                id_cache = dataCloud.id_cache,
                 full_name = dataCloud.full_name,
                 phone_user = dataCloud.phone_user,
                 phone_operator = dataCloud.phone_operator,

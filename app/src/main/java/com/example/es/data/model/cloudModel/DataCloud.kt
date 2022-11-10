@@ -1,6 +1,7 @@
 package com.example.es.data.model.cloudModel
 
 data class DataCloud(
+    val id_cache: Int = 0,
     val id: Int = 0,
     var full_name: String = "",
     var phone_user: String = "",

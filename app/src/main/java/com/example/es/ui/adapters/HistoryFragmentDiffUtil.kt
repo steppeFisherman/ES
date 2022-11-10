@@ -12,7 +12,7 @@ class HistoryFragmentDiffUtil(
     override fun getNewListSize() = newList.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-        oldList[oldItemPosition].id_cache == newList[newItemPosition].id_cache
+        oldList[oldItemPosition].time_location == newList[newItemPosition].time_location
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
         when {

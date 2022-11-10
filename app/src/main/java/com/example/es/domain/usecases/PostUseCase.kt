@@ -7,11 +7,11 @@ import javax.inject.Inject
 
 interface PostUseCase {
 
-    suspend fun postLocation(id: String, dataDomain: DataDomain): ResultUser
+    suspend fun postLocation(id: String, map: MutableMap<String,Any>): ResultUser
 
     class Base @Inject constructor(private val repository: Repository) : PostUseCase {
-        override suspend fun postLocation(id: String, dataDomain: DataDomain)
+        override suspend fun postLocation(id: String, map: MutableMap<String, Any>)
                 : ResultUser =
-            repository.postLocation(id = id, dataDomain = dataDomain)
+            repository.postLocation(id = id, map = map)
     }
 }

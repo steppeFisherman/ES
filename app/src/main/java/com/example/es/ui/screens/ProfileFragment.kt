@@ -9,17 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
-import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.databinding.FragmentProfileBinding
-import com.example.es.ui.BaseBottomSheetDialogFragment
 import com.example.es.utils.APP_PREFERENCES
+import com.example.es.utils.Navigator
 import com.example.es.utils.PREF_URI_VALUE
 import com.example.es.utils.snackLongTop
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class ProfileFragment() : BaseBottomSheetDialogFragment<FragmentProfileBinding>() {
+class ProfileFragment : BottomSheetDialogFragment() {
 
+    private var _binding: FragmentProfileBinding? = null
+    private val binding get() = checkNotNull(_binding)
     private lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,11 +29,13 @@ class ProfileFragment() : BaseBottomSheetDialogFragment<FragmentProfileBinding>(
         setStyle(STYLE_NORMAL, R.style.profileDialogTheme)
     }
 
-    override fun initBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ): FragmentProfileBinding =
-        FragmentProfileBinding.inflate(inflater, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentProfileBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,9 +48,11 @@ class ProfileFragment() : BaseBottomSheetDialogFragment<FragmentProfileBinding>(
         else binding.profileImage.setImageURI(uri?.toUri())
 
         binding.btnLogout.setOnClickListener {
-            preferences.edit().clear().apply()
-            findNavController()
-                .navigate(R.id.action_profileFragment_to_splashFragment)
+            (requireActivity() as Navigator)
+                .navigateAndPrefClear(
+                    R.id.action_profileFragment_to_splashFragment,
+                    true
+                )
         }
 
         binding.profileImage.setOnClickListener {
@@ -62,6 +68,7 @@ class ProfileFragment() : BaseBottomSheetDialogFragment<FragmentProfileBinding>(
             .start()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 

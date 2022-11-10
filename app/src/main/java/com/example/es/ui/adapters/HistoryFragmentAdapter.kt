@@ -20,12 +20,11 @@ class HistoryFragmentAdapter(private val loadImage: LoadImage) :
     }
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
-
         holder.binding.apply {
             loadImage.load(holder.binding.profileImage, "")
             holder.binding.txtName.text = mList[position].full_name
             holder.binding.txtLatitude.text = mList[position].time_location
-            holder.binding.txtPhone.text = mList[position].phone_user
+            holder.binding.txtPhone.text = mList[position].id_cache.toString()
         }
     }
 
