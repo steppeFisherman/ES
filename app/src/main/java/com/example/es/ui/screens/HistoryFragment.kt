@@ -35,7 +35,6 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm.fetchData()
         snack = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE)
 
         val adapter = HistoryFragmentAdapter(LoadImage.Base())

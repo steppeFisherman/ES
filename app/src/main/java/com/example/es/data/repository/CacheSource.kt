@@ -1,5 +1,6 @@
 package com.example.es.data.repository
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.map
 import com.example.es.data.model.MapCacheToDomain
 import com.example.es.data.model.MapCloudToCache

@@ -22,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener, Navigator {
+class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener {
 
     private lateinit var binding: ActivityMainBinding
     lateinit var navControllerMain: NavController
@@ -92,13 +92,6 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener, Navigat
 
     override fun photoListener(photo: String) {
         MainFragment.newInstance(photo)
-    }
-
-    override fun navigateAndPrefClear(resId: Int , prefClear: Boolean) {
-        if (prefClear) {
-            navControllerMain.navigate(resId)
-            preferences.edit().clear().apply()
-        } else navControllerMain.navigate(resId)
     }
 }
 

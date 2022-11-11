@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.databinding.FragmentProfileBinding
 import com.example.es.utils.APP_PREFERENCES
@@ -48,11 +49,8 @@ class ProfileFragment : BottomSheetDialogFragment() {
         else binding.profileImage.setImageURI(uri?.toUri())
 
         binding.btnLogout.setOnClickListener {
-            (requireActivity() as Navigator)
-                .navigateAndPrefClear(
-                    R.id.action_profileFragment_to_splashFragment,
-                    true
-                )
+            preferences.edit().clear().apply()
+            findNavController().navigate(R.id.action_profileFragment_to_splashFragment)
         }
 
         binding.profileImage.setOnClickListener {

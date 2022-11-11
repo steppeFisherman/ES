@@ -1,5 +1,6 @@
 package com.example.es.data.repository
 
+import android.database.sqlite.SQLiteException
 import com.example.es.domain.Repository
 import com.example.es.domain.model.DataDomain
 import com.example.es.domain.model.ResultUser

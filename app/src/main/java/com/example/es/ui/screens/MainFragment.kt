@@ -12,28 +12,32 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.es.R
-import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.databinding.FragmentMainBinding
 import com.example.es.utils.*
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DateFormat
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
 
+    @Inject
+    lateinit var connectionLiveData: ConnectionLiveData
+
+    @Inject
+    lateinit var snackTopBuilder: SnackBuilder
+
     private var _binding: FragmentMainBinding? = null
     private val binding get() = checkNotNull(_binding)
     private var phoneOperator = ""
-    private var isAttachedToActivity: Boolean = false
     private val vm by activityViewModels<MainFragmentViewModel>()
+    private val formatUiPhoneNumber = FormatUiPhoneNumber.Base()
     private lateinit var preferences: SharedPreferences
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        isAttachedToActivity = true
-    }
+    private lateinit var snack: Snackbar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,34 +50,26 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        preferences = view.context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+        initialise(view)
+
         val userId = preferences.getString(PREF_ID_VALUE, "").toString()
         val userPhone = preferences.getString(PREF_PHONE_VALUE, "").toString()
 
-        if (userId.isNotBlank()) {
+        if (userId.isNotBlank()) vm.fetchExistedUser(id = userId)
 
-            vm.fetchExistedUser(id = userId)
+        vm.user.observe(viewLifecycleOwner) { dataUi ->
+            phoneOperator = dataUi.phone_operator
+            binding.txtName.text = dataUi.full_name
+            binding.txtLocation.text = dataUi.latitude
+            binding.txtTime.text = dataUi.time_location
+            binding.txtPhone.text = formatUiPhoneNumber
+                .modify(dataUi.phone_user)
 
-            REF_DATABASE_ROOT.child(NODE_USERS).child(userId)
-                .addValueEventListener(SnapShotListener { snapShot ->
-                    if (snapShot.exists()) {
-                        val dataCloud = snapShot.getValue(DataCloud::class.java) ?: DataCloud()
-                        val ddd = dataCloud.phone_user
-                        if (userPhone == ddd) {
-                            phoneOperator = dataCloud.phone_operator
-                            binding.txtPhone.text = dataCloud.phone_user
-                            binding.txtName.text = dataCloud.full_name
-                            binding.txtLocation.text = dataCloud.latitude
-                            binding.txtTime.text = dataCloud.time_location
-                        } else if (isAttachedToActivity) {
-                            (requireActivity() as Navigator)
-                                .navigateAndPrefClear(
-                                    R.id.action_mainFragment_to_splashFragment,
-                                    true
-                                )
-                        }
-                    }
-                })
+            if (userPhone != dataUi.phone_user) {
+                preferences.edit().clear().apply()
+                findNavController()
+                    .navigate(R.id.action_mainFragment_to_splashFragment)
+            }
         }
 
         vm.error.observe(viewLifecycleOwner) { errorType ->
@@ -101,6 +97,17 @@ class MainFragment : Fragment() {
             intent.data = Uri.parse("tel:${phoneOperator}")
             ContextCompat.startActivity(view.context, intent, null)
         }
+
+        checkNetworks(connectionLiveData) { isNetWorkAvailable ->
+            when (isNetWorkAvailable) {
+                false -> snack.show()
+                true -> snack.dismiss()
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
     }
 
     override fun onResume() {
@@ -111,9 +118,23 @@ class MainFragment : Fragment() {
         else binding.imgPhoto.setImageURI(uri?.toUri())
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        isAttachedToActivity = false
+    private fun initialise(view: View) {
+        preferences = view.context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+        connectionLiveData = ConnectionLiveData(view.context)
+        snack = snackTopBuilder.buildSnackTopIndefinite(view)
+    }
+
+    private fun checkNetworks(
+        connection: ConnectionLiveData,
+        connected: (Boolean) -> Unit
+    ): Boolean {
+        var isNetWorkAvailable = true
+        connection.checkValidNetworks()
+        connection.observe(viewLifecycleOwner) {
+            isNetWorkAvailable = it
+            connected(isNetWorkAvailable)
+        }
+        return isNetWorkAvailable
     }
 
     companion object {

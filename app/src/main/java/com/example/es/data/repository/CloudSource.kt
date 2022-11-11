@@ -10,6 +10,8 @@ import com.example.es.domain.model.ErrorType
 import com.example.es.domain.model.ResultUser
 import com.example.es.utils.NODE_USERS
 import com.example.es.utils.REF_DATABASE_ROOT
+import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseNetworkException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

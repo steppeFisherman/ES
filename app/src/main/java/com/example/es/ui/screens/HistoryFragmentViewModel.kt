@@ -26,25 +26,9 @@ class HistoryFragmentViewModel @Inject constructor(
     val error: LiveData<ErrorType>
         get() = mError
 
-//    init {
-//        val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
-//        viewModelScope.launch(exceptionHandler) {
-//            when (val result = fetchUseCase.fetchCached()) {
-//                is ResultUser.SuccessLiveDAta -> {
-//                    mUsers = result.userLiveData.map { list ->
-//                        list.map { dataDomain ->
-//                            mapper.mapDomainToUi(dataDomain)
-//                        }
-//                    } as MutableLiveData<List<DataUi>>
-//                }
-//                is ResultUser.Fail -> mError.value = result.error
-//                else -> {}
-//            }
-//        }
-//    }
+    private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
 
-    fun fetchData(){
-        val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
+    private fun fetchData() {
         viewModelScope.launch(exceptionHandler) {
             when (val result = fetchUseCase.fetchCached()) {
                 is ResultUser.SuccessLiveData -> {
@@ -58,5 +42,9 @@ class HistoryFragmentViewModel @Inject constructor(
                 else -> {}
             }
         }
+    }
+
+    init {
+        fetchData()
     }
 }
