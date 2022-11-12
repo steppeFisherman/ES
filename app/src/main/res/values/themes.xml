@@ -49,6 +49,12 @@
         <item name="cornerRadius">6dp</item>
     </style>
 
+    <style name="btnAlarm_MainFragment" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">@dimen/size_96</item>
+        <item name="android:layout_height">@dimen/size_96</item>
+        <item name="android:background">@drawable/round_button_white</item>
+    </style>
+
     <style name="shapeImageView">
         <item name="android:layout_width">92dp</item>
         <item name="android:layout_height">92dp</item>

@@ -68,6 +68,7 @@ dependencies {
     //Firebase
     implementation "com.google.firebase:firebase-database-ktx:$firebase_version"
     implementation "com.google.firebase:firebase-database:$firebase_version"
+    implementation 'com.google.firebase:firebase-messaging:23.1.0'
     implementation 'com.google.firebase:firebase-auth-ktx:21.1.0'
     implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4'

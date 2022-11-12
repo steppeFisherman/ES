@@ -70,12 +70,36 @@
         app:iconSize="48dp"
         app:iconPadding="@dimen/size_0" />
 
-    <com.google.android.material.button.MaterialButton
+
+
+    <ImageView
+        android:id="@+id/imgAnimation2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/circle"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
+        app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/imgAnimation1"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/circle"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
+        app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
+        tools:ignore="ContentDescription" />
+
+    <Button
         android:id="@+id/btn_panic"
-        style="@style/btn_mainFragment"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        style="@style/btnAlarm_MainFragment"
         android:layout_marginStart="@dimen/margin_18dp"
         android:layout_marginBottom="@dimen/margin_14dp"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
         app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
         app:icon="@drawable/ic_panic"

@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +32,9 @@ class MainFragment : Fragment() {
 
     @Inject
     lateinit var snackTopBuilder: SnackBuilder
+
+    private val handler = Handler(Looper.getMainLooper())
+    private var statusAnimation = false
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = checkNotNull(_binding)
@@ -98,6 +103,12 @@ class MainFragment : Fragment() {
             ContextCompat.startActivity(view.context, intent, null)
         }
 
+        binding.btnPanic.setOnClickListener {
+            if (statusAnimation) stopPulse() else startPulse()
+            statusAnimation = !statusAnimation
+        }
+
+
         checkNetworks(connectionLiveData) { isNetWorkAvailable ->
             when (isNetWorkAvailable) {
                 false -> snack.show()
@@ -135,6 +146,35 @@ class MainFragment : Fragment() {
             connected(isNetWorkAvailable)
         }
         return isNetWorkAvailable
+    }
+
+    private fun startPulse() {
+        runnable.run()
+    }
+
+    private fun stopPulse() {
+        handler.removeCallbacks(runnable)
+    }
+
+    private val runnable = object : Runnable {
+        override fun run() {
+
+            binding.imgAnimation1.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(1000)
+                .withEndAction {
+                    binding.imgAnimation1.scaleX = 1f
+                    binding.imgAnimation1.scaleY = 1f
+                    binding.imgAnimation1.alpha = 1f
+                }
+
+            binding.imgAnimation2.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(700)
+                .withEndAction {
+                    binding.imgAnimation2.scaleX = 1f
+                    binding.imgAnimation2.scaleY = 1f
+                    binding.imgAnimation2.alpha = 1f
+                }
+
+            handler.postDelayed(this, 1500)
+        }
     }
 
     companion object {
