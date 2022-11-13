@@ -5,8 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,15 +12,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.databinding.FragmentMainBinding
 import com.example.es.utils.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.set
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
@@ -33,16 +35,15 @@ class MainFragment : Fragment() {
     @Inject
     lateinit var snackTopBuilder: SnackBuilder
 
-    private val handler = Handler(Looper.getMainLooper())
-    private var statusAnimation = false
-
     private var _binding: FragmentMainBinding? = null
     private val binding get() = checkNotNull(_binding)
-    private var phoneOperator = ""
     private val vm by activityViewModels<MainFragmentViewModel>()
+    private var phoneOperator = ""
+    private var statusAnimation = false
     private val formatUiPhoneNumber = FormatUiPhoneNumber.Base()
     private lateinit var preferences: SharedPreferences
     private lateinit var snack: Snackbar
+    private val animation = Animation.Base()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -104,10 +105,14 @@ class MainFragment : Fragment() {
         }
 
         binding.btnPanic.setOnClickListener {
-            if (statusAnimation) stopPulse() else startPulse()
             statusAnimation = !statusAnimation
+            lifecycleScope.launch {
+                while (statusAnimation) {
+                    delay(300)
+                    animation.animate(binding.imgAnimation1, binding.imgAnimation2)
+                }
+            }
         }
-
 
         checkNetworks(connectionLiveData) { isNetWorkAvailable ->
             when (isNetWorkAvailable) {
@@ -146,35 +151,6 @@ class MainFragment : Fragment() {
             connected(isNetWorkAvailable)
         }
         return isNetWorkAvailable
-    }
-
-    private fun startPulse() {
-        runnable.run()
-    }
-
-    private fun stopPulse() {
-        handler.removeCallbacks(runnable)
-    }
-
-    private val runnable = object : Runnable {
-        override fun run() {
-
-            binding.imgAnimation1.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(1000)
-                .withEndAction {
-                    binding.imgAnimation1.scaleX = 1f
-                    binding.imgAnimation1.scaleY = 1f
-                    binding.imgAnimation1.alpha = 1f
-                }
-
-            binding.imgAnimation2.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(700)
-                .withEndAction {
-                    binding.imgAnimation2.scaleX = 1f
-                    binding.imgAnimation2.scaleY = 1f
-                    binding.imgAnimation2.alpha = 1f
-                }
-
-            handler.postDelayed(this, 1500)
-        }
     }
 
     companion object {

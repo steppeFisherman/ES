@@ -50,8 +50,8 @@
     </style>
 
     <style name="btnAlarm_MainFragment" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_width">@dimen/size_96</item>
-        <item name="android:layout_height">@dimen/size_96</item>
+        <item name="android:layout_width">@dimen/size_80</item>
+        <item name="android:layout_height">@dimen/size_80</item>
         <item name="android:background">@drawable/round_button_white</item>
     </style>
 

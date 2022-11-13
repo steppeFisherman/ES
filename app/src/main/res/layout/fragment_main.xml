@@ -12,20 +12,19 @@
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:indicatorColor="@color/deep_sky_blue"
         android:visibility="gone"
-        />
+        app:indicatorColor="@color/deep_sky_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_photo"
         style="@style/img_mainFragment"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.CircularBorder"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.CircularBorder"
         app:srcCompat="@drawable/inset_holder_camera"
         app:strokeColor="@color/black_textView"
         app:strokeWidth="@dimen/size_1" />
@@ -62,66 +61,63 @@
         style="@style/btn_mainFragment"
         android:layout_marginEnd="@dimen/margin_18dp"
         android:layout_marginBottom="@dimen/margin_14dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical"
         app:icon="@drawable/ic_location"
-        app:iconTint="@color/deep_sky_blue"
         app:iconGravity="textEnd"
+        app:iconPadding="@dimen/size_0"
         app:iconSize="48dp"
-        app:iconPadding="@dimen/size_0" />
-
-
+        app:iconTint="@color/deep_sky_blue"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical" />
 
     <ImageView
         android:id="@+id/imgAnimation2"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:src="@drawable/circle"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
-        app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_location"
+        app:layout_constraintEnd_toEndOf="@+id/btn_dial"
+        app:layout_constraintStart_toEndOf="@+id/btn_dial"
+        app:layout_constraintTop_toTopOf="@+id/btn_location"
         tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/imgAnimation1"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:src="@drawable/circle"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
-        app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_location"
+        app:layout_constraintEnd_toEndOf="@+id/btn_dial"
+        app:layout_constraintStart_toEndOf="@+id/btn_dial"
+        app:layout_constraintTop_toTopOf="@+id/btn_location"
         tools:ignore="ContentDescription" />
 
     <Button
         android:id="@+id/btn_panic"
         style="@style/btnAlarm_MainFragment"
-        android:layout_marginStart="@dimen/margin_18dp"
-        android:layout_marginBottom="@dimen/margin_14dp"
         app:backgroundTint="@null"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
-        app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
         app:icon="@drawable/ic_panic"
-        app:iconTint="@color/dark_red"
         app:iconGravity="textEnd"
-        app:iconSize="56dp"
         app:iconPadding="@dimen/size_0"
-        />
+        app:iconSize="56dp"
+        app:iconTint="@color/dark_red"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_location"
+        app:layout_constraintEnd_toEndOf="@+id/btn_dial"
+        app:layout_constraintStart_toEndOf="@+id/btn_dial"
+        app:layout_constraintTop_toTopOf="@+id/btn_location" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dial"
         style="@style/btn_mainFragment"
-        android:layout_marginTop="@dimen/margin_10dp"
-        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical"
-        app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal"
+        android:layout_marginTop="8dp"
         app:icon="@drawable/ic_phone"
-        app:iconTint="@color/dark_green"
         app:iconGravity="textEnd"
-        app:iconSize="48dp"
         app:iconPadding="@dimen/size_0"
-        />
+        app:iconSize="48dp"
+        app:iconTint="@color/dark_green"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_horizontal"
