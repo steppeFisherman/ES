@@ -1,5 +1,6 @@
 package com.example.es.utils
 
+import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.ConnectivityManager
@@ -25,6 +26,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
         postValue(validNetworks.size > 0)
     }
 
+    @SuppressLint("MissingPermission")
     override fun onActive() {
         networkCallback = createNetworkCallback()
         val networkRequest = NetworkRequest.Builder()
@@ -43,6 +45,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
           Called when a network is detected. If that network has internet, save it in the Set.
           Source: https://developer.android.com/reference/android/net/ConnectivityManager.NetworkCallback#onAvailable(android.net.Network)
          */
+        @SuppressLint("MissingPermission")
         override fun onAvailable(network: Network) {
             Log.d(TAG, "onAvailable: ${network}")
             val networkCapabilities = cm.getNetworkCapabilities(network)

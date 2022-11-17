@@ -19,6 +19,8 @@ interface MapDomainToCloud {
                 time_location = dataDomain.time_location,
                 latitude = dataDomain.latitude,
                 longitude = dataDomain.longitude,
+                locationAddress = dataDomain.locationAddress,
+                homeAddress = dataDomain.homeAddress,
                 alarm = dataDomain.alarm,
                 notify = dataDomain.notify,
             )

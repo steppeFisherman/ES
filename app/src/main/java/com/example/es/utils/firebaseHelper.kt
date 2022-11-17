@@ -21,6 +21,8 @@ const val CHILD_PHOTO = "photo"
 const val CHILD_TIME = "time_location"
 const val CHILD_LATITUDE = "latitude"
 const val CHILD_LONGITUDE = "longitude"
+const val CHILD_LOCATION_ADDRESS = "locationAddress"
+const val CHILD_HOME_ADDRESS = "homeAddress"
 const val CHILD_ALARM = "alarm"
 const val CHILD_NOTIFY = "notify"
 

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/margin_16dp"
-    android:layout_marginEnd="@dimen/margin_16dp"
     android:layout_marginTop="@dimen/margin_4dp"
+    android:layout_marginEnd="@dimen/margin_16dp"
     android:layout_marginBottom="@dimen/margin_4dp"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="@dimen/margin_8dp"
@@ -17,26 +17,28 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/profileImage"
-            android:layout_width="@dimen/size_48"
-            android:layout_height="@dimen/size_48"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_8dp"
-            android:scaleType="fitXY"
-            tools:ignore="ContentDescription"
-            tools:text="Movie Image" />
-
         <TextView
-            android:id="@+id/txt_name"
+            android:id="@+id/txt_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:fontFamily="casual"
-            tools:text="Title" />
+            android:textStyle="bold"
+            android:textColor="@color/black_textView"
+            android:gravity="center_horizontal"
+            tools:text="Time" />
 
         <TextView
-            android:id="@+id/txt_latitude"
+            android:id="@+id/txt_location_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="casual"
+            android:layout_marginStart="@dimen/margin_8dp"
+            android:layout_marginEnd="@dimen/margin_8dp"
+            android:layout_marginBottom="@dimen/margin_8dp"
+            tools:text="Location" />
+
+        <TextView
+            android:id="@+id/txt_id_cached"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_8dp"
@@ -44,13 +46,5 @@
             android:layout_marginBottom="@dimen/margin_8dp"
             tools:text="Description" />
 
-        <TextView
-            android:id="@+id/txt_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_8dp"
-            android:layout_marginEnd="@dimen/margin_8dp"
-            android:layout_marginBottom="@dimen/margin_8dp"
-            tools:text="Description" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

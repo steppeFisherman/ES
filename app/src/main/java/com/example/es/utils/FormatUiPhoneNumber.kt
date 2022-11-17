@@ -9,14 +9,16 @@ interface FormatUiPhoneNumber {
             if (initial.length == 12) {
                 val index2 = 2
                 val index6 = 6
-                val index10 = 10
-                val index13 = 13
+                val index7 = 7
+                val index11 = 11
+                val index14 = 14
 
                 val charList = initial.toCharArray().toMutableList()
                 charList.add(index2, '(')
                 charList.add(index6, ')')
-                charList.add(index10, ' ')
-                charList.add(index13, ' ')
+                charList.add(index7, ' ')
+                charList.add(index11, ' ')
+                charList.add(index14, ' ')
                 val charArray = charList.toCharArray()
                 charArray.joinToString("")
 

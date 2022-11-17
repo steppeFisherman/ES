@@ -1,32 +1,39 @@
 package com.example.es.ui
 
+import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.es.R
-import com.example.es.data.room.AppRoomDatabase.Companion.getInstance
 import com.example.es.databinding.ActivityMainBinding
 import com.example.es.ui.screens.MainFragment
 import com.example.es.ui.screens.ProfileFragment
 import com.example.es.utils.APP_PREFERENCES
 import com.example.es.utils.PREF_BOOLEAN_VALUE
 import com.example.es.utils.REF_DATABASE_ROOT
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.iid.FirebaseInstanceIdReceiver
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener {
+class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
+    MainFragment.PermissionHandle {
 
     private lateinit var binding: ActivityMainBinding
     lateinit var navControllerMain: NavController
@@ -35,10 +42,17 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var preferences: SharedPreferences
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    private val requestLocationPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions(),   // contract for requesting more than 1 permission
+        ::onGotLocationPermissionsResult
+    )
+
 //    private val usersService: UsersService
 //        get() = (applicationContext as App).usersService
 //    private val mapDataCloud = mutableMapOf<String, Any>()
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_ES)
@@ -51,10 +65,18 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener {
             .isAppearanceLightStatusBars = true
         setContentView(binding.root)
 
+        requestLocationPermissionsLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+
         initialise()
         checkUserLoggedIn()
         displayBottomNav()
 //        usersService.addListener(usersListener)
+
     }
 
     private fun initialise() {
@@ -96,6 +118,60 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener {
 
     override fun photoListener(photo: String) {
         MainFragment.newInstance(photo)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun onGotLocationPermissionsResult(grantResults: Map<String, Boolean>) {
+
+        if (grantResults.entries.all { it.value }) {
+//            onLocationPermissionsGranted()
+        } else {
+            // example of handling 'Deny & don't ask again' user choice
+            if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                askUserForOpeningAppSettings()
+            } else {
+                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun askUserForOpeningAppSettings() {
+
+        val appSettingsIntent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", packageName, null)
+        )
+        if (packageManager.resolveActivity(
+                appSettingsIntent,
+                PackageManager.MATCH_DEFAULT_ONLY
+            ) == null
+        ) {
+            Toast.makeText(this, R.string.permissions_denied_forever, Toast.LENGTH_SHORT).show()
+        } else {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.permission_denied)
+                .setMessage(R.string.permission_denied_forever_message)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    startActivity(appSettingsIntent)
+                }
+                .create()
+                .show()
+        }
+    }
+
+    private fun onLocationPermissionsGranted() {
+        Toast.makeText(this, R.string.location_permissions_granted, Toast.LENGTH_SHORT)
+            .show()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun check() {
+        requestLocationPermissionsLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
     }
 }
 

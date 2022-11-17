@@ -10,6 +10,8 @@ data class DataCloud(
     var time_location: String = "",
     var latitude: String = "",
     var longitude: String = "",
+    val locationAddress: String = "",
+    val homeAddress: String = "",
     var alarm: Boolean = false,
     var notify: Boolean = false
 )

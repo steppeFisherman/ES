@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/margin_16dp"
     tools:context=".ui.screens.MainFragment">
 
     <ProgressBar
@@ -22,7 +21,8 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_photo"
         style="@style/img_mainFragment"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/size_8"
+        app:layout_constraintStart_toStartOf="@id/left_guideline_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.CircularBorder"
         app:srcCompat="@drawable/inset_holder_camera"
@@ -30,31 +30,39 @@
         app:strokeWidth="@dimen/size_1" />
 
     <TextView
-        android:id="@+id/txt_phone"
-        style="@style/textView"
-        android:layout_marginTop="@dimen/margin_8dp"
-        android:textColor="@color/black_textView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_photo" />
-
-    <TextView
         android:id="@+id/txt_name"
         style="@style/textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:fontFamily="casual"
+        app:layout_constraintStart_toStartOf="@id/left_guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/img_photo"
+        tools:text="full_name" />
 
     <TextView
-        android:id="@+id/txt_location"
+        android:id="@+id/txt_phone"
         style="@style/textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_name" />
+        app:layout_constraintStart_toStartOf="@id/left_guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/txt_name"
+        tools:text="phone_number" />
 
     <TextView
         android:id="@+id/txt_time"
         style="@style/textView"
-        android:layout_marginTop="@dimen/margin_8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_location" />
+        android:layout_marginStart="@dimen/margin_20dp"
+        android:layout_marginTop="@dimen/size_8"
+        android:fontFamily="casual"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/right_guideline_vertical"
+        app:layout_constraintStart_toEndOf="@+id/barrier"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_location_address"
+        style="@style/textView"
+        android:layout_marginStart="@dimen/margin_20dp"
+        android:fontFamily="casual"
+        app:layout_constraintEnd_toStartOf="@+id/right_guideline_vertical"
+        app:layout_constraintStart_toEndOf="@+id/barrier"
+        app:layout_constraintTop_toBottomOf="@+id/txt_time" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_location"
@@ -66,11 +74,12 @@
         app:iconPadding="@dimen/size_0"
         app:iconSize="48dp"
         app:iconTint="@color/deep_sky_blue"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical" />
+        app:layout_constraintBottom_toTopOf="@+id/center_guideline_horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/center_guideline_vertical"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <ImageView
-        android:id="@+id/imgAnimation2"
+        android:id="@+id/imgAnimation1"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:src="@drawable/circle"
@@ -81,10 +90,10 @@
         tools:ignore="ContentDescription" />
 
     <ImageView
-        android:id="@+id/imgAnimation1"
+        android:id="@+id/imgAnimation2"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:src="@drawable/circle"
+        android:src="@drawable/circle_red"
         app:layout_constraintBottom_toBottomOf="@+id/btn_location"
         app:layout_constraintEnd_toEndOf="@+id/btn_dial"
         app:layout_constraintStart_toEndOf="@+id/btn_dial"
@@ -103,7 +112,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/btn_location"
         app:layout_constraintEnd_toEndOf="@+id/btn_dial"
         app:layout_constraintStart_toEndOf="@+id/btn_dial"
-        app:layout_constraintTop_toTopOf="@+id/btn_location" />
+        app:layout_constraintTop_toTopOf="@+id/btn_location"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dial"
@@ -114,22 +124,44 @@
         app:iconPadding="@dimen/size_0"
         app:iconSize="48dp"
         app:iconTint="@color/dark_green"
-        app:layout_constraintEnd_toEndOf="@+id/guideline_vertical"
+        app:layout_constraintEnd_toEndOf="@+id/center_guideline_vertical"
         app:layout_constraintHorizontal_bias="0.51"
-        app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal" />
+        app:layout_constraintStart_toStartOf="@+id/center_guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/center_guideline_horizontal"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_horizontal"
+        android:id="@+id/center_guideline_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.75" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical"
+        android:id="@+id/center_guideline_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_guideline_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/margin_16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_guideline_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/margin_16dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="@dimen/size_0"
+        android:layout_height="@dimen/size_0"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="txt_name, txt_phone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

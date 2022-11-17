@@ -10,6 +10,8 @@ data class DataDomain(
     var time_location: String,
     var latitude: String,
     var longitude: String,
+    var locationAddress: String,
+    var homeAddress: String,
     var alarm: Boolean,
     var notify: Boolean
 )

@@ -15,6 +15,8 @@ data class DataCache(
     val time_location: String,
     val latitude: String,
     val longitude: String,
+    val locationAddress: String,
+    val homeAddress: String,
     val alarm: Boolean,
     val notify: Boolean
 )

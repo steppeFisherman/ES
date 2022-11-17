@@ -1,13 +1,18 @@
 package com.example.es.ui.screens
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.location.Geocoder
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -17,14 +22,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.databinding.FragmentMainBinding
 import com.example.es.utils.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.text.DateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.set
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
@@ -40,10 +45,26 @@ class MainFragment : Fragment() {
     private val vm by activityViewModels<MainFragmentViewModel>()
     private var phoneOperator = ""
     private var statusAnimation = false
+    private var gpsStatus = false
+    private var userId = ""
     private val formatUiPhoneNumber = FormatUiPhoneNumber.Base()
-    private lateinit var preferences: SharedPreferences
-    private lateinit var snack: Snackbar
+    private val requestLocationUpdate = RequestLocationUpdate.Base()
+    private val fusedLocationResult = FusedLocationResult.Base()
     private val animation = Animation.Base()
+    private lateinit var preferences: SharedPreferences
+
+    private lateinit var snack: Snackbar
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationManager: LocationManager
+    private lateinit var geoCoder: Geocoder
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+        locationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        geoCoder = Geocoder(context, Locale.getDefault())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,12 +74,13 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initialise(view)
 
-        val userId = preferences.getString(PREF_ID_VALUE, "").toString()
+        userId = preferences.getString(PREF_ID_VALUE, "").toString()
         val userPhone = preferences.getString(PREF_PHONE_VALUE, "").toString()
 
         if (userId.isNotBlank()) vm.fetchExistedUser(id = userId)
@@ -66,7 +88,7 @@ class MainFragment : Fragment() {
         vm.user.observe(viewLifecycleOwner) { dataUi ->
             phoneOperator = dataUi.phone_operator
             binding.txtName.text = dataUi.full_name
-            binding.txtLocation.text = dataUi.latitude
+            binding.txtLocationAddress.text = dataUi.locationAddress
             binding.txtTime.text = dataUi.time_location
             binding.txtPhone.text = formatUiPhoneNumber
                 .modify(dataUi.phone_user)
@@ -90,12 +112,13 @@ class MainFragment : Fragment() {
         }
 
         binding.btnLocation.setOnClickListener {
-            val dateDate = Calendar.getInstance(Locale.getDefault()).time
-            val dateString = DateFormat.getDateTimeInstance().format(dateDate)
-            val map = mutableMapOf<String, Any>()
-            map[CHILD_TIME] = dateString
-            map[CHILD_LATITUDE] = dateString
-            vm.postLocation(id = userId, map)
+            (requireActivity() as PermissionHandle).check()
+            gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+
+            if (!gpsStatus) dialogShow() else
+                fusedLocationResult.result(fusedLocationClient, geoCoder) {
+                    vm.postLocation(id = userId, it)
+                }
         }
 
         binding.btnDial.setOnClickListener {
@@ -122,8 +145,10 @@ class MainFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun onStart() {
         super.onStart()
+        requestLocationUpdate.update(fusedLocationClient)
     }
 
     override fun onResume() {
@@ -153,6 +178,19 @@ class MainFragment : Fragment() {
         return isNetWorkAvailable
     }
 
+    private fun dialogShow() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.location_mode)
+            .setMessage(R.string.location_mode_denied_message)
+            .setPositiveButton(R.string.yes) { _, _ ->
+                val intent =
+                    Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+            }
+            .create()
+            .show()
+    }
+
     companion object {
         const val ARGS = "MAIN_FRAGMENT_ARGS"
         fun newInstance(message: String): MainFragment {
@@ -160,6 +198,10 @@ class MainFragment : Fragment() {
             fragment.arguments?.putString(ARGS, message)
             return fragment
         }
+    }
+
+    interface PermissionHandle {
+        fun check()
     }
 }
 

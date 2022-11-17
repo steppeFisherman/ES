@@ -14,12 +14,13 @@
     <color name="bottomNav_background_blue">#010035</color>
     <color name="grey_bottomNav_icon">#7B7B7B</color>
     <color name="red">#FD3A69</color>
-    <color name="red_light">#F08080</color>
+    <color name="red_light">#99F08080</color>
     <color name="transparent">#000000FF</color>
     <color name="black_textView">#010035</color>
     <color name="stroke_color">#222831</color>
     <color name="grey_category_textView">#C3C4C9</color>
     <color name="deepBlue">#2460A7FF</color>
+    <color name="yellow">#FFFF00</color>
     <color name="grey_dark">#47000000</color>
     <color name="colorPrimary">#6200EE</color>
     <color name="colorAccent">#03DAC5</color>
@@ -27,6 +28,7 @@
     <color name="eliteColor">#13436b</color>
     <color name="dark_green">#006400</color>
     <color name="deep_sky_blue">#00BFFF</color>
+    <color name="light_sky_blue">#5600BFFF</color>
     <color name="dark_red">#800000</color>
     <color name="status_bar">#FBFBFB</color>
 </resources>

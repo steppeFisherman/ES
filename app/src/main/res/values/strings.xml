@@ -10,8 +10,8 @@
     <string name="user_not_registered_exception_message">Пользователь не зарегистрирован</string>
     <string name="database_exception_message">Что то пошло не так, ошибка базы данных</string>
     <string name="no_connection_exception_message">Что то пошло не так, нет соединения</string>
-    <string name="arithmetic_exception">ArithmeticException</string>
     <string name="generic_exception_message">Что то пошло не так</string>
+    <string name="arithmetic_exception">ArithmeticException</string>
     <string name="logIn">войти</string>
     <string name="menu_save">Сохранить</string>
     <string name="logOut">Выйти</string>
@@ -20,11 +20,19 @@
     <string name="enter_id">Введите id</string>
     <string name="fill_all_fields">Заполните все поля</string>
     <string name="enter_correct_phone_password">Введите корректный номер телефона и пароль</string>
+
     <string name="check_internet_connection">Проверьте наличие интернета</string>
     <string name="firebase_db">
         /data/data/com.example.es/databases/location-control-default-rtdb.europe-west1.firebasedatabase.app_default</string>
     <string name="firebase_journal">
         /data/data/com.example.es/databases/location-control-default-rtdb.europe-west1.firebasedatabase.app_default-journal</string>
+    <string name="permissions_denied_forever">Разрешения не предоставлены</string>
+    <string name="permission_denied">Разрешения геолокации не предоставлены</string>
+    <string name="permission_denied_forever_message">Перейти в режим настроек предоставления данных?</string>
+    <string name="yes">да</string>
+    <string name="location_mode">Доступ к местоположению отключен</string>
+    <string name="location_mode_denied_message">Перейти в режим включения доступа?</string>
+    <string name="location_permissions_granted">предоставлены разрешения для геолокации</string>
 
 
     <string-array name="list_affine_formats">

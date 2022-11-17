@@ -21,11 +21,13 @@ interface MapCacheToDomain {
                 time_location = dataCache.time_location,
                 latitude = dataCache.latitude,
                 longitude = dataCache.longitude,
+                locationAddress = dataCache.locationAddress,
+                homeAddress = dataCache.homeAddress,
                 alarm = dataCache.alarm,
                 notify = dataCache.notify,
             )
 
-         fun listMapCacheToDomain(list: List<DataCache>): List<DataDomain> =
+        fun listMapCacheToDomain(list: List<DataCache>): List<DataDomain> =
             list.map { dataCache -> mapCacheToDomain(dataCache) }
 
 //

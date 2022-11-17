@@ -19,6 +19,8 @@ interface MapCloudToDomain {
                 time_location = dataCloud.time_location,
                 latitude = dataCloud.latitude,
                 longitude = dataCloud.longitude,
+                locationAddress = dataCloud.locationAddress,
+                homeAddress = dataCloud.homeAddress,
                 alarm = dataCloud.alarm,
                 notify = dataCloud.notify,
             )

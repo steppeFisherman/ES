@@ -18,6 +18,8 @@ interface MapUiToDomain {
                 time_location = dataUi.time_location,
                 latitude = dataUi.latitude,
                 longitude = dataUi.longitude,
+                locationAddress = dataUi.locationAddress,
+                homeAddress = dataUi.homeAddress,
                 alarm = dataUi.alarm,
                 notify = dataUi.notify
             )
