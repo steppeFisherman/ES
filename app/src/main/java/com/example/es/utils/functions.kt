@@ -1,11 +1,17 @@
 package com.example.es.utils
 
+import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.annotation.StringRes
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+
+fun showToast(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+}
 
 fun View.snackLong(@StringRes message: Int) {
     Snackbar.make(this, message, Snackbar.LENGTH_LONG)

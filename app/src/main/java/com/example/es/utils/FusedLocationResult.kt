@@ -2,6 +2,7 @@ package com.example.es.utils
 
 import android.annotation.SuppressLint
 import android.location.Geocoder
+import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import java.text.DateFormat
 import java.util.*
@@ -24,9 +25,10 @@ interface FusedLocationResult {
         ) {
             client.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
-
                     val locationAddress = geocoder
                         .getFromLocation(location.latitude, location.longitude, 2)
+
+//                    Log.d("AAA", "latLong: ${location.latitude}, ${location.longitude}")
 
                     if (locationAddress.isNotEmpty() && locationAddress.size > 1) {
                         val address = locationAddress[1].getAddressLine(0)

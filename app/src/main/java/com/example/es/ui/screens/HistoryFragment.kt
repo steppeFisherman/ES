@@ -1,7 +1,7 @@
 package com.example.es.ui.screens
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.es.R
 import com.example.es.databinding.FragmentHistoryBinding
+import com.example.es.map.MapsActivity
 import com.example.es.ui.adapters.HistoryFragmentAdapter
-import com.example.es.utils.LoadImage
+import com.example.es.ui.model.DataUi
 import com.example.es.utils.snackLong
 import com.example.es.utils.snowSnackIndefiniteTop
 import com.example.es.utils.visible
@@ -37,13 +38,20 @@ class HistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         snack = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE)
 
-        val adapter = HistoryFragmentAdapter(LoadImage.Base())
+        val adapter = HistoryFragmentAdapter(object : HistoryFragmentAdapter.Listener {
+            override fun toLocation(user: DataUi) {
+                val intent = Intent(view.context, MapsActivity::class.java)
+                intent.putExtra("user", user)
+                startActivity(intent)
+            }
+        })
+
         binding.historyFragmentRv.adapter = adapter
 
         vm.users.observe(viewLifecycleOwner) { listDataUi ->
             if (listDataUi.isNullOrEmpty()) binding.progressBar.visible(true)
             else {
-                adapter.setData(listDataUi.asReversed())
+                adapter.submitList(listDataUi.asReversed())
                 binding.progressBar.visible(false)
             }
         }

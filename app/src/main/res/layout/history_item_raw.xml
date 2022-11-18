@@ -12,39 +12,45 @@
     app:cardCornerRadius="@dimen/margin_8dp"
     app:cardElevation="@dimen/size_0">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:padding="@dimen/size_8"
+        >
 
         <TextView
             android:id="@+id/txt_time"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="casual"
-            android:textStyle="bold"
             android:textColor="@color/black_textView"
-            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Time" />
 
         <TextView
             android:id="@+id/txt_location_address"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="casual"
-            android:layout_marginStart="@dimen/margin_8dp"
-            android:layout_marginEnd="@dimen/margin_8dp"
-            android:layout_marginBottom="@dimen/margin_8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_location"
+            app:layout_constraintTop_toBottomOf="@+id/txt_time"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Location" />
 
-        <TextView
-            android:id="@+id/txt_id_cached"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_8dp"
-            android:layout_marginEnd="@dimen/margin_8dp"
-            android:layout_marginBottom="@dimen/margin_8dp"
-            tools:text="Description" />
+        <ImageButton
+            android:id="@+id/btn_location"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_location_blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
