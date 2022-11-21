@@ -20,7 +20,7 @@ import javax.inject.Inject
 class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
     @Inject
-    lateinit var connectionLiveData: ConnectionLiveData
+    lateinit var connectivityManager: ConnectivityManager
 
     @Inject
     lateinit var snackTopBuilder: SnackBuilder
@@ -73,27 +73,24 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
             }
         }
 
-        checkNetworks(connectionLiveData) { isNetWorkAvailable ->
-            when (isNetWorkAvailable) {
-                false -> {
-                    binding.btnLogin.isEnabled = false
-                    snack.show()
-                }
-                true -> {
-                    snack.dismiss()
-                    binding.btnLogin.isEnabled = true
+        connectivityManager.isNetworkAvailable.observe(viewLifecycleOwner) { isNetworkAvailable ->
+            if (isNetworkAvailable == false) {
+                binding.btnLogin.isEnabled = false
+                snack.show()
+            } else {
+                snack.dismiss()
+                binding.btnLogin.isEnabled = true
+                binding.btnLogin.setOnClickListener {
+                    val phone = binding.editTextPhone.text.toString().trim()
+                    val splitPhone = phone.split(" ")
+                    phoneEntered = splitPhone[0] + extracted
+                    idEntered = binding.editTextPassword.text.toString().trim()
 
-                    binding.btnLogin.setOnClickListener {
-                        val phone = binding.editTextPhone.text.toString().trim()
-                        val splitPhone = phone.split(" ")
-                        phoneEntered = splitPhone[0] + extracted
-                        idEntered = binding.editTextPassword.text.toString().trim()
+                    if (phoneEntered.isBlank() || idEntered.isBlank()) it.snackLongTop(R.string.fill_all_fields)
+                    else {
 
-                        if (phoneEntered.isBlank() || idEntered.isBlank()) it.snackLongTop(R.string.fill_all_fields)
-                        else {
-                            vm.fetchData(id = idEntered, phone = phoneEntered)
-                            binding.progressBar.visibility = View.VISIBLE
-                        }
+                        vm.fetchData(id = idEntered, phone = phoneEntered)
+                        binding.progressBar.visibility = View.VISIBLE
                     }
                 }
             }
@@ -101,7 +98,6 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
     }
 
     private fun initialise() {
-        connectionLiveData = ConnectionLiveData(binding.root.context)
         preferences = binding.root.context.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
         snack = snackTopBuilder.buildSnackTopIndefinite(binding.root)
     }
@@ -112,19 +108,6 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
         binding.editTextPhone.addTextChangedListener(listener)
         binding.editTextPhone.onFocusChangeListener = listener
-    }
-
-    private fun checkNetworks(
-        connection: ConnectionLiveData,
-        connected: (Boolean) -> Unit
-    ): Boolean {
-        var isNetWorkAvailable = true
-        connection.checkValidNetworks()
-        connection.observe(viewLifecycleOwner) {
-            isNetWorkAvailable = it
-            connected(isNetWorkAvailable)
-        }
-        return isNetWorkAvailable
     }
 }
 

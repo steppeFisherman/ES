@@ -32,10 +32,10 @@ interface FusedLocationResult {
 
                     if (locationAddress.isNotEmpty() && locationAddress.size > 1) {
                         val address = locationAddress[1].getAddressLine(0)
-                        val dateDate = Calendar.getInstance(Locale.getDefault()).time
-                        val dateString = DateFormat.getDateTimeInstance().format(dateDate)
+                        val dateDate = Calendar.getInstance(Locale.getDefault()).time.time
+//                        val dateString = DateFormat.getDateTimeInstance().format(dateDate)
                         val map = mutableMapOf<String, Any>()
-                        map[CHILD_TIME] = dateString
+                        map[CHILD_TIME] = dateDate
                         map[CHILD_LATITUDE] = location.latitude.toString()
                         map[CHILD_LONGITUDE] = location.longitude.toString()
                         map[CHILD_LOCATION_ADDRESS] = address

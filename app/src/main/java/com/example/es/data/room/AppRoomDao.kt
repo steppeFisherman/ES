@@ -13,7 +13,10 @@ interface AppRoomDao {
     @Query("SELECT * FROM item_table")
     fun fetchAllUsers(): LiveData<List<DataCache>>
 
-    @Query("SELECT * FROM item_table")
+    @Query("SELECT * FROM item_table Where time_location BETWEEN :timeStart and :timeEnd")
+    suspend fun fetchUsersByDate(timeStart: Long, timeEnd: Long): List<DataCache>
+
+    @Query("SELECT * FROM item_table ")
     suspend fun fetchAllUsersBySuspend(): List<DataCache>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

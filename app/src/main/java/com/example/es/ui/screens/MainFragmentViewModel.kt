@@ -26,13 +26,13 @@ class MainFragmentViewModel @Inject constructor(
 
     private var mUser = MutableLiveData<DataUi>()
     private var mError = MutableLiveData<ErrorType>()
-    private var mLoading = MutableLiveData<ResultUser.Loading>()
+    private var mLoading = MutableLiveData<Boolean>(false)
 
     val user: LiveData<DataUi>
         get() = mUser
     val error: LiveData<ErrorType>
         get() = mError
-    val loading: LiveData<ResultUser.Loading>
+    val loading: LiveData<Boolean>
         get() = mLoading
 
     private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
@@ -50,10 +50,17 @@ class MainFragmentViewModel @Inject constructor(
 
     fun postLocation(id: String, map: MutableMap<String, Any>) {
         viewModelScope.launch(exceptionHandler) {
+            mLoading.value = true
             val result = postUseCase.postLocation(id, map)
             when (result) {
-                is ResultUser.Success -> mUser.value = mapperToUi.mapDomainToUi(result.user)
-                is ResultUser.Fail -> mError.value = result.error
+                is ResultUser.Success -> {
+                    mUser.value = mapperToUi.mapDomainToUi(result.user)
+                    mLoading.value = false
+                }
+                is ResultUser.Fail -> {
+                    mError.value = result.error
+                    mLoading.value = false
+                }
                 else -> {}
             }
         }

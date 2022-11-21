@@ -23,17 +23,22 @@ import com.example.es.R
 import com.example.es.databinding.ActivityMainBinding
 import com.example.es.ui.screens.MainFragment
 import com.example.es.ui.screens.ProfileFragment
-import com.example.es.utils.APP_PREFERENCES
-import com.example.es.utils.PREF_BOOLEAN_VALUE
-import com.example.es.utils.REF_DATABASE_ROOT
+import com.example.es.utils.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
     MainFragment.PermissionHandle {
+
+//    @Inject
+//    lateinit var connectionLiveData: ConnectionLiveData
+
+    @Inject
+    lateinit var connectivityManager: ConnectivityManager
 
     private lateinit var binding: ActivityMainBinding
     lateinit var navControllerMain: NavController
@@ -106,6 +111,12 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
             }
     }
 
+    override fun onStart() {
+        super.onStart()
+//        connectionLiveData = ConnectionLiveData(this)
+        connectivityManager.registerConnectionObserver(this)
+    }
+
     override fun onResume() {
         super.onResume()
         navControllerMain.addOnDestinationChangedListener(destinationChangedListener)
@@ -114,6 +125,12 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
     override fun onPause() {
         super.onPause()
         navControllerMain.removeOnDestinationChangedListener(destinationChangedListener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        connectivityManager.unregisterConnectionObserver(this)
+
     }
 
     override fun photoListener(photo: String) {

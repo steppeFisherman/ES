@@ -13,10 +13,9 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:indicatorColor="@color/deep_sky_blue"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_horizontal_top" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_photo"
@@ -75,7 +74,7 @@
         app:iconPadding="@dimen/size_0"
         app:iconSize="48dp"
         app:iconTint="@color/deep_sky_blue"
-        app:layout_constraintBottom_toTopOf="@+id/center_guideline_horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal_bottom"
         app:layout_constraintEnd_toEndOf="@+id/center_guideline_vertical"
         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -128,11 +127,18 @@
         app:layout_constraintEnd_toEndOf="@+id/center_guideline_vertical"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="@+id/center_guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/center_guideline_horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal_bottom"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/center_guideline_horizontal"
+        android:id="@+id/guideline_horizontal_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.20" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_horizontal_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

@@ -1,11 +1,7 @@
 package com.example.es.data.repository
 
-import android.database.sqlite.SQLiteException
 import com.example.es.domain.Repository
-import com.example.es.domain.model.DataDomain
 import com.example.es.domain.model.ResultUser
-import com.google.firebase.FirebaseException
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
@@ -30,12 +26,18 @@ class RepositoryImpl @Inject constructor(
         exceptionHandle.handle(exception = e)
     }
 
-    override suspend fun postLocation(id: String, map: MutableMap<String,Any>): ResultUser =
+    override suspend fun postLocation(id: String, map: MutableMap<String, Any>): ResultUser =
         try {
             cloudSource.postLocation(id, map)
         } catch (e: Exception) {
             exceptionHandle.handle(exception = e)
         }
+
+    override suspend fun fetchCachedByDate(timeStart: Long, timeEnd: Long): ResultUser = try {
+        cacheSource.fetchCachedByDate(timeStart, timeEnd)
+    } catch (e: Exception) {
+        exceptionHandle.handle(exception = e)
+    }
 
     override val usersCached: ResultUser
         get() = try {

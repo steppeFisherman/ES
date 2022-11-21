@@ -7,7 +7,7 @@ data class DataCloud(
     var phone_user: String = "",
     var phone_operator: String = "",
     var photo: String = "",
-    var time_location: String = "",
+    var time_location: Long = 0,
     var latitude: String = "",
     var longitude: String = "",
     val locationAddress: String = "",

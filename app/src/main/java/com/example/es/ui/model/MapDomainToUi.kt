@@ -1,6 +1,8 @@
 package com.example.es.ui.model
 
 import com.example.es.domain.model.DataDomain
+import java.text.DateFormat
+import java.time.format.DateTimeFormatter
 
 interface MapDomainToUi {
 
@@ -15,7 +17,7 @@ interface MapDomainToUi {
                 phone_user = dataDomain.phone_user,
                 phone_operator = dataDomain.phone_operator,
                 photo = dataDomain.photo,
-                time_location = dataDomain.time_location,
+                time_location = longToDate(dataDomain.time_location),
                 latitude = dataDomain.latitude,
                 longitude = dataDomain.longitude,
                 locationAddress = dataDomain.locationAddress,
@@ -23,5 +25,10 @@ interface MapDomainToUi {
                 alarm = dataDomain.alarm,
                 notify = dataDomain.notify
             )
+
+        private fun longToDate(timeLong: Long): String {
+//            return DateFormat.getDateInstance().format(timeLong)
+           return DateFormat.getDateTimeInstance().format(timeLong)
+        }
     }
 }

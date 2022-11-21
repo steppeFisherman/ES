@@ -7,7 +7,7 @@ data class DataDomain(
     var phone_user: String,
     var phone_operator: String,
     var photo: String,
-    var time_location: String,
+    var time_location: Long,
     var latitude: String,
     var longitude: String,
     var locationAddress: String,

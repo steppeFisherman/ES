@@ -35,7 +35,7 @@ import javax.inject.Inject
 class MainFragment : Fragment() {
 
     @Inject
-    lateinit var connectionLiveData: ConnectionLiveData
+    lateinit var connectivityManager: ConnectivityManager
 
     @Inject
     lateinit var snackTopBuilder: SnackBuilder
@@ -89,7 +89,7 @@ class MainFragment : Fragment() {
             phoneOperator = dataUi.phone_operator
             binding.txtName.text = dataUi.full_name
             binding.txtLocationAddress.text = dataUi.locationAddress
-            binding.txtTime.text = dataUi.time_location
+            binding.txtTime.text = dataUi.time_location.toString()
             binding.txtPhone.text = formatUiPhoneNumber
                 .modify(dataUi.phone_user)
 
@@ -109,6 +109,11 @@ class MainFragment : Fragment() {
                 4 -> view.snackLong(R.string.database_exception_message)
                 5 -> view.snackLong(R.string.generic_exception_message)
             }
+        }
+
+        vm.loading.observe(viewLifecycleOwner) {
+            if (it) binding.progressBar.visible(true)
+            else binding.progressBar.visible(false)
         }
 
         binding.btnLocation.setOnClickListener {
@@ -137,7 +142,7 @@ class MainFragment : Fragment() {
             }
         }
 
-        checkNetworks(connectionLiveData) { isNetWorkAvailable ->
+        checkNetworks(connectivityManager) { isNetWorkAvailable ->
             when (isNetWorkAvailable) {
                 false -> snack.show()
                 true -> snack.dismiss()
@@ -159,19 +164,22 @@ class MainFragment : Fragment() {
         else binding.imgPhoto.setImageURI(uri?.toUri())
     }
 
+    override fun onPause() {
+        super.onPause()
+        snack.dismiss()
+    }
+
     private fun initialise(view: View) {
         preferences = view.context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-        connectionLiveData = ConnectionLiveData(view.context)
         snack = snackTopBuilder.buildSnackTopIndefinite(view)
     }
 
     private fun checkNetworks(
-        connection: ConnectionLiveData,
+        connectivityManager: ConnectivityManager,
         connected: (Boolean) -> Unit
     ): Boolean {
         var isNetWorkAvailable = true
-        connection.checkValidNetworks()
-        connection.observe(viewLifecycleOwner) {
+        connectivityManager.isNetworkAvailable.observe(viewLifecycleOwner) {
             isNetWorkAvailable = it
             connected(isNetWorkAvailable)
         }
@@ -202,6 +210,11 @@ class MainFragment : Fragment() {
 
     interface PermissionHandle {
         fun check()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

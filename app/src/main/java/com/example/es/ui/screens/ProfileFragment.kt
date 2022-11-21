@@ -85,6 +85,12 @@ class ProfileFragment : BottomSheetDialogFragment() {
     interface PhotoListener {
         fun photoListener(photo: String)
     }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
 
 

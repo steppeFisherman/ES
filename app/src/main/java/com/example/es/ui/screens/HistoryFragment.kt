@@ -72,4 +72,9 @@ class HistoryFragment : Fragment() {
         super.onPause()
         snack.dismiss()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
