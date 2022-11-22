@@ -48,24 +48,24 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
     private fun createNetworkCallback() = object : ConnectivityManager.NetworkCallback() {
 
-//
-//        @RequiresApi(Build.VERSION_CODES.M)
-//        override fun onCapabilitiesChanged(
-//            network: Network,
-//            networkCapabilities: NetworkCapabilities) {
-//            val isInternet = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-//
-//            Log.d("AAA", "networkCapabilities: ${network} $networkCapabilities")
-//
-//            val isValidated = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-//
-//            if (isValidated){
-//                Log.d("AAA", "hasCapability: ${network} $networkCapabilities")
-//            } else{
-//                Log.d("AAA", "Network has No Connection Capability: ${network} $networkCapabilities")
-//            }
-//            postValue(isInternet && isValidated)
-//        }
+
+        @RequiresApi(Build.VERSION_CODES.M)
+        override fun onCapabilitiesChanged(
+            network: Network,
+            networkCapabilities: NetworkCapabilities) {
+            val isInternet = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+
+            Log.d("AAA", "networkCapabilities: ${network} $networkCapabilities")
+
+            val isValidated = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+
+            if (isValidated){
+                Log.d("AAA", "hasCapability: ${network} $networkCapabilities")
+            } else{
+                Log.d("AAA", "Network has No Connection Capability: ${network} $networkCapabilities")
+            }
+            postValue(isInternet && isValidated)
+        }
 
         /*
           Called when a network is detected. If that network has internet, save it in the Set.

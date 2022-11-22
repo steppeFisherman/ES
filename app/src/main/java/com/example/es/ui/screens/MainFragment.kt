@@ -9,6 +9,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,7 +90,8 @@ class MainFragment : Fragment() {
             phoneOperator = dataUi.phone_operator
             binding.txtName.text = dataUi.full_name
             binding.txtLocationAddress.text = dataUi.locationAddress
-            binding.txtTime.text = dataUi.time_location.toString()
+            binding.txtTime.text = dataUi.time_location
+            Log.d("AAA", "txtTime: ${dataUi.time_location}" )
             binding.txtPhone.text = formatUiPhoneNumber
                 .modify(dataUi.phone_user)
 

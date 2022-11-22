@@ -15,7 +15,9 @@
         app:indicatorColor="@color/deep_sky_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline_horizontal_top" />
+        app:layout_constraintTop_toTopOf="@+id/barrier_horizontal_top"
+        android:layout_marginTop="@dimen/size_16"
+        />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_photo"
@@ -130,12 +132,13 @@
         app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal_bottom"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_horizontal_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.20" />
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_horizontal_top"
+        android:layout_width="@dimen/size_0"
+        android:layout_height="@dimen/size_0"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="txt_location_address"
+        />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_horizontal_bottom"

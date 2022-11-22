@@ -1,8 +1,9 @@
 package com.example.es.ui.model
 
+import android.annotation.SuppressLint
 import com.example.es.domain.model.DataDomain
 import java.text.DateFormat
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
 
 interface MapDomainToUi {
 
@@ -26,9 +27,11 @@ interface MapDomainToUi {
                 notify = dataDomain.notify
             )
 
+        @SuppressLint("SimpleDateFormat")
         private fun longToDate(timeLong: Long): String {
-//            return DateFormat.getDateInstance().format(timeLong)
-           return DateFormat.getDateTimeInstance().format(timeLong)
+            return DateFormat.getDateTimeInstance().format(timeLong)
+//            val sdf =  SimpleDateFormat("dd.MM.yyyy HH:mm")
+//            return sdf.format(timeLong)
         }
     }
 }

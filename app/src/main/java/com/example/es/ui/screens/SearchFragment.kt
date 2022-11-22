@@ -1,6 +1,6 @@
 package com.example.es.ui.screens
 
-import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,14 +13,10 @@ import com.example.es.databinding.FragmentSearchBinding
 import com.example.es.map.MapsActivity
 import com.example.es.ui.adapters.HistoryFragmentAdapter
 import com.example.es.ui.model.DataUi
-import com.example.es.utils.ResourceProvider
-import com.example.es.utils.snackLong
-import com.example.es.utils.snowSnackIndefiniteTop
-import com.example.es.utils.visible
+import com.example.es.utils.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DateFormat
-import java.util.*
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -32,8 +28,13 @@ class SearchFragment : Fragment() {
     private var endDate: Long = 0
     private var startDateString = ""
     private var endDateString = ""
-    private val provider = ResourceProvider.Base()
     private lateinit var snack: Snackbar
+    lateinit var datePicker: DatePickerDialogProvide
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        datePicker = DatePickerDialogProvide.Base(context = context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,9 +64,9 @@ class SearchFragment : Fragment() {
         vm.users.observe(viewLifecycleOwner) { listDataUi ->
             binding.progressBar.visible(false)
 
-            if (listDataUi.isNullOrEmpty()){
+            if (listDataUi.isNullOrEmpty()) {
                 view.snackLong(R.string.no_data_for_selected_period)
-            }else {
+            } else {
                 adapter.submitList(listDataUi.asReversed())
             }
         }
@@ -89,89 +90,25 @@ class SearchFragment : Fragment() {
 
     private fun setStartDate() {
         binding.txtStartDate.setOnClickListener {
-            val currentDateTime = Calendar.getInstance()
-            val startYear = currentDateTime.get(Calendar.YEAR)
-            val startMonth = currentDateTime.get(Calendar.MONTH)
-            val startDay = currentDateTime.get(Calendar.DAY_OF_MONTH)
-
-            DatePickerDialog(
-                requireContext(),
-                { _, year, month, day ->
-
-                    val pickedDateTime = Calendar.getInstance()
-                    pickedDateTime.set(Calendar.YEAR, year)
-                    pickedDateTime.set(Calendar.MONTH, month)
-                    pickedDateTime.set(Calendar.DAY_OF_MONTH, day)
-                    pickedDateTime.set(Calendar.HOUR_OF_DAY, 0)
-                    pickedDateTime.set(Calendar.MINUTE, 0)
-                    pickedDateTime.set(Calendar.SECOND, 0)
-                    pickedDateTime.set(Calendar.MILLISECOND, 0)
-
-                    startDate = pickedDateTime.time.time
-                    startDateString =
-                        DateFormat.getDateInstance().format(pickedDateTime.time)
-
-                    binding.txtStartDate.setTextColor(
-                        provider.color(
-                            requireContext(),
-                            R.color.black_textView
-                        )
-                    )
-
-                    binding.txtStartDate.text = startDateString
-
-                    if (startDateString.isNotBlank() && endDateString.isNotBlank()) {
-                        binding.btnSearch.isEnabled = true
-                    }
-                },
-                startYear,
-                startMonth,
-                startDay
-            ).show()
+            datePicker.provide(binding.txtStartDate) { date ->
+                startDate = date.time
+                startDateString = DateFormat.getDateInstance().format(date)
+                if (startDateString.isNotBlank() && endDateString.isNotBlank()) {
+                    binding.btnSearch.isEnabled = true
+                }
+            }
         }
     }
 
     private fun setEndDate() {
         binding.txtEndDate.setOnClickListener {
-            val currentDateTime = Calendar.getInstance()
-            val startYear = currentDateTime.get(Calendar.YEAR)
-            val startMonth = currentDateTime.get(Calendar.MONTH)
-            val startDay = currentDateTime.get(Calendar.DAY_OF_MONTH)
-
-            DatePickerDialog(
-                requireContext(),
-                { _, year, month, day ->
-
-                    val pickedDateTime = Calendar.getInstance()
-                    pickedDateTime.set(Calendar.YEAR, year)
-                    pickedDateTime.set(Calendar.MONTH, month)
-                    pickedDateTime.set(Calendar.DAY_OF_MONTH, day)
-                    pickedDateTime.set(Calendar.HOUR_OF_DAY, 0)
-                    pickedDateTime.set(Calendar.MINUTE, 0)
-                    pickedDateTime.set(Calendar.SECOND, 0)
-                    pickedDateTime.set(Calendar.MILLISECOND, 0)
-
-                    endDate = pickedDateTime.time.time
-                    endDateString =
-                        DateFormat.getDateInstance().format(pickedDateTime.time)
-
-                    binding.txtEndDate.setTextColor(
-                        provider.color(
-                            requireContext(),
-                            R.color.black_textView
-                        )
-                    )
-
-                    binding.txtEndDate.text = endDateString
-
-                    if (startDateString.isNotBlank() && endDateString.isNotBlank()) {
-                        binding.btnSearch.isEnabled = true
-                    }
-                },
-                startYear,
-                startMonth,
-                startDay
-            ).show()
+            datePicker.provide(binding.txtEndDate) { date ->
+                endDate = date.time
+                endDateString = DateFormat.getDateInstance().format(date)
+                if (startDateString.isNotBlank() && endDateString.isNotBlank()) {
+                    binding.btnSearch.isEnabled = true
+                }
+            }
         }
     }
 

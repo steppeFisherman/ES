@@ -1,5 +1,6 @@
 package com.example.es.data.repository
 
+import android.util.Log
 import com.example.es.data.model.MapCacheToDomain
 import com.example.es.data.model.MapCloudToCache
 import com.example.es.data.model.MapCloudToDomain
@@ -57,6 +58,7 @@ interface CloudSource {
                 .addOnCompleteListener() { task ->
                     result = if (task.isSuccessful) {
                         val dataCloud = task.result.getValue(DataCloud::class.java) ?: DataCloud()
+                        Log.d("AAA", "dataCloud: ${dataCloud.time_location}" )
                         val dataDomain = mapperCloudToDomain.mapCloudToDomain(dataCloud)
                         ResultUser.Success(dataDomain)
                     } else exceptionHandle.handle(exception = task.exception)
@@ -71,6 +73,8 @@ interface CloudSource {
                     result = if (task.isSuccessful) {
                         val dataCloud =
                             task.result.getValue(DataCloud::class.java) ?: DataCloud()
+                        Log.d("AAA", "dataCloud postLocation: ${dataCloud.time_location}" )
+
                         val dataCache = mapperCloudToCache.mapCloudToCache(dataCloud)
                         dispatchers.launchIO(scope = scope) { appDao.insertUser(dataCache) }
                         val dataDomain = mapperCacheToDomain.mapCacheToDomain(dataCache)
