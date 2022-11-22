@@ -5,17 +5,19 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class DataUi(
-    var id_cache: Int,
-    val id: Int,
-    var full_name: String,
-    var phone_user: String,
-    var phone_operator: String,
-    var photo: String,
-    var time_location: String,
-    var latitude: String,
-    var longitude: String,
-    var locationAddress: String,
-    var homeAddress: String,
-    var alarm: Boolean,
-    var notify: Boolean
+    val idCache: Int,
+    val id: String,
+    val fullName: String,
+    val phoneUser: String,
+    val phoneOperator: String,
+    val photo: String,
+    val time: String,
+    val timeLong: Long,
+    val latitude: String,
+    val longitude: String,
+    val locationAddress: String,
+    val homeAddress: String,
+    val company: String,
+    val alarm: Boolean,
+    val notify: Boolean
 ): Parcelable

@@ -21,11 +21,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class DataModule {
 
-//    @Provides
-//    @Singleton
-//    fun provideConnectionLiveData(@ApplicationContext context: Context): ConnectionLiveData =
-//        ConnectionLiveData(context = context)
-
     @Provides
     @Singleton
     fun provideSnackBuilder(): SnackBuilder = SnackBuilder.Base()

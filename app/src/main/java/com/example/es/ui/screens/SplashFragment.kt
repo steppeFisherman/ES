@@ -43,8 +43,8 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
         vm.userAuth.observe(viewLifecycleOwner) { dataUi ->
             binding.progressBar.visibility = View.GONE
-            val idFetched = dataUi.id.toString()
-            val phoneFetched = dataUi.phone_user
+            val idFetched = dataUi.id
+            val phoneFetched = dataUi.phoneUser
 
             val userExists = (idFetched == idEntered && phoneFetched == phoneEntered)
             preferences.edit().putBoolean(PREF_BOOLEAN_VALUE, userExists).apply()
@@ -52,6 +52,8 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
             if (userExists) {
                 preferences.edit().putString(PREF_ID_VALUE, idEntered).apply()
                 preferences.edit().putString(PREF_PHONE_VALUE, phoneEntered).apply()
+                preferences.edit().putString(PREF_COMPANY_VALUE, dataUi.company).apply()
+                preferences.edit().putString(PREF_HOME_ADDRESS_VALUE, dataUi.homeAddress).apply()
                 val bundle = Bundle()
                 bundle.putParcelable(MainFragment.ARGS, dataUi)
                 findNavController()

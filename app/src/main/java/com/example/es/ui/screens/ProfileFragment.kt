@@ -12,10 +12,7 @@ import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.databinding.FragmentProfileBinding
-import com.example.es.utils.APP_PREFERENCES
-import com.example.es.utils.Navigator
-import com.example.es.utils.PREF_URI_VALUE
-import com.example.es.utils.snackLongTop
+import com.example.es.utils.*
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -24,6 +21,11 @@ class ProfileFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = checkNotNull(_binding)
     private lateinit var preferences: SharedPreferences
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        preferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +43,12 @@ class ProfileFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        preferences = view.context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-
         val uri = preferences.getString(PREF_URI_VALUE, "")
         if (uri?.isBlank() == true) binding.profileImage
             .setImageResource(R.drawable.inset_holder_camera)
         else binding.profileImage.setImageURI(uri?.toUri())
+
+        textViewSetUp()
 
         binding.btnLogout.setOnClickListener {
             preferences.edit().clear().apply()
@@ -54,16 +56,26 @@ class ProfileFragment : BottomSheetDialogFragment() {
         }
 
         binding.profileImage.setOnClickListener {
-            selectImage()
+            ImagePicker.with(this)
+                .crop()
+                .compress(1024)
+                .maxResultSize(1080, 1080)
+                .start()
         }
     }
 
-    private fun selectImage() {
-        ImagePicker.with(this)
-            .crop()
-            .compress(1024)
-            .maxResultSize(1080, 1080)
-            .start()
+    private fun textViewSetUp() {
+        val company = preferences.getString(PREF_COMPANY_VALUE, "")
+        val homeAddress = getString(
+            R.string.home_address, preferences.getString(PREF_HOME_ADDRESS_VALUE, "")
+        )
+        val id = getString(
+            R.string.your_id, preferences.getString(PREF_ID_VALUE, "")
+        )
+
+        binding.txtCompanyName.text = company
+        binding.txtHomeAddress.text = homeAddress
+        binding.txtId.text = id
     }
 
     @Deprecated("Deprecated in Java")
@@ -85,7 +97,6 @@ class ProfileFragment : BottomSheetDialogFragment() {
     interface PhotoListener {
         fun photoListener(photo: String)
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

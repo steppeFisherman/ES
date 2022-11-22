@@ -18,27 +18,31 @@
         android:paddingBottom="@dimen/margin_14dp">
 
         <TextView
-            android:id="@+id/txt_name"
+            android:id="@+id/txt_company_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_40dp"
-            tools:text="Name"
+            tools:text="Company name"
             android:textSize="@dimen/text_size_large" />
 
         <TextView
-            android:id="@+id/txt_phone"
+            android:id="@+id/txt_home_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:layout_marginTop="@dimen/margin_10dp"
-            tools:text="Phone"
+            android:text="@string/home_address"
+            tools:text="Address"
             android:textSize="@dimen/text_size_large" />
 
         <TextView
-            android:id="@+id/txt_comp"
+            android:id="@+id/txt_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:layout_marginTop="@dimen/margin_10dp"
-            tools:text="Company"
+            android:text="@string/your_id"
+            tools:text="ID"
             android:textSize="@dimen/text_size_large" />
 
         <com.google.android.material.button.MaterialButton

@@ -13,16 +13,18 @@ interface MapCacheToDomain {
         override fun mapCacheToDomain(dataCache: DataCache): DataDomain =
             DataDomain(
                 id = dataCache.id,
-                id_cache = dataCache.id_cache,
-                full_name = dataCache.full_name,
-                phone_user = dataCache.phone_user,
-                phone_operator = dataCache.phone_operator,
+                idCache = dataCache.idCache,
+                fullName = dataCache.fullName,
+                phoneUser = dataCache.phoneUser,
+                phoneOperator = dataCache.phoneOperator,
                 photo = dataCache.photo,
-                time_location = dataCache.time_location,
+                time = dataCache.time,
+                timeLong = dataCache.timeLong,
                 latitude = dataCache.latitude,
                 longitude = dataCache.longitude,
                 locationAddress = dataCache.locationAddress,
                 homeAddress = dataCache.homeAddress,
+                company = dataCache.company,
                 alarm = dataCache.alarm,
                 notify = dataCache.notify,
             )

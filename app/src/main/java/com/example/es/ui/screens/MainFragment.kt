@@ -87,15 +87,15 @@ class MainFragment : Fragment() {
         if (userId.isNotBlank()) vm.fetchExistedUser(id = userId)
 
         vm.user.observe(viewLifecycleOwner) { dataUi ->
-            phoneOperator = dataUi.phone_operator
-            binding.txtName.text = dataUi.full_name
+            phoneOperator = dataUi.phoneOperator
+            binding.txtName.text = dataUi.fullName
             binding.txtLocationAddress.text = dataUi.locationAddress
-            binding.txtTime.text = dataUi.time_location
-            Log.d("AAA", "txtTime: ${dataUi.time_location}" )
+            binding.txtTime.text = dataUi.time
+            Log.d("AAA", "txtTime: ${dataUi.time}" )
             binding.txtPhone.text = formatUiPhoneNumber
-                .modify(dataUi.phone_user)
+                .modify(dataUi.phoneUser)
 
-            if (userPhone != dataUi.phone_user) {
+            if (userPhone != dataUi.phoneUser) {
                 preferences.edit().clear().apply()
                 findNavController()
                     .navigate(R.id.action_mainFragment_to_splashFragment)

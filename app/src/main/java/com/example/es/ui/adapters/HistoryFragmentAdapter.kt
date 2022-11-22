@@ -37,7 +37,7 @@ class HistoryFragmentAdapter(private val listener: Listener) :
             btnLocation.tag = user
 
             holder.binding.txtLocationAddress.text = user.locationAddress
-            holder.binding.txtTime.text = user.time_location
+            holder.binding.txtTime.text = user.time
         }
     }
 
@@ -49,7 +49,7 @@ class HistoryFragmentAdapter(private val listener: Listener) :
 
     object ItemCallback : DiffUtil.ItemCallback<DataUi>() {
         override fun areItemsTheSame(oldItem: DataUi, newItem: DataUi): Boolean {
-            return oldItem.time_location == newItem.time_location
+            return oldItem.time == newItem.time
         }
 
         override fun areContentsTheSame(oldItem: DataUi, newItem: DataUi): Boolean {

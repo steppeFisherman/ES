@@ -13,7 +13,7 @@ interface AppRoomDao {
     @Query("SELECT * FROM item_table")
     fun fetchAllUsers(): LiveData<List<DataCache>>
 
-    @Query("SELECT * FROM item_table Where time_location BETWEEN :timeStart and :timeEnd")
+    @Query("SELECT * FROM item_table Where timeLong BETWEEN :timeStart and :timeEnd")
     suspend fun fetchUsersByDate(timeStart: Long, timeEnd: Long): List<DataCache>
 
     @Query("SELECT * FROM item_table ")

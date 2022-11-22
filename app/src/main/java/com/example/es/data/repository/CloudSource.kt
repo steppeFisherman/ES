@@ -44,7 +44,7 @@ interface CloudSource {
             REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
                 .addOnCompleteListener() { task ->
                     val dataCloud = task.result.getValue(DataCloud::class.java) ?: DataCloud()
-                    val isPhoneExists = dataCloud.phone_user == phone
+                    val isPhoneExists = dataCloud.phoneUser == phone
                     result = if (isPhoneExists) {
                         val mapCloudToDomain = mapperCloudToDomain.mapCloudToDomain(dataCloud)
                         ResultUser.Success(mapCloudToDomain)
@@ -58,7 +58,7 @@ interface CloudSource {
                 .addOnCompleteListener() { task ->
                     result = if (task.isSuccessful) {
                         val dataCloud = task.result.getValue(DataCloud::class.java) ?: DataCloud()
-                        Log.d("AAA", "dataCloud: ${dataCloud.time_location}" )
+                        Log.d("AAA", "dataCloud: ${dataCloud.time}" )
                         val dataDomain = mapperCloudToDomain.mapCloudToDomain(dataCloud)
                         ResultUser.Success(dataDomain)
                     } else exceptionHandle.handle(exception = task.exception)
@@ -73,7 +73,7 @@ interface CloudSource {
                     result = if (task.isSuccessful) {
                         val dataCloud =
                             task.result.getValue(DataCloud::class.java) ?: DataCloud()
-                        Log.d("AAA", "dataCloud postLocation: ${dataCloud.time_location}" )
+                        Log.d("AAA", "dataCloud postLocation: ${dataCloud.time}" )
 
                         val dataCache = mapperCloudToCache.mapCloudToCache(dataCloud)
                         dispatchers.launchIO(scope = scope) { appDao.insertUser(dataCache) }

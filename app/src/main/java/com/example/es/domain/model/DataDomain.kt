@@ -1,17 +1,19 @@
 package com.example.es.domain.model
 
 data class DataDomain(
-    var id_cache: Int,
-    val id: Int,
-    var full_name: String,
-    var phone_user: String,
-    var phone_operator: String,
-    var photo: String,
-    var time_location: Long,
-    var latitude: String,
-    var longitude: String,
-    var locationAddress: String,
-    var homeAddress: String,
-    var alarm: Boolean,
-    var notify: Boolean
+    val idCache: Int,
+    val id: String,
+    val fullName: String,
+    val phoneUser: String,
+    val phoneOperator: String,
+    val photo: String,
+    val time: String,
+    val timeLong: Long,
+    val latitude: String,
+    val longitude: String,
+    val locationAddress: String,
+    val homeAddress: String,
+    val company: String,
+    val alarm: Boolean,
+    val notify: Boolean
 )

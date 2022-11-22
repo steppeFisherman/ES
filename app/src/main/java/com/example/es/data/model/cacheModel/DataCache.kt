@@ -6,18 +6,19 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "item_table")
 data class DataCache(
     @PrimaryKey(autoGenerate = true)
-    val id_cache: Int,
-    val id: Int,
-    val full_name: String,
-    val phone_user: String,
-    val phone_operator: String,
+    val idCache: Int,
+    val id: String,
+    val fullName: String,
+    val phoneUser: String,
+    val phoneOperator: String,
     val photo: String,
-    val time_location: Long,
+    val time: String,
+    val timeLong: Long,
     val latitude: String,
     val longitude: String,
     val locationAddress: String,
     val homeAddress: String,
+    val company: String,
     val alarm: Boolean,
     val notify: Boolean
 )
-

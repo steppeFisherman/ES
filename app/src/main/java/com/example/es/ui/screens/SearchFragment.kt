@@ -13,7 +13,10 @@ import com.example.es.databinding.FragmentSearchBinding
 import com.example.es.map.MapsActivity
 import com.example.es.ui.adapters.HistoryFragmentAdapter
 import com.example.es.ui.model.DataUi
-import com.example.es.utils.*
+import com.example.es.utils.DatePickerDialogProvide
+import com.example.es.utils.snackLong
+import com.example.es.utils.snowSnackIndefiniteTop
+import com.example.es.utils.visible
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DateFormat
@@ -26,6 +29,7 @@ class SearchFragment : Fragment() {
     private val vm by viewModels<SearchFragmentViewModel>()
     private var startDate: Long = 0
     private var endDate: Long = 0
+    private var indexOf: Int = 0
     private var startDateString = ""
     private var endDateString = ""
     private lateinit var snack: Snackbar
@@ -63,12 +67,9 @@ class SearchFragment : Fragment() {
 
         vm.users.observe(viewLifecycleOwner) { listDataUi ->
             binding.progressBar.visible(false)
-
-            if (listDataUi.isNullOrEmpty()) {
+            if (listDataUi.isNullOrEmpty() && binding.btnSearch.isEnabled)
                 view.snackLong(R.string.no_data_for_selected_period)
-            } else {
-                adapter.submitList(listDataUi.asReversed())
-            }
+            else adapter.submitList(listDataUi.asReversed())
         }
 
         vm.error.observe(viewLifecycleOwner) {
