@@ -11,8 +11,6 @@ import com.example.es.domain.model.ErrorType
 import com.example.es.domain.model.ResultUser
 import com.example.es.utils.NODE_USERS
 import com.example.es.utils.REF_DATABASE_ROOT
-import com.google.firebase.FirebaseException
-import com.google.firebase.FirebaseNetworkException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -41,15 +39,15 @@ interface CloudSource {
         private lateinit var result: ResultUser
 
         override suspend fun fetchAuth(id: String, phone: String): ResultUser {
-            REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
-                .addOnCompleteListener() { task ->
-                    val dataCloud = task.result.getValue(DataCloud::class.java) ?: DataCloud()
-                    val isPhoneExists = dataCloud.phoneUser == phone
-                    result = if (isPhoneExists) {
-                        val mapCloudToDomain = mapperCloudToDomain.mapCloudToDomain(dataCloud)
-                        ResultUser.Success(mapCloudToDomain)
-                    } else ResultUser.Fail(ErrorType.USER_NOT_REGISTERED)
-                }.await()
+                REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
+                    .addOnCompleteListener() { task ->
+                        val dataCloud = task.result.getValue(DataCloud::class.java) ?: DataCloud()
+                        val isPhoneExists = dataCloud.phoneUser == phone
+                        result = if (isPhoneExists) {
+                            val mapCloudToDomain = mapperCloudToDomain.mapCloudToDomain(dataCloud)
+                            ResultUser.Success(mapCloudToDomain)
+                        } else ResultUser.Fail(ErrorType.USER_NOT_REGISTERED)
+                    }.await()
             return result
         }
 
@@ -58,7 +56,7 @@ interface CloudSource {
                 .addOnCompleteListener() { task ->
                     result = if (task.isSuccessful) {
                         val dataCloud = task.result.getValue(DataCloud::class.java) ?: DataCloud()
-                        Log.d("AAA", "dataCloud: ${dataCloud.time}" )
+                        Log.d("AAA", "dataCloud: ${dataCloud.time}")
                         val dataDomain = mapperCloudToDomain.mapCloudToDomain(dataCloud)
                         ResultUser.Success(dataDomain)
                     } else exceptionHandle.handle(exception = task.exception)
@@ -73,7 +71,7 @@ interface CloudSource {
                     result = if (task.isSuccessful) {
                         val dataCloud =
                             task.result.getValue(DataCloud::class.java) ?: DataCloud()
-                        Log.d("AAA", "dataCloud postLocation: ${dataCloud.time}" )
+                        Log.d("AAA", "dataCloud postLocation: ${dataCloud.time}")
 
                         val dataCache = mapperCloudToCache.mapCloudToCache(dataCloud)
                         dispatchers.launchIO(scope = scope) { appDao.insertUser(dataCache) }

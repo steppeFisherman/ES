@@ -75,7 +75,7 @@
         app:iconGravity="textEnd"
         app:iconPadding="@dimen/size_0"
         app:iconSize="48dp"
-        app:iconTint="@color/deep_sky_blue"
+        app:iconTint= "@color/btn_location_icon_color_selector"
         app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal_bottom"
         app:layout_constraintEnd_toEndOf="@+id/center_guideline_vertical"
         tools:ignore="SpeakableTextPresentCheck" />
@@ -110,7 +110,7 @@
         app:iconGravity="textEnd"
         app:iconPadding="@dimen/size_0"
         app:iconSize="56dp"
-        app:iconTint="@color/dark_red"
+        app:iconTint="@color/btn_panic_icon_color_selector"
         app:layout_constraintBottom_toBottomOf="@+id/btn_location"
         app:layout_constraintEnd_toEndOf="@+id/btn_dial"
         app:layout_constraintStart_toEndOf="@+id/btn_dial"

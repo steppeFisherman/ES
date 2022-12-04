@@ -1,8 +1,6 @@
 package com.example.es.utils
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -35,6 +33,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
     @SuppressLint("MissingPermission")
     override fun onActive() {
+        checkValidNetworks()
         networkCallback = createNetworkCallback()
         val networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -48,23 +47,30 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
     private fun createNetworkCallback() = object : ConnectivityManager.NetworkCallback() {
 
-
         @RequiresApi(Build.VERSION_CODES.M)
         override fun onCapabilitiesChanged(
             network: Network,
-            networkCapabilities: NetworkCapabilities) {
-            val isInternet = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            networkCapabilities: NetworkCapabilities
+        ) {
+            val isInternet =
+                networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 
-            Log.d("AAA", "networkCapabilities: ${network} $networkCapabilities")
+            val isValidated =
+                networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
 
-            val isValidated = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-
-            if (isValidated){
-                Log.d("AAA", "hasCapability: ${network} $networkCapabilities")
-            } else{
-                Log.d("AAA", "Network has No Connection Capability: ${network} $networkCapabilities")
+            if (isValidated) {
+                validNetworks.add(network)
+                checkValidNetworks()
+                Log.d("AAAA", "isValidated: ${network} $networkCapabilities\n" +
+                "________________________________________________________\n")
+            } else {
+                validNetworks.remove(network)
+                checkValidNetworks()
+                Log.d("AAAA", "Network has No Connection Capability: ${network} $networkCapabilities\n" +
+                "________________________________________________________\n")
             }
             postValue(isInternet && isValidated)
+            checkValidNetworks()
         }
 
         /*
@@ -74,18 +80,26 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
          */
         @SuppressLint("MissingPermission")
         override fun onAvailable(network: Network) {
-            Log.d("AAA", "onAvailable: $network")
+
+            Log.d("AAAA", "onAvailable: $network\n" +
+            "___________________________________________________\n")
             val networkCapabilities = cm.getNetworkCapabilities(network)
             val hasInternetCapability =
                 networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            Log.d("AAA", "onAvailable: ${network}, $hasInternetCapability")
-            if (hasInternetCapability == true) {
+
+            val isValidated =
+                networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+
+            Log.d("AAAA", "onAvailable networkCapabilities: ${network}, $hasInternetCapability\n" +
+            "__________________________________________________________")
+            if (hasInternetCapability == true && isValidated == true) {
                 // check if this network actually has internet
                 CoroutineScope(Dispatchers.IO).launch {
                     val hasInternet = DoesNetworkHaveInternet.execute(network.socketFactory)
                     if (hasInternet) {
                         withContext(Dispatchers.Main) {
-                            Log.d("AAA", "onAvailable: adding network. $network")
+                            Log.d("AAAA", "onAvailable: hasInternet google. $network\n" + "" +
+                                    "______________________________________\n")
                             validNetworks.add(network)
                             checkValidNetworks()
                         }
@@ -99,10 +113,9 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
           Source: https://developer.android.com/reference/android/net/ConnectivityManager.NetworkCallback#onLost(android.net.Network)
          */
         override fun onLost(network: Network) {
-            Log.d("AAA", "onLost: ${network}")
+            Log.d("AAAA", "onLost: ${network}\n")
             validNetworks.remove(network)
             checkValidNetworks()
-
         }
     }
 }

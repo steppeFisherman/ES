@@ -13,11 +13,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
@@ -91,7 +94,6 @@ class MainFragment : Fragment() {
             binding.txtName.text = dataUi.fullName
             binding.txtLocationAddress.text = dataUi.locationAddress
             binding.txtTime.text = dataUi.time
-            Log.d("AAA", "txtTime: ${dataUi.time}" )
             binding.txtPhone.text = formatUiPhoneNumber
                 .modify(dataUi.phoneUser)
 
@@ -143,19 +145,26 @@ class MainFragment : Fragment() {
                 }
             }
         }
-
-        checkNetworks(connectivityManager) { isNetWorkAvailable ->
-            when (isNetWorkAvailable) {
-                false -> snack.show()
-                true -> snack.dismiss()
-            }
-        }
     }
 
     @SuppressLint("MissingPermission")
     override fun onStart() {
         super.onStart()
         requestLocationUpdate.update(fusedLocationClient)
+        checkNetworks(connectivityManager) { isNetWorkAvailable ->
+            when (isNetWorkAvailable) {
+                false -> {
+                    binding.btnLocation.isEnabled = false
+                    binding.btnPanic.isEnabled = false
+                    snack.show()
+                }
+                true -> {
+                    snack.dismiss()
+                    binding.btnLocation.isEnabled = true
+                    binding.btnPanic.isEnabled = true
+                }
+            }
+        }
     }
 
     override fun onResume() {

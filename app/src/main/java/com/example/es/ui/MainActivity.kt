@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,8 +25,10 @@ import com.example.es.databinding.ActivityMainBinding
 import com.example.es.ui.screens.MainFragment
 import com.example.es.ui.screens.ProfileFragment
 import com.example.es.utils.*
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -92,6 +95,16 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         bottomNavigationView = binding.bottomNavigation
         bottomNavigationView.setupWithNavController(navControllerMain)
         preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("AAA", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            // Get new FCM registration token
+            val token = task.result
+            Log.d("AAA", "token: $token")
+        })
     }
 
     private fun checkUserLoggedIn() {
@@ -113,7 +126,6 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
 
     override fun onStart() {
         super.onStart()
-//        connectionLiveData = ConnectionLiveData(this)
         connectivityManager.registerConnectionObserver(this)
     }
 
@@ -130,7 +142,6 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
     override fun onDestroy() {
         super.onDestroy()
         connectivityManager.unregisterConnectionObserver(this)
-
     }
 
     override fun photoListener(photo: String) {

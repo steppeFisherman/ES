@@ -111,6 +111,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
         binding.editTextPhone.addTextChangedListener(listener)
         binding.editTextPhone.onFocusChangeListener = listener
     }
+
 }
 
 

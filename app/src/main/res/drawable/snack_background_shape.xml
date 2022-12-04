@@ -2,16 +2,16 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <!--    Set Margin Here -->
     <item
-        android:bottom="@dimen/size_8"
-        android:left="@dimen/size_0"
-        android:right="@dimen/size_0"
-        android:top="@dimen/size_8"
+        android:bottom="@dimen/margin_8dp"
+        android:left="@dimen/margin_16dp"
+        android:right="@dimen/margin_16dp"
+        android:top="@dimen/margin_8dp"
         >
 
         <!-- Insert your shape here: -->
         <shape
             android:shape="rectangle"
-            android:tint="@color/dark_red">
+            android:tint="@color/black_textView">
 
             <!-- Padding for inner text-->
             <padding

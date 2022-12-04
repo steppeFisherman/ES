@@ -3,7 +3,6 @@ package com.example.es.utils
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.view.marginBottom
 import com.example.es.R
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -21,7 +20,8 @@ interface SnackBuilder {
                 Snackbar.LENGTH_INDEFINITE
             )
             val layoutParams = FrameLayout.LayoutParams(snack.view.layoutParams)
-            layoutParams.gravity = Gravity.CENTER
+            layoutParams.bottomMargin = 110
+            layoutParams.gravity = Gravity.BOTTOM
             snack.view.setPadding(0, 0, 0, 0)
             snack.view.setBackgroundResource(R.drawable.snack_background_shape)
             snack.view.layoutParams = layoutParams
