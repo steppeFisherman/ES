@@ -33,6 +33,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
     @SuppressLint("MissingPermission")
     override fun onActive() {
+        Log.d("AAAA", "onActive:")
         checkValidNetworks()
         networkCallback = createNetworkCallback()
         val networkRequest = NetworkRequest.Builder()
@@ -42,6 +43,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
     }
 
     override fun onInactive() {
+        Log.d("AAAA", "onInactive:")
         cm.unregisterNetworkCallback(networkCallback)
     }
 

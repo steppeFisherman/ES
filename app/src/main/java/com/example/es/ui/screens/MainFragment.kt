@@ -9,18 +9,14 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
@@ -50,6 +46,7 @@ class MainFragment : Fragment() {
     private var phoneOperator = ""
     private var statusAnimation = false
     private var gpsStatus = false
+    private var alarmIsActive = false
     private var userId = ""
     private val formatUiPhoneNumber = FormatUiPhoneNumber.Base()
     private val requestLocationUpdate = RequestLocationUpdate.Base()
@@ -144,6 +141,10 @@ class MainFragment : Fragment() {
                     animation.animate(binding.imgAnimation1, binding.imgAnimation2)
                 }
             }
+
+            alarmIsActive = !alarmIsActive
+            REF_DATABASE_ROOT.child(NODE_USERS).child(userId).child(CHILD_ALARM)
+                .setValue(alarmIsActive)
         }
     }
 
