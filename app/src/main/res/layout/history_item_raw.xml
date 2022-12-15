@@ -22,7 +22,7 @@
             android:id="@+id/txt_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="casual"
+            android:fontFamily="cursive"
             android:textColor="@color/black_textView"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"

@@ -8,6 +8,9 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun showToast(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -80,3 +83,8 @@ fun View.dismissSnackIndefiniteTop(@StringRes message: Int) {
 fun View.visible(show: Boolean) =
     if (show) this.visibility = View.VISIBLE else this.visibility = View.GONE
 
+fun longToStringDateFormat(time: Long) {
+//    val dateString = DateFormat.getDateTimeInstance().format(time)
+//    val format = SimpleDateFormat("HH:mm:ss, dd.MM.yyyy", Locale.getDefault())
+//    return format.format(time).toString()
+}

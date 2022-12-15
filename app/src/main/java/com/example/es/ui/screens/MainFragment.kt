@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.location.Geocoder
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -50,7 +51,7 @@ class MainFragment : Fragment() {
     private var userId = ""
     private val formatUiPhoneNumber = FormatUiPhoneNumber.Base()
     private val requestLocationUpdate = RequestLocationUpdate.Base()
-    private val fusedLocationResult = FusedLocationResult.Base()
+    private val fusedLocationResult = FusedLocationResult.Base(DateTimeFormat.Base())
     private val animation = Animation.Base()
     private lateinit var preferences: SharedPreferences
 
@@ -118,13 +119,7 @@ class MainFragment : Fragment() {
         }
 
         binding.btnLocation.setOnClickListener {
-            (requireActivity() as PermissionHandle).check()
-            gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-
-            if (!gpsStatus) dialogShow() else
-                fusedLocationResult.result(fusedLocationClient, geoCoder) {
-                    vm.postLocation(id = userId, it)
-                }
+            postLocationAlarm()
         }
 
         binding.btnDial.setOnClickListener {
@@ -143,9 +138,19 @@ class MainFragment : Fragment() {
             }
 
             alarmIsActive = !alarmIsActive
-            REF_DATABASE_ROOT.child(NODE_USERS).child(userId).child(CHILD_ALARM)
-                .setValue(alarmIsActive)
+            postLocationAlarm(alarm = alarmIsActive)
         }
+    }
+
+    private fun postLocationAlarm(alarm: Boolean = false) {
+        (requireActivity() as PermissionHandle).check()
+        gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+
+        if (!gpsStatus) dialogShow() else
+            fusedLocationResult.result(fusedLocationClient, geoCoder) {
+                it[CHILD_ALARM] = alarm
+                vm.postLocation(id = userId, it)
+            }
     }
 
     @SuppressLint("MissingPermission")
@@ -198,6 +203,15 @@ class MainFragment : Fragment() {
         return isNetWorkAvailable
     }
 
+    private fun isLocationEnabled(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            locationManager.isLocationEnabled
+        } else {
+            (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                    || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+        }
+    }
+
     private fun dialogShow() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.location_mode)
@@ -224,8 +238,8 @@ class MainFragment : Fragment() {
         fun check()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         _binding = null
     }
 }
