@@ -24,6 +24,8 @@ interface MapUiToDomain {
                 company = dataUi.company,
                 alarm = dataUi.alarm,
                 notify = dataUi.notify,
+                locationFlagOnly = dataUi.locationFlagOnly,
+                comment = dataUi.comment
             )
     }
 }

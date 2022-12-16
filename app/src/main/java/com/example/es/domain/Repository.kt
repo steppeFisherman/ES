@@ -5,7 +5,7 @@ import com.example.es.domain.model.ResultUser
 interface Repository {
     suspend fun executeAuth(id: String, phone: String): ResultUser
     suspend fun fetchExisted(id: String): ResultUser
-    suspend fun postLocation(id: String, map: MutableMap<String, Any>): ResultUser
+    suspend fun postUpdates(id: String, map: MutableMap<String, Any>): ResultUser
     suspend fun fetchCachedByDate(timeStart: Long, timeEnd: Long): ResultUser
     val usersCached: ResultUser
 }

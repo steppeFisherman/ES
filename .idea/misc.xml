@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable-v24/btn_icon_color_selector.xml" value="0.2165" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable-v24/ic_dot.xml" value="0.1" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable-v24/main_rv_item_shape.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable-v24/notification_icon_shape.xml" value="0.1785" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/bottom_nav background_shape.xml" value="0.13" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/btn_enter_quit_selector.xml" value="0.123" />
@@ -60,7 +61,7 @@
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_profile.xml" value="0.22" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_search.xml" value="0.2073170731707317" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_splash.xml" value="0.1" />
-        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/history_item_raw.xml" value="0.1" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/history_item_raw.xml" value="0.22" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/notification.xml" value="0.5" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/menu/menu_bottom_navigation.xml" value="0.33177083333333335" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/menu/menu_bottom_navigation_view.xml" value="0.22" />

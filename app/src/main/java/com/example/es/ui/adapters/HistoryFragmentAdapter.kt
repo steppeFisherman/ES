@@ -3,12 +3,14 @@ package com.example.es.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.es.R
 import com.example.es.databinding.HistoryItemRawBinding
 import com.example.es.ui.model.DataUi
+import com.example.es.utils.visible
 
 class HistoryFragmentAdapter(private val listener: Listener) :
     ListAdapter<DataUi, HistoryFragmentAdapter.MainHolder>(ItemCallback), View.OnClickListener {
@@ -36,8 +38,12 @@ class HistoryFragmentAdapter(private val listener: Listener) :
             root.tag = user
             btnLocation.tag = user
 
-            holder.binding.txtLocationAddress.text = user.locationAddress
-            holder.binding.txtTime.text = user.time
+            txtId.animation = AnimationUtils
+                .loadAnimation(holder.binding.root.context, R.anim.fade_transition_animation)
+            txtId.text = user.id
+            txtLocationAddress.text = user.locationAddress
+            txtTime.text = user.time
+            if (user.alarm) imgAlarm.visible(true)
         }
     }
 

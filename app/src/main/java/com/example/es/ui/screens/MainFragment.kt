@@ -21,7 +21,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
+import com.example.es.data.model.MapCloudToDomain
+import com.example.es.data.model.MapDomainToCloud
+import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.databinding.FragmentMainBinding
+import com.example.es.ui.model.MapDomainToUi
 import com.example.es.utils.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -53,6 +57,8 @@ class MainFragment : Fragment() {
     private val requestLocationUpdate = RequestLocationUpdate.Base()
     private val fusedLocationResult = FusedLocationResult.Base(DateTimeFormat.Base())
     private val animation = Animation.Base()
+    private val mapCloudToDomain = MapCloudToDomain.Base()
+    private val mapDomainToUi = MapDomainToUi.Base()
     private lateinit var preferences: SharedPreferences
 
     private lateinit var snack: Snackbar
@@ -119,7 +125,7 @@ class MainFragment : Fragment() {
         }
 
         binding.btnLocation.setOnClickListener {
-            postLocationAlarm()
+            postUpdates(locationFlagOnly = true)
         }
 
         binding.btnDial.setOnClickListener {
@@ -129,27 +135,33 @@ class MainFragment : Fragment() {
         }
 
         binding.btnPanic.setOnClickListener {
-            statusAnimation = !statusAnimation
+            postUpdates(alarm = true, locationFlagOnly = true)
+        }
+
+        REF_DATABASE_ROOT.child(NODE_USERS).child(userId).addValueEventListener(SnapShotListener{
+            val dataCloud = it.getValue(DataCloud::class.java) ?: DataCloud()
+            val dataDomain = mapCloudToDomain.mapCloudToDomain(dataCloud)
+            val dataUi = mapDomainToUi.mapDomainToUi(dataDomain)
+            statusAnimation = dataUi.alarm
+
             lifecycleScope.launch {
                 while (statusAnimation) {
                     delay(300)
                     animation.animate(binding.imgAnimation1, binding.imgAnimation2)
                 }
             }
-
-            alarmIsActive = !alarmIsActive
-            postLocationAlarm(alarm = alarmIsActive)
-        }
+        })
     }
 
-    private fun postLocationAlarm(alarm: Boolean = false) {
+    private fun postUpdates(alarm: Boolean = false, locationFlagOnly: Boolean = false) {
         (requireActivity() as PermissionHandle).check()
         gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
         if (!gpsStatus) dialogShow() else
             fusedLocationResult.result(fusedLocationClient, geoCoder) {
                 it[CHILD_ALARM] = alarm
-                vm.postLocation(id = userId, it)
+                it[CHILD_LOCATION_FLAG_ONLY] = locationFlagOnly
+                vm.postUpdates(id = userId, it)
             }
     }
 

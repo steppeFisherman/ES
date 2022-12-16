@@ -24,7 +24,9 @@ interface MapDomainToUi {
                 homeAddress = dataDomain.homeAddress,
                 company = dataDomain.company,
                 alarm = dataDomain.alarm,
-                notify = dataDomain.notify
+                notify = dataDomain.notify,
+                locationFlagOnly = dataDomain.locationFlagOnly,
+                comment = dataDomain.comment
             )
 
         private fun longToDate(timeLong: Long) =

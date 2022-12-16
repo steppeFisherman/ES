@@ -21,7 +21,7 @@ interface CloudSource {
 
     suspend fun fetchAuth(id: String, phone: String): ResultUser
     suspend fun fetchExisted(id: String): ResultUser
-    suspend fun postLocation(id: String, map: MutableMap<String, Any>): ResultUser
+    suspend fun postUpdates(id: String, map: MutableMap<String, Any>): ResultUser
 
     class Base @Inject constructor(
         private val appDao: AppRoomDao,
@@ -64,7 +64,7 @@ interface CloudSource {
             return result
         }
 
-        override suspend fun postLocation(id: String, map: MutableMap<String, Any>): ResultUser {
+        override suspend fun postUpdates(id: String, map: MutableMap<String, Any>): ResultUser {
             REF_DATABASE_ROOT.child(NODE_USERS).child(id).updateChildren(map).await()
             REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
                 .addOnCompleteListener { task ->

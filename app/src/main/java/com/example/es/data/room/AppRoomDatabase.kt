@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.example.es.data.model.cacheModel.DataCache
 import com.example.es.utils.DateLongConverter
 
-@Database(entities = [DataCache::class], version = 1 , exportSchema = false)
+@Database(entities = [DataCache::class], version = 2 , exportSchema = false)
 @TypeConverters(DateLongConverter::class)
 abstract class AppRoomDatabase : RoomDatabase() {
 
@@ -25,7 +25,8 @@ abstract class AppRoomDatabase : RoomDatabase() {
                     context,
                     AppRoomDatabase::class.java,
                     "database"
-                ).build()
+                ).fallbackToDestructiveMigration()
+                    .build()
                 database as AppRoomDatabase
             } else database as AppRoomDatabase
         }

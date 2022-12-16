@@ -15,5 +15,7 @@ data class DataDomain(
     val homeAddress: String,
     val company: String,
     val alarm: Boolean,
-    val notify: Boolean
+    val notify: Boolean,
+    val locationFlagOnly: Boolean,
+    val comment: String
 )

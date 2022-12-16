@@ -26,9 +26,9 @@ class RepositoryImpl @Inject constructor(
         exceptionHandle.handle(exception = e)
     }
 
-    override suspend fun postLocation(id: String, map: MutableMap<String, Any>): ResultUser =
+    override suspend fun postUpdates(id: String, map: MutableMap<String, Any>): ResultUser =
         try {
-            cloudSource.postLocation(id, map)
+            cloudSource.postUpdates(id, map)
         } catch (e: Exception) {
             exceptionHandle.handle(exception = e)
         }

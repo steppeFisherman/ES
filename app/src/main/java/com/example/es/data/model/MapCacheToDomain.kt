@@ -27,6 +27,8 @@ interface MapCacheToDomain {
                 company = dataCache.company,
                 alarm = dataCache.alarm,
                 notify = dataCache.notify,
+                locationFlagOnly = dataCache.locationFlagOnly,
+                comment = dataCache.comment
             )
 
         fun listMapCacheToDomain(list: List<DataCache>): List<DataDomain> =

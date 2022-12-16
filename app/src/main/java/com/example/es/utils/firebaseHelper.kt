@@ -28,6 +28,8 @@ const val CHILD_HOME_ADDRESS = "homeAddress"
 const val CHILD_COMPANY = "company"
 const val CHILD_ALARM = "alarm"
 const val CHILD_NOTIFY = "notify"
+const val CHILD_COMMENT = "comment"
+const val CHILD_LOCATION_FLAG_ONLY = "locationFlagOnly"
 
 const val APP_PREFERENCES = "APP_PREFERENCES"
 const val PREF_BOOLEAN_VALUE = "PREF_BOOLEAN_VALUE"

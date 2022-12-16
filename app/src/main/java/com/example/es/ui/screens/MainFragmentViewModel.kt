@@ -48,10 +48,10 @@ class MainFragmentViewModel @Inject constructor(
         }
     }
 
-    fun postLocation(id: String, map: MutableMap<String, Any>) {
+    fun postUpdates(id: String, map: MutableMap<String, Any>) {
         viewModelScope.launch(exceptionHandler) {
             mLoading.value = true
-            val result = postUseCase.postLocation(id, map)
+            val result = postUseCase.postUpdates(id, map)
             when (result) {
                 is ResultUser.Success -> {
                     mUser.value = mapperToUi.mapDomainToUi(result.user)

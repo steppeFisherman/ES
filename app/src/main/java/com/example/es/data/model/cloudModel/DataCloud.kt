@@ -15,5 +15,7 @@ data class DataCloud(
     val homeAddress: String = "",
     val company: String = "",
     val alarm: Boolean = false,
-    val notify: Boolean = false
+    val notify: Boolean = false,
+    val locationFlagOnly: Boolean = false,
+    val comment: String = ""
 )
