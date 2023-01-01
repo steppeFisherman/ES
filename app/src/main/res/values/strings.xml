@@ -39,7 +39,7 @@
     <string name="location_permissions_granted">предоставлены разрешения для геолокации</string>
     <string name="home_address">Домашний адрес: %s</string>
     <string name="your_id">Ваш ID: %s</string>
-
+    <string name="comments_template">Комментарий: %s</string>
 
     <string-array name="list_affine_formats">
         <item>+1 ([000]) [000]-[00]-[00]</item>

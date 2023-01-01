@@ -6,11 +6,17 @@ import javax.inject.Inject
 
 interface PostUseCase {
 
-    suspend fun postUpdates(id: String, map: MutableMap<String,Any>): ResultUser
+    suspend fun postLocationUpdates(id: String, map: MutableMap<String,Any>): ResultUser
+    suspend fun postAlarmUpdates(id: String, map: MutableMap<String,Any>): ResultUser
 
     class Base @Inject constructor(private val repository: Repository) : PostUseCase {
-        override suspend fun postUpdates(id: String, map: MutableMap<String, Any>)
-                : ResultUser =
-            repository.postUpdates(id = id, map = map)
+
+        override suspend fun postLocationUpdates(id: String, map: MutableMap<String, Any>)
+                : ResultUser = repository.postLocationUpdates(id = id, map = map)
+
+        override suspend fun postAlarmUpdates(id: String, map: MutableMap<String, Any>)
+        : ResultUser = repository.postAlarmUpdates(id = id, map = map)
+
+
     }
 }

@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.location.Geocoder
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -22,7 +21,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.data.model.MapCloudToDomain
-import com.example.es.data.model.MapDomainToCloud
 import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.databinding.FragmentMainBinding
 import com.example.es.ui.model.MapDomainToUi
@@ -51,7 +49,6 @@ class MainFragment : Fragment() {
     private var phoneOperator = ""
     private var statusAnimation = false
     private var gpsStatus = false
-    private var alarmIsActive = false
     private var userId = ""
     private val formatUiPhoneNumber = FormatUiPhoneNumber.Base()
     private val requestLocationUpdate = RequestLocationUpdate.Base()
@@ -125,7 +122,7 @@ class MainFragment : Fragment() {
         }
 
         binding.btnLocation.setOnClickListener {
-            postUpdates(locationFlagOnly = true)
+            postLocationUpdates()
         }
 
         binding.btnDial.setOnClickListener {
@@ -135,25 +132,28 @@ class MainFragment : Fragment() {
         }
 
         binding.btnPanic.setOnClickListener {
-            postUpdates(alarm = true, locationFlagOnly = true)
+            postAlarmUpdates()
         }
 
-        REF_DATABASE_ROOT.child(NODE_USERS).child(userId).addValueEventListener(SnapShotListener{
-            val dataCloud = it.getValue(DataCloud::class.java) ?: DataCloud()
-            val dataDomain = mapCloudToDomain.mapCloudToDomain(dataCloud)
-            val dataUi = mapDomainToUi.mapDomainToUi(dataDomain)
-            statusAnimation = dataUi.alarm
+        if (userId.isNotBlank()) {
+            REF_DATABASE_ROOT.child(NODE_USERS).child(userId)
+                .addValueEventListener(SnapShotListener {
+                    val dataCloud = it.getValue(DataCloud::class.java) ?: DataCloud()
+                    val dataDomain = mapCloudToDomain.mapCloudToDomain(dataCloud)
+                    val dataUi = mapDomainToUi.mapDomainToUi(dataDomain)
+                    statusAnimation = dataUi.alarm
 
-            lifecycleScope.launch {
-                while (statusAnimation) {
-                    delay(300)
-                    animation.animate(binding.imgAnimation1, binding.imgAnimation2)
-                }
-            }
-        })
+                    lifecycleScope.launch {
+                        while (statusAnimation) {
+                            delay(300)
+                            animation.animate(binding.imgAnimation1, binding.imgAnimation2)
+                        }
+                    }
+                })
+        }
     }
 
-    private fun postUpdates(alarm: Boolean = false, locationFlagOnly: Boolean = false) {
+    private fun postLocationUpdates(alarm: Boolean = false, locationFlagOnly: Boolean = true) {
         (requireActivity() as PermissionHandle).check()
         gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
@@ -161,7 +161,22 @@ class MainFragment : Fragment() {
             fusedLocationResult.result(fusedLocationClient, geoCoder) {
                 it[CHILD_ALARM] = alarm
                 it[CHILD_LOCATION_FLAG_ONLY] = locationFlagOnly
-                vm.postUpdates(id = userId, it)
+                vm.postLocationUpdates(id = userId, it)
+            }
+    }
+
+    private fun postAlarmUpdates(
+        alarm: Boolean = true,
+        locationFlagOnly: Boolean = true,
+    ) {
+        (requireActivity() as PermissionHandle).check()
+        gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+
+        if (!gpsStatus) dialogShow() else
+            fusedLocationResult.result(fusedLocationClient, geoCoder) {
+                it[CHILD_ALARM] = alarm
+                it[CHILD_LOCATION_FLAG_ONLY] = locationFlagOnly
+                vm.postAlarmUpdates(id = userId, it)
             }
     }
 
@@ -213,15 +228,6 @@ class MainFragment : Fragment() {
             connected(isNetWorkAvailable)
         }
         return isNetWorkAvailable
-    }
-
-    private fun isLocationEnabled(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            locationManager.isLocationEnabled
-        } else {
-            (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                    || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-        }
     }
 
     private fun dialogShow() {

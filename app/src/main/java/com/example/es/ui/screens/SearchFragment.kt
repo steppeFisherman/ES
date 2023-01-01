@@ -29,11 +29,10 @@ class SearchFragment : Fragment() {
     private val vm by viewModels<SearchFragmentViewModel>()
     private var startDate: Long = 0
     private var endDate: Long = 0
-    private var indexOf: Int = 0
     private var startDateString = ""
     private var endDateString = ""
     private lateinit var snack: Snackbar
-    lateinit var datePicker: DatePickerDialogProvide
+    private lateinit var datePicker: DatePickerDialogProvide
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

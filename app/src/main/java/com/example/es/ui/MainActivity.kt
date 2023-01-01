@@ -35,7 +35,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
     MainFragment.PermissionHandle {
@@ -55,10 +54,6 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         ActivityResultContracts.RequestMultiplePermissions(),   // contract for requesting more than 1 permission
         ::onGotLocationPermissionsResult
     )
-
-//    private val usersService: UsersService
-//        get() = (applicationContext as App).usersService
-//    private val mapDataCloud = mutableMapOf<String, Any>()
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,8 +78,6 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         initialise()
         checkUserLoggedIn()
         displayBottomNav()
-//        usersService.addListener(usersListener)
-
     }
 
     private fun initialise() {
@@ -98,7 +91,6 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
-                Log.w("AAA", "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
             }
             // Get new FCM registration token

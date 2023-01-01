@@ -30,11 +30,6 @@ class ProfileFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.profileDialogTheme)
-
-//        parentFragmentManager.
-//        setFragmentResultListener("KEY_PROFILE", viewLifecycleOwner) { key, bundle ->
-//            binding.txtCompanyName.text = bundle.getString("KEY_BUNDLE")
-//        }
     }
 
     override fun onCreateView(

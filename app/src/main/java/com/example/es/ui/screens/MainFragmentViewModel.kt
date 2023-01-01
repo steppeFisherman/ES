@@ -10,7 +10,6 @@ import com.example.es.domain.usecases.FetchUseCase
 import com.example.es.domain.usecases.PostUseCase
 import com.example.es.ui.model.DataUi
 import com.example.es.ui.model.MapDomainToUi
-import com.example.es.ui.model.MapUiToDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -21,12 +20,11 @@ class MainFragmentViewModel @Inject constructor(
     private val fetchUseCase: FetchUseCase,
     private val postUseCase: PostUseCase,
     private val mapperToUi: MapDomainToUi,
-    private val mapperToDomain: MapUiToDomain,
 ) : ViewModel() {
 
     private var mUser = MutableLiveData<DataUi>()
     private var mError = MutableLiveData<ErrorType>()
-    private var mLoading = MutableLiveData<Boolean>(false)
+    private var mLoading = MutableLiveData(false)
 
     val user: LiveData<DataUi>
         get() = mUser
@@ -48,11 +46,27 @@ class MainFragmentViewModel @Inject constructor(
         }
     }
 
-    fun postUpdates(id: String, map: MutableMap<String, Any>) {
+    fun postLocationUpdates(id: String, map: MutableMap<String, Any>) {
         viewModelScope.launch(exceptionHandler) {
             mLoading.value = true
-            val result = postUseCase.postUpdates(id, map)
-            when (result) {
+            when (val result = postUseCase.postLocationUpdates(id, map)) {
+                is ResultUser.Success -> {
+                    mUser.value = mapperToUi.mapDomainToUi(result.user)
+                    mLoading.value = false
+                }
+                is ResultUser.Fail -> {
+                    mError.value = result.error
+                    mLoading.value = false
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun postAlarmUpdates(id: String, map: MutableMap<String, Any>) {
+        viewModelScope.launch(exceptionHandler) {
+            mLoading.value = true
+            when (val result = postUseCase.postAlarmUpdates(id, map)) {
                 is ResultUser.Success -> {
                     mUser.value = mapperToUi.mapDomainToUi(result.user)
                     mLoading.value = false

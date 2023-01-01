@@ -3,7 +3,6 @@ package com.example.es.utils
 import android.annotation.SuppressLint
 import android.location.Geocoder
 import com.google.android.gms.location.FusedLocationProviderClient
-import java.text.SimpleDateFormat
 import java.util.*
 
 interface FusedLocationResult {

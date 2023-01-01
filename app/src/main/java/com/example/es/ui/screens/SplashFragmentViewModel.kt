@@ -21,19 +21,15 @@ class SplashFragmentViewModel @Inject constructor(
 ) : ViewModel() {
     private var mUserAuth = MutableLiveData<DataUi>()
     private var mError = MutableLiveData<ErrorType>()
-    private var mLoading = MutableLiveData<ResultUser.Loading>()
 
     val userAuth: LiveData<DataUi>
         get() = mUserAuth
     val error: LiveData<ErrorType>
         get() = mError
-    val loading: LiveData<ResultUser.Loading>
-        get() = mLoading
 
     private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
 
     fun fetchData(id: String, phone: String) {
-        mLoading.value = ResultUser.Loading(true)
         viewModelScope.launch(exceptionHandler) {
             when (val result: ResultUser = fetchUseCase.executeAuth(id, phone)) {
                 is ResultUser.Success -> mUserAuth.value =

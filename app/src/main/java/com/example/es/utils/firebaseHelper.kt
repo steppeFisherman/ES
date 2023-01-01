@@ -1,11 +1,9 @@
 package com.example.es.utils
 
-import androidx.room.Database
 import com.example.es.ui.model.DataUi
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-//lateinit var AUTH: FirebaseAuth
 lateinit var REF_DATABASE_ROOT: DatabaseReference
 lateinit var USER: DataUi
 
@@ -40,7 +38,3 @@ const val PREF_COMPANY_VALUE = "PREF_COMPANY_VALUE"
 const val PREF_HOME_ADDRESS_VALUE = "PREF_HOME_ADDRESS_VALUE"
 const val PREF_URI_VALUE = "PREF_URI_VALUE"
 
-fun  initFirebase(){
-//    AUTH = FirebaseAuth.getInstance()
-    REF_DATABASE_ROOT = FirebaseDatabase.getInstance().reference
-}

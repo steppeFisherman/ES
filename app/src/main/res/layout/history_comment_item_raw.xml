@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/container_comment"
     style="@style/rv_main_container">
 
     <TextView
-        android:id="@+id/txt_id"
+        android:id="@+id/txt_id_comment"
         style="@style/rv_main_textView"
         android:layout_marginStart="@dimen/size_8"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -15,7 +15,7 @@
         tools:text="id" />
 
     <TextView
-        android:id="@+id/txt_time"
+        android:id="@+id/txt_time_comment"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:fontFamily="cursive"
@@ -26,19 +26,30 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Time" />
 
+    <ImageView
+        android:id="@+id/img_alarm_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_panic"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@id/btn_location_comment"
+        app:layout_constraintStart_toStartOf="@+id/btn_location_comment"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
     <TextView
-        android:id="@+id/txt_location_address"
+        android:id="@+id/txt_location_address_comment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="casual"
         android:layout_marginTop="@dimen/margin_8dp"
-        app:layout_constraintEnd_toStartOf="@id/btn_location"
-        app:layout_constraintStart_toStartOf="@id/innerGuideline"
-        app:layout_constraintTop_toBottomOf="@id/txt_time"
+        android:fontFamily="casual"
+        app:layout_constraintEnd_toStartOf="@id/btn_location_comment"
+        app:layout_constraintStart_toStartOf="@id/innerGuideline_comment"
+        app:layout_constraintTop_toBottomOf="@id/txt_time_comment"
         tools:text="Location" />
 
     <ImageButton
-        android:id="@+id/btn_location"
+        android:id="@+id/btn_location_comment"
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:layout_marginEnd="@dimen/size_8"
@@ -46,11 +57,11 @@
         android:src="@drawable/ic_location_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txt_location_address"
+        app:layout_constraintTop_toTopOf="@+id/txt_location_address_comment"
         tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/innerGuideline"
+        android:id="@+id/innerGuideline_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"

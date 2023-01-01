@@ -1,10 +1,8 @@
 package com.example.es.data.repository
 
-import android.util.Log
 import com.example.es.data.model.MapCacheToDomain
 import com.example.es.data.model.MapCloudToCache
 import com.example.es.data.model.MapCloudToDomain
-import com.example.es.data.model.MapDomainToCloud
 import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.data.room.AppRoomDao
 import com.example.es.domain.model.ErrorType
@@ -21,14 +19,14 @@ interface CloudSource {
 
     suspend fun fetchAuth(id: String, phone: String): ResultUser
     suspend fun fetchExisted(id: String): ResultUser
-    suspend fun postUpdates(id: String, map: MutableMap<String, Any>): ResultUser
+    suspend fun postLocationUpdates(id: String, map: MutableMap<String, Any>): ResultUser
+    suspend fun postAlarmUpdates(id: String, map: MutableMap<String, Any>): ResultUser
 
     class Base @Inject constructor(
         private val appDao: AppRoomDao,
         private val mapperCacheToDomain: MapCacheToDomain,
         private val mapperCloudToCache: MapCloudToCache,
         private val mapperCloudToDomain: MapCloudToDomain,
-        private val mapperDomainToCloud: MapDomainToCloud,
         private val dispatchers: ToDispatch,
         private val exceptionHandle: ExceptionHandle
     ) : CloudSource {
@@ -39,24 +37,23 @@ interface CloudSource {
         private lateinit var result: ResultUser
 
         override suspend fun fetchAuth(id: String, phone: String): ResultUser {
-                REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
-                    .addOnCompleteListener() { task ->
-                        val dataCloud = task.result.getValue(DataCloud::class.java) ?: DataCloud()
-                        val isPhoneExists = dataCloud.phoneUser == phone
-                        result = if (isPhoneExists) {
-                            val mapCloudToDomain = mapperCloudToDomain.mapCloudToDomain(dataCloud)
-                            ResultUser.Success(mapCloudToDomain)
-                        } else ResultUser.Fail(ErrorType.USER_NOT_REGISTERED)
-                    }.await()
+            REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
+                .addOnCompleteListener { task ->
+                    val dataCloud = task.result.getValue(DataCloud::class.java) ?: DataCloud()
+                    val isPhoneExists = dataCloud.phoneUser == phone
+                    result = if (isPhoneExists) {
+                        val mapCloudToDomain = mapperCloudToDomain.mapCloudToDomain(dataCloud)
+                        ResultUser.Success(mapCloudToDomain)
+                    } else ResultUser.Fail(ErrorType.USER_NOT_REGISTERED)
+                }.await()
             return result
         }
 
         override suspend fun fetchExisted(id: String): ResultUser {
             REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
-                .addOnCompleteListener() { task ->
+                .addOnCompleteListener { task ->
                     result = if (task.isSuccessful) {
                         val dataCloud = task.result.getValue(DataCloud::class.java) ?: DataCloud()
-                        Log.d("AAA", "dataCloud: ${dataCloud.time}")
                         val dataDomain = mapperCloudToDomain.mapCloudToDomain(dataCloud)
                         ResultUser.Success(dataDomain)
                     } else exceptionHandle.handle(exception = task.exception)
@@ -64,15 +61,37 @@ interface CloudSource {
             return result
         }
 
-        override suspend fun postUpdates(id: String, map: MutableMap<String, Any>): ResultUser {
+        override suspend fun postLocationUpdates(
+            id: String,
+            map: MutableMap<String, Any>
+        ): ResultUser {
             REF_DATABASE_ROOT.child(NODE_USERS).child(id).updateChildren(map).await()
             REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
                 .addOnCompleteListener { task ->
                     result = if (task.isSuccessful) {
                         val dataCloud =
                             task.result.getValue(DataCloud::class.java) ?: DataCloud()
-                        Log.d("AAA", "dataCloud postLocation: ${dataCloud.time}")
+                        val dataCache = mapperCloudToCache.mapCloudToCache(dataCloud)
+                        dispatchers.launchIO(scope = scope) { appDao.insertUser(dataCache) }
+                        val dataDomain = mapperCacheToDomain.mapCacheToDomain(dataCache)
+                        ResultUser.Success(dataDomain)
+                    } else {
+                        exceptionHandle.handle(exception = task.exception)
+                    }
+                }.await()
+            return result
+        }
 
+        override suspend fun postAlarmUpdates(
+            id: String,
+            map: MutableMap<String, Any>
+        ): ResultUser {
+            REF_DATABASE_ROOT.child(NODE_USERS).child(id).updateChildren(map).await()
+            REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
+                .addOnCompleteListener { task ->
+                    result = if (task.isSuccessful) {
+                        val dataCloud =
+                            task.result.getValue(DataCloud::class.java) ?: DataCloud()
                         val dataCache = mapperCloudToCache.mapCloudToCache(dataCloud)
                         dispatchers.launchIO(scope = scope) { appDao.insertUser(dataCache) }
                         val dataDomain = mapperCacheToDomain.mapCacheToDomain(dataCache)

@@ -8,11 +8,7 @@ class RepositoryImpl @Inject constructor(
     private val cloudSource: CloudSource,
     private val cacheSource: CacheSource,
     private val exceptionHandle: ExceptionHandle,
-    private val dispatchers: ToDispatch
 ) : Repository {
-
-//    private val exceptionHandler = CoroutineExceptionHandler { _, throwable -> }
-//    private val scope = CoroutineScope(Job() + exceptionHandler)
 
     override suspend fun executeAuth(id: String, phone: String): ResultUser = try {
         cloudSource.fetchAuth(id = id, phone = phone)
@@ -26,9 +22,16 @@ class RepositoryImpl @Inject constructor(
         exceptionHandle.handle(exception = e)
     }
 
-    override suspend fun postUpdates(id: String, map: MutableMap<String, Any>): ResultUser =
+    override suspend fun postLocationUpdates(id: String, map: MutableMap<String, Any>): ResultUser =
         try {
-            cloudSource.postUpdates(id, map)
+            cloudSource.postLocationUpdates(id, map)
+        } catch (e: Exception) {
+            exceptionHandle.handle(exception = e)
+        }
+
+    override suspend fun postAlarmUpdates(id: String, map: MutableMap<String, Any>): ResultUser =
+        try {
+            cloudSource.postAlarmUpdates(id, map)
         } catch (e: Exception) {
             exceptionHandle.handle(exception = e)
         }

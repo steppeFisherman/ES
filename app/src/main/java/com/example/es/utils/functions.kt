@@ -8,9 +8,6 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
 
 fun showToast(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -66,20 +63,6 @@ fun View.snowSnackIndefiniteTop(snack: Snackbar, @StringRes message: Int) {
     snack.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
     snack.show()
 }
-
-fun View.dismissSnackIndefiniteTop(@StringRes message: Int) {
-    val snackBar = Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
-    val layoutParams = FrameLayout.LayoutParams(snackBar.view.layoutParams)
-
-    layoutParams.gravity = Gravity.TOP
-    layoutParams.marginStart = 40
-    layoutParams.marginEnd = 40
-    snackBar.view.setPadding(0, 8, 0, 8)
-    snackBar.view.layoutParams = layoutParams
-    snackBar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
-    snackBar.dismiss()
-}
-
 fun View.visible(show: Boolean) =
     if (show) this.visibility = View.VISIBLE else this.visibility = View.GONE
 

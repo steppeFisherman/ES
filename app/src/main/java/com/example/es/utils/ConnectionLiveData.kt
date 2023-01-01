@@ -63,13 +63,18 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
             if (isValidated) {
                 validNetworks.add(network)
                 checkValidNetworks()
-                Log.d("AAAA", "isValidated: ${network} $networkCapabilities\n" +
-                "________________________________________________________\n")
+                Log.d(
+                    "AAAA", "isValidated: $network $networkCapabilities\n" +
+                            "________________________________________________________\n"
+                )
             } else {
                 validNetworks.remove(network)
                 checkValidNetworks()
-                Log.d("AAAA", "Network has No Connection Capability: ${network} $networkCapabilities\n" +
-                "________________________________________________________\n")
+                Log.d(
+                    "AAAA",
+                    "Network has No Connection Capability: $network $networkCapabilities\n" +
+                            "________________________________________________________\n"
+                )
             }
             postValue(isInternet && isValidated)
             checkValidNetworks()
@@ -83,8 +88,10 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
         @SuppressLint("MissingPermission")
         override fun onAvailable(network: Network) {
 
-            Log.d("AAAA", "onAvailable: $network\n" +
-            "___________________________________________________\n")
+            Log.d(
+                "AAAA", "onAvailable: $network\n" +
+                        "___________________________________________________\n"
+            )
             val networkCapabilities = cm.getNetworkCapabilities(network)
             val hasInternetCapability =
                 networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -92,16 +99,20 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
             val isValidated =
                 networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
 
-            Log.d("AAAA", "onAvailable networkCapabilities: ${network}, $hasInternetCapability\n" +
-            "__________________________________________________________")
+            Log.d(
+                "AAAA", "onAvailable networkCapabilities: ${network}, $hasInternetCapability\n" +
+                        "__________________________________________________________"
+            )
             if (hasInternetCapability == true && isValidated == true) {
                 // check if this network actually has internet
                 CoroutineScope(Dispatchers.IO).launch {
                     val hasInternet = DoesNetworkHaveInternet.execute(network.socketFactory)
                     if (hasInternet) {
                         withContext(Dispatchers.Main) {
-                            Log.d("AAAA", "onAvailable: hasInternet google. $network\n" + "" +
-                                    "______________________________________\n")
+                            Log.d(
+                                "AAAA", "onAvailable: hasInternet google. $network\n" + "" +
+                                        "______________________________________\n"
+                            )
                             validNetworks.add(network)
                             checkValidNetworks()
                         }

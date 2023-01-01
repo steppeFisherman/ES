@@ -69,7 +69,6 @@ class DataModule {
         mapCacheToDomain: MapCacheToDomain,
         mapCloudToCache: MapCloudToCache,
         mapCloudToDomain: MapCloudToDomain,
-        mapDomainToCloud: MapDomainToCloud,
         dispatchers: ToDispatch,
         exceptionHandle: ExceptionHandle,
     ): CloudSource = CloudSource.Base(
@@ -77,7 +76,6 @@ class DataModule {
         mapperCacheToDomain = mapCacheToDomain,
         mapperCloudToCache = mapCloudToCache,
         mapperCloudToDomain = mapCloudToDomain,
-        mapperDomainToCloud = mapDomainToCloud,
         dispatchers = dispatchers,
         exceptionHandle = exceptionHandle
     )
@@ -86,16 +84,10 @@ class DataModule {
     fun provideCacheSource(
         appDao: AppRoomDao,
         mapCacheToDomain: MapCacheToDomain,
-        mapCloudToCache: MapCloudToCache,
-        mapCloudToDomain: MapCloudToDomain,
-        dispatchers: ToDispatch,
         exceptionHandle: ExceptionHandle,
     ): CacheSource = CacheSource.Base(
         appDao = appDao,
         mapperCacheToDomain = mapCacheToDomain,
-        mapperCloudToCache = mapCloudToCache,
-        mapperCloudToDomain = mapCloudToDomain,
-        dispatchers = dispatchers,
         exceptionHandle = exceptionHandle
     )
 
@@ -105,11 +97,9 @@ class DataModule {
         cloudSource: CloudSource,
         cacheSource: CacheSource,
         exceptionHandle: ExceptionHandle,
-        dispatchers: ToDispatch,
     ): Repository = RepositoryImpl(
         cloudSource = cloudSource,
         cacheSource = cacheSource,
         exceptionHandle = exceptionHandle,
-        dispatchers = dispatchers
     )
 }

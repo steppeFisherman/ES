@@ -7,13 +7,15 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.example.es.R
+import com.example.es.databinding.HistoryCommentItemRawBinding
 import com.example.es.databinding.HistoryItemRawBinding
 import com.example.es.ui.model.DataUi
-import com.example.es.utils.visible
 
 class HistoryFragmentAdapter(private val listener: Listener) :
-    ListAdapter<DataUi, HistoryFragmentAdapter.MainHolder>(ItemCallback), View.OnClickListener {
+    ListAdapter<DataUi, HistoryFragmentAdapter.RecyclerViewHolder>(ItemCallback),
+    View.OnClickListener {
 
     override fun onClick(v: View) {
         val user = v.tag as DataUi
@@ -22,32 +24,75 @@ class HistoryFragmentAdapter(private val listener: Listener) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
-        val view = HistoryItemRawBinding
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
+
+        val simpleBinding = HistoryItemRawBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
+        simpleBinding.btnLocation.setOnClickListener(this)
 
-        view.btnLocation.setOnClickListener(this)
+        val commentBinding = HistoryCommentItemRawBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+        commentBinding.btnLocationComment.setOnClickListener(this)
 
-        return MainHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: MainHolder, position: Int) {
-        val user = getItem(position)
-
-        holder.binding.apply {
-            root.tag = user
-            btnLocation.tag = user
-
-            txtId.animation = AnimationUtils
-                .loadAnimation(holder.binding.root.context, R.anim.fade_transition_animation)
-            txtId.text = user.id
-            txtLocationAddress.text = user.locationAddress
-            txtTime.text = user.time
-            if (user.alarm) imgAlarm.visible(true)
+        return when (viewType) {
+            TYPE_SIMPLE -> RecyclerViewHolder.MainHolder(simpleBinding)
+            TYPE_COMMENT -> RecyclerViewHolder.CommentHolder(commentBinding)
+            else -> RecyclerViewHolder.MainHolder(simpleBinding)
         }
     }
 
-    class MainHolder(val binding: HistoryItemRawBinding) : RecyclerView.ViewHolder(binding.root)
+    override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
+        val user = getItem(position)
+
+        when (holder) {
+            is RecyclerViewHolder.MainHolder -> {
+                holder.mBinding.apply {
+                    root.tag = user
+                    btnLocation.tag = user
+
+                    txtId.animation = AnimationUtils
+                        .loadAnimation(
+                            holder.mBinding.root.context,
+                            R.anim.fade_transition_animation
+                        )
+                    txtId.text = user.id
+                    txtTime.text = user.time
+                    txtLocationAddress.text = user.locationAddress
+                }
+            }
+            is RecyclerViewHolder.CommentHolder -> {
+                holder.cBinding.apply {
+                    root.tag = user
+                    btnLocationComment.tag = user
+
+                    txtIdComment.animation = AnimationUtils
+                        .loadAnimation(
+                            holder.cBinding.root.context,
+                            R.anim.fade_transition_animation
+                        )
+                    txtIdComment.text = user.id
+                    txtTimeComment.text = user.time
+                    txtLocationAddressComment.text = user.locationAddress
+                }
+            }
+        }
+    }
+
+    sealed class RecyclerViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        class MainHolder(val mBinding: HistoryItemRawBinding) : RecyclerViewHolder(mBinding)
+
+        class CommentHolder(val cBinding: HistoryCommentItemRawBinding) :
+            RecyclerViewHolder(cBinding)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        val user = getItem(position)
+        return when (user.alarm) {
+            true -> TYPE_COMMENT
+            false -> TYPE_SIMPLE
+        }
+    }
 
     interface Listener {
         fun toLocation(user: DataUi)
@@ -61,5 +106,10 @@ class HistoryFragmentAdapter(private val listener: Listener) :
         override fun areContentsTheSame(oldItem: DataUi, newItem: DataUi): Boolean {
             return oldItem == newItem
         }
+    }
+
+    companion object {
+        private const val TYPE_SIMPLE = 0
+        private const val TYPE_COMMENT = 1
     }
 }

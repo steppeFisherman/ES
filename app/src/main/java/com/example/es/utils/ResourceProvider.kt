@@ -7,8 +7,6 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
 interface ResourceProvider {
 
@@ -17,10 +15,13 @@ interface ResourceProvider {
     fun fetchColor(@ColorRes id: Int): Int
     fun fetchDrawable(@DrawableRes id: Int): Drawable?
 
-    class Base ( val context: Context) : ResourceProvider {
+    class Base(val context: Context) : ResourceProvider {
         override fun fetchString(@StringRes id: Int) = context.getString(id)
-        override fun fetchStringArray(@ArrayRes id: Int): Array<String> = context.resources.getStringArray(id)
+        override fun fetchStringArray(@ArrayRes id: Int): Array<String> =
+            context.resources.getStringArray(id)
+
         override fun fetchColor(@ColorRes id: Int): Int = ContextCompat.getColor(context, id)
-        override fun fetchDrawable(@DrawableRes id: Int): Drawable? = ContextCompat.getDrawable(context, id)
+        override fun fetchDrawable(@DrawableRes id: Int): Drawable? =
+            ContextCompat.getDrawable(context, id)
     }
 }

@@ -6,7 +6,6 @@ import com.example.es.domain.model.DataDomain
 interface MapCacheToDomain {
 
     fun mapCacheToDomain(dataCache: DataCache): DataDomain
-//    fun listMapCacheToDomain(list: List<DataCache>): List<DataDomain>
 
     class Base : MapCacheToDomain {
 
@@ -30,12 +29,5 @@ interface MapCacheToDomain {
                 locationFlagOnly = dataCache.locationFlagOnly,
                 comment = dataCache.comment
             )
-
-        fun listMapCacheToDomain(list: List<DataCache>): List<DataDomain> =
-            list.map { dataCache -> mapCacheToDomain(dataCache) }
-
-//
-//       private fun listMapCacheToDomain(list: List<DataCache>): List<DataDomain> =
-//            list.map { dataCache -> mapCacheToDomain(dataCache) }
     }
 }
