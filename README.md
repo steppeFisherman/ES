@@ -10,7 +10,7 @@ ___
 
 _Стэк:_
 
-__Firebase, Room, Hilt, Navigation Component, MVVM, LiveData, Kotlin Coroutines, ViewBinding, Clean Architecture__     
+__Firebase, Room, Hilt, Navigation Component, MVVM, LiveData, Kotlin Coroutines, ViewBinding, Clean Architecture, Google Maps__     
 ___
 
 ![Screenshot_permissions](https://user-images.githubusercontent.com/26350957/211204287-da651abd-cc9f-40e1-8591-85ffda72687e.png)
