@@ -17,6 +17,8 @@ ___
 ![Screenshot_calendar](https://user-images.githubusercontent.com/26350957/211198246-dfd441f1-3b75-44bf-9bf8-12b7f84007f2.png)
 ![Screenshot_call](https://user-images.githubusercontent.com/26350957/211198257-60568a14-86a8-4269-a656-d2dc9f3409f2.png)
 __
+
+
 _Стэк:_
 
 __Firebase, Room, Hilt, Navigation Component, MVVM, LiveData, Kotlin Coroutines, ViewBinding, Clean Architecture__                
