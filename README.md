@@ -13,14 +13,15 @@ _Стэк:_
 __Firebase, Room, Hilt, Navigation Component, MVVM, LiveData, Kotlin Coroutines, ViewBinding, Clean Architecture__     
 ___
 
-![Screenshot_permission](https://user-images.githubusercontent.com/26350957/211198112-0d5b3d03-2b8c-468a-a0c2-0acf6146a058.png)
-![Screenshot_phone_enter](https://user-images.githubusercontent.com/26350957/211198096-6c2d984d-c8bc-4a53-8fe7-316210ef3494.png)
-![Screenshot_main png](https://user-images.githubusercontent.com/26350957/211198147-027307ef-82a9-4e54-ad45-08f070eba02e.jpg)
-![Screenshot_panic_pressed](https://user-images.githubusercontent.com/26350957/211198172-63f4b1bb-deac-4902-bbec-6569c421d363.png)
-![Screenshot_history](https://user-images.githubusercontent.com/26350957/211198153-cb5a36ba-22df-4044-b02c-5ecc7d0e0c12.png)
-![Screenshot_map](https://user-images.githubusercontent.com/26350957/211198205-cda9bb4b-49d6-4c40-8060-68f326cc5d1d.png)
-![Screenshot_profile](https://user-images.githubusercontent.com/26350957/211198240-58294c42-690c-4a64-890b-5bf8ce60f001.png)
-![Screenshot_calendar](https://user-images.githubusercontent.com/26350957/211198246-dfd441f1-3b75-44bf-9bf8-12b7f84007f2.png)
-![Screenshot_call](https://user-images.githubusercontent.com/26350957/211198257-60568a14-86a8-4269-a656-d2dc9f3409f2.png)
+![Screenshot_permission](https://user-images.githubusercontent.com/26350957/211201716-0213a907-2619-458e-aac0-fd4c33371cbd.png)
+![Screenshot_phone_enter](https://user-images.githubusercontent.com/26350957/211201718-e1021a80-0862-4595-bc6f-deae62826ccf.png)
+![Screenshot_main png](https://user-images.githubusercontent.com/26350957/211201713-d97db228-cd7f-4b63-a6f6-1dca191a62c2.jpg)
+![Screenshot_panic_pressed](https://user-images.githubusercontent.com/26350957/211201715-839fa1ab-09a8-43e7-9547-92c90ce2f7a9.png)
+![Screenshot_history](https://user-images.githubusercontent.com/26350957/211201712-611451f4-ee58-4302-99a6-cd192254fa94.png)
+![Screenshot_map](https://user-images.githubusercontent.com/26350957/211201714-11589516-9502-47b3-9e3c-4fda05d3c24b.png)
+![Screenshot_profile](https://user-images.githubusercontent.com/26350957/211201720-3b889e07-9a96-46ee-bb42-3e8bde3cfd8c.png)
+![Screenshot_calendar](https://user-images.githubusercontent.com/26350957/211201710-f9a33340-69f4-4099-8280-10d3c9882b59.png)
+![Screenshot_call](https://user-images.githubusercontent.com/26350957/211201711-d84f1b71-8b52-45bf-80db-0bc10f0045fc.png)
+
 __
            
