@@ -1,5 +1,5 @@
 # ES
-Описание:
+_Описание:_
 
 Клиент-серверное приложение для контроля текущей геопозиции. Клиенту необходимо раз в сутки отправить геолокацию, в случае если данное событие не произошло
 оператор колл-центра связывается с клиентом. Клиент имеет возможность послать сигнал тревоги с текущей геопозицией, 
@@ -11,7 +11,6 @@ ___
 _Стэк:_
 
 __Firebase, Room, Hilt, Navigation Component, MVVM, LiveData, Kotlin Coroutines, ViewBinding, Clean Architecture__     
-___
 ___
 
 ![Screenshot_permission](https://user-images.githubusercontent.com/26350957/211198112-0d5b3d03-2b8c-468a-a0c2-0acf6146a058.png)
