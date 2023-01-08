@@ -14,7 +14,6 @@ __Firebase, Room, Hilt, Navigation Component, MVVM, LiveData, Kotlin Coroutines,
 ___
 
 ![Screenshot_permissions](https://user-images.githubusercontent.com/26350957/211204287-da651abd-cc9f-40e1-8591-85ffda72687e.png)
-![Screenshot_splash](https://user-images.githubusercontent.com/26350957/211204290-7bcf95e1-b945-4a9d-b392-36bc6ab8ebc7.png)
 ![Screenshot_phone enter](https://user-images.githubusercontent.com/26350957/211204289-91d111e1-cbc4-4a9a-ba36-5384b09563d3.jpg)
 ![Screenshot_main](https://user-images.githubusercontent.com/26350957/211204284-052c142f-a8ae-4587-b280-20218d5b7451.jpg)
 ![Screenshot_panic](https://user-images.githubusercontent.com/26350957/211204286-c8358704-ae2f-4af6-8fba-13f50fd9be5c.jpg)
