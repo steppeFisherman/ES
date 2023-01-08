@@ -5,6 +5,13 @@
 оператор колл-центра связывается с клиентом. Клиент имеет возможность послать сигнал тревоги с текущей геопозицией, 
 оператор при этом реагирует по  определенному алгоритму действий. Также клиент имеет возможность позвонить в колл-центр(звонилка) и посмотреть историю событий в зависимости от выбранной даты. 
 На стороне оператора установлено другое приложение с базой данных всех клиентов для онлайн контроля всех текущих событий всех клиентов.
+
+___
+
+_Стэк:_
+
+__Firebase, Room, Hilt, Navigation Component, MVVM, LiveData, Kotlin Coroutines, ViewBinding, Clean Architecture__     
+___
 ___
 
 ![Screenshot_permission](https://user-images.githubusercontent.com/26350957/211198112-0d5b3d03-2b8c-468a-a0c2-0acf6146a058.png)
@@ -17,8 +24,4 @@ ___
 ![Screenshot_calendar](https://user-images.githubusercontent.com/26350957/211198246-dfd441f1-3b75-44bf-9bf8-12b7f84007f2.png)
 ![Screenshot_call](https://user-images.githubusercontent.com/26350957/211198257-60568a14-86a8-4269-a656-d2dc9f3409f2.png)
 __
-
-
-_Стэк:_
-
-__Firebase, Room, Hilt, Navigation Component, MVVM, LiveData, Kotlin Coroutines, ViewBinding, Clean Architecture__                
+           
