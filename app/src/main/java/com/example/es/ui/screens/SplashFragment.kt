@@ -12,6 +12,7 @@ import com.example.es.R
 import com.example.es.databinding.FragmentSplashBinding
 import com.example.es.ui.BaseFragment
 import com.example.es.utils.*
+import com.example.es.utils.connectivity.ConnectivityManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

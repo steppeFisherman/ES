@@ -20,7 +20,7 @@ class HistoryFragmentAdapter(private val listener: Listener) :
     override fun onClick(v: View) {
         val user = v.tag as DataUi
         when (v.id) {
-            R.id.btn_location -> listener.toLocation(user)
+            R.id.btn_location_history -> listener.toLocation(user)
         }
     }
 
@@ -28,7 +28,7 @@ class HistoryFragmentAdapter(private val listener: Listener) :
 
         val simpleBinding = HistoryItemRawBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
-        simpleBinding.btnLocation.setOnClickListener(this)
+        simpleBinding.btnLocationHistory.setOnClickListener(this)
 
         val commentBinding = HistoryCommentItemRawBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
@@ -48,7 +48,7 @@ class HistoryFragmentAdapter(private val listener: Listener) :
             is RecyclerViewHolder.MainHolder -> {
                 holder.mBinding.apply {
                     root.tag = user
-                    btnLocation.tag = user
+                    btnLocationHistory.tag = user
 
                     txtId.animation = AnimationUtils
                         .loadAnimation(
@@ -79,18 +79,15 @@ class HistoryFragmentAdapter(private val listener: Listener) :
     }
 
     sealed class RecyclerViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
-
         class MainHolder(val mBinding: HistoryItemRawBinding) : RecyclerViewHolder(mBinding)
-
-        class CommentHolder(val cBinding: HistoryCommentItemRawBinding) :
-            RecyclerViewHolder(cBinding)
+        class CommentHolder(val cBinding: HistoryCommentItemRawBinding) : RecyclerViewHolder(cBinding)
     }
 
     override fun getItemViewType(position: Int): Int {
         val user = getItem(position)
-        return when (user.alarm) {
-            true -> TYPE_COMMENT
-            false -> TYPE_SIMPLE
+        return when (user.locationFlagOnly) {
+            true -> TYPE_SIMPLE
+            else -> TYPE_COMMENT
         }
     }
 

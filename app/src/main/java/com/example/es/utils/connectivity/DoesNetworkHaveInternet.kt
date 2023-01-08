@@ -1,4 +1,4 @@
-package com.example.es.ui.app
+package com.example.es.utils.connectivity
 
 import android.util.Log
 import java.io.IOException

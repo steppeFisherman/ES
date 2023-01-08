@@ -32,13 +32,13 @@
         android:layout_height="wrap_content"
         android:fontFamily="casual"
         android:layout_marginTop="@dimen/margin_8dp"
-        app:layout_constraintEnd_toStartOf="@id/btn_location"
+        app:layout_constraintEnd_toStartOf="@id/btn_location_history"
         app:layout_constraintStart_toStartOf="@id/innerGuideline"
         app:layout_constraintTop_toBottomOf="@id/txt_time"
         tools:text="Location" />
 
     <ImageButton
-        android:id="@+id/btn_location"
+        android:id="@+id/btn_location_history"
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:layout_marginEnd="@dimen/size_8"

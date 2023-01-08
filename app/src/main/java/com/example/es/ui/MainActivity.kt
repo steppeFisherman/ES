@@ -25,7 +25,7 @@ import com.example.es.databinding.ActivityMainBinding
 import com.example.es.ui.screens.MainFragment
 import com.example.es.ui.screens.ProfileFragment
 import com.example.es.utils.APP_PREFERENCES
-import com.example.es.utils.ConnectivityManager
+import com.example.es.utils.connectivity.ConnectivityManager
 import com.example.es.utils.PREF_BOOLEAN_VALUE
 import com.example.es.utils.REF_DATABASE_ROOT
 import com.google.android.gms.tasks.OnCompleteListener

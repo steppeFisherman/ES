@@ -25,6 +25,7 @@ import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.databinding.FragmentMainBinding
 import com.example.es.ui.model.MapDomainToUi
 import com.example.es.utils.*
+import com.example.es.utils.connectivity.ConnectivityManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
@@ -167,7 +168,7 @@ class MainFragment : Fragment() {
 
     private fun postAlarmUpdates(
         alarm: Boolean = true,
-        locationFlagOnly: Boolean = true,
+        locationFlagOnly: Boolean = false,
     ) {
         (requireActivity() as PermissionHandle).check()
         gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -176,6 +177,7 @@ class MainFragment : Fragment() {
             fusedLocationResult.result(fusedLocationClient, geoCoder) {
                 it[CHILD_ALARM] = alarm
                 it[CHILD_LOCATION_FLAG_ONLY] = locationFlagOnly
+                it[CHILD_COMMENT] = ""
                 vm.postAlarmUpdates(id = userId, it)
             }
     }

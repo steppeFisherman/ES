@@ -1,4 +1,4 @@
-package com.example.es.utils
+package com.example.es.utils.connectivity
 
 import android.app.Application
 import androidx.lifecycle.LifecycleOwner

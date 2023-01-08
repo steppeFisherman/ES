@@ -16,7 +16,5 @@ interface PostUseCase {
 
         override suspend fun postAlarmUpdates(id: String, map: MutableMap<String, Any>)
         : ResultUser = repository.postAlarmUpdates(id = id, map = map)
-
-
     }
 }

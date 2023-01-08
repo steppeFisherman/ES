@@ -26,8 +26,6 @@ interface FusedLocationResult {
                     val locationAddress = geocoder
                         .getFromLocation(location.latitude, location.longitude, 2)
 
-//                    Log.d("AAA", "latLong: ${location.latitude}, ${location.longitude}")
-
                     if (locationAddress.isNotEmpty() && locationAddress.size > 1) {
 
                         val address = locationAddress[1].getAddressLine(0)
