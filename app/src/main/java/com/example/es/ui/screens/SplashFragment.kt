@@ -91,7 +91,6 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
                     if (phoneEntered.isBlank() || idEntered.isBlank()) it.snackLongTop(R.string.fill_all_fields)
                     else {
-
                         vm.fetchData(id = idEntered, phone = phoneEntered)
                         binding.progressBar.visibility = View.VISIBLE
                     }

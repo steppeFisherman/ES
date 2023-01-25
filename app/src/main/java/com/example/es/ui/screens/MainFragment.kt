@@ -30,6 +30,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -63,6 +64,7 @@ class MainFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
     private lateinit var geoCoder: Geocoder
+    private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -144,10 +146,10 @@ class MainFragment : Fragment() {
                     val dataUi = mapDomainToUi.mapDomainToUi(dataDomain)
                     statusAnimation = dataUi.alarm
 
-                    lifecycleScope.launch {
+                    lifecycleScope.launch(exceptionHandler) {
                         while (statusAnimation) {
                             delay(300)
-                            animation.animate(binding.imgAnimation1, binding.imgAnimation2)
+                                animation.animate(binding.imgAnimation1, binding.imgAnimation2)
                         }
                     }
                 })
