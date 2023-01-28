@@ -66,56 +66,71 @@
         app:layout_constraintStart_toEndOf="@+id/barrier"
         app:layout_constraintTop_toBottomOf="@+id/txt_time" />
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/btn_location"
         style="@style/btn_mainFragment"
         android:layout_marginEnd="@dimen/margin_18dp"
         android:layout_marginBottom="@dimen/margin_14dp"
+        android:text="@string/location"
+        android:textColor="@color/grey_category_textView"
+        android:textAppearance="?attr/textAppearanceButton"
+        android:textSize="12sp"
         app:icon="@drawable/ic_location"
-        app:iconGravity="textEnd"
-        app:iconPadding="@dimen/size_0"
+        app:iconGravity="textTop"
+        app:iconPadding="@dimen/size_4"
         app:iconSize="48dp"
         app:iconTint= "@color/btn_location_icon_color_selector"
         app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal_bottom"
         app:layout_constraintEnd_toEndOf="@+id/center_guideline_vertical"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <ImageView
-        android:id="@+id/imgAnimation1"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@drawable/circle"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_location"
-        app:layout_constraintEnd_toEndOf="@+id/btn_dial"
-        app:layout_constraintStart_toEndOf="@+id/btn_dial"
-        app:layout_constraintTop_toTopOf="@+id/btn_location"
-        tools:ignore="ContentDescription" />
+<!--    <ImageView-->
+<!--        android:id="@+id/imgAnimation1"-->
+<!--        android:layout_width="70dp"-->
+<!--        android:layout_height="70dp"-->
+<!--        android:src="@drawable/circle"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/btn_location"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/btn_dial"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/btn_dial"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/btn_location"-->
+<!--        tools:ignore="ContentDescription" />-->
 
-    <ImageView
-        android:id="@+id/imgAnimation2"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@drawable/circle_red"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_location"
-        app:layout_constraintEnd_toEndOf="@+id/btn_dial"
-        app:layout_constraintStart_toEndOf="@+id/btn_dial"
-        app:layout_constraintTop_toTopOf="@+id/btn_location"
-        tools:ignore="ContentDescription" />
+<!--    <ImageView-->
+<!--        android:id="@+id/imgAnimation2"-->
+<!--        android:layout_width="70dp"-->
+<!--        android:layout_height="70dp"-->
+<!--        android:src="@drawable/circle_red"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/btn_location"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/btn_dial"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/btn_dial"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/btn_location"-->
+<!--        tools:ignore="ContentDescription" />-->
 
-    <Button
-        android:id="@+id/btn_panic"
-        style="@style/btnAlarm_MainFragment"
-        app:backgroundTint="@null"
-        app:icon="@drawable/ic_panic"
-        app:iconGravity="textEnd"
-        app:iconPadding="@dimen/size_0"
-        app:iconSize="56dp"
-        app:iconTint="@color/btn_panic_icon_color_selector"
+<!--    <Button-->
+<!--        android:id="@+id/btn_panic"-->
+<!--        style="@style/btnAlarm_MainFragment"-->
+<!--        app:backgroundTint="@null"-->
+<!--        app:icon="@drawable/ic_panic"-->
+<!--        app:iconGravity="textEnd"-->
+<!--        app:iconPadding="@dimen/size_0"-->
+<!--        app:iconSize="56dp"-->
+<!--        app:iconTint="@color/btn_panic_icon_color_selector"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/btn_location"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/btn_dial"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/btn_dial"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/btn_location"-->
+<!--        tools:ignore="SpeakableTextPresentCheck" />-->
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id = "@+id/ltAnimation"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:lottie_rawRes="@raw/punic_button"
         app:layout_constraintBottom_toBottomOf="@+id/btn_location"
         app:layout_constraintEnd_toEndOf="@+id/btn_dial"
         app:layout_constraintStart_toEndOf="@+id/btn_dial"
         app:layout_constraintTop_toTopOf="@+id/btn_location"
-        tools:ignore="SpeakableTextPresentCheck" />
+        />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dial"

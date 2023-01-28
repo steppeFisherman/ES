@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.airbnb.lottie.LottieDrawable
 import com.example.es.R
 import com.example.es.data.model.MapCloudToDomain
 import com.example.es.data.model.cloudModel.DataCloud
@@ -134,7 +135,11 @@ class MainFragment : Fragment() {
             ContextCompat.startActivity(view.context, intent, null)
         }
 
-        binding.btnPanic.setOnClickListener {
+//        binding.btnPanic.setOnClickListener {
+//            postAlarmUpdates()
+//        }
+
+        binding.ltAnimation.setOnClickListener {
             postAlarmUpdates()
         }
 
@@ -146,10 +151,21 @@ class MainFragment : Fragment() {
                     val dataUi = mapDomainToUi.mapDomainToUi(dataDomain)
                     statusAnimation = dataUi.alarm
 
+//                    lifecycleScope.launch(exceptionHandler) {
+//                        while (statusAnimation) {
+//                            delay(300)
+//                                animation.animate(binding.imgAnimation1, binding.imgAnimation2)
+//                        }
+//                    }
+/**
+Using lottie instead of ViewPropertyAnimator
+ */
                     lifecycleScope.launch(exceptionHandler) {
-                        while (statusAnimation) {
-                            delay(300)
-                                animation.animate(binding.imgAnimation1, binding.imgAnimation2)
+                        if (statusAnimation) {
+                            binding.ltAnimation.playAnimation()
+                            binding.ltAnimation.repeatCount = LottieDrawable.INFINITE
+                        } else{
+                            binding.ltAnimation.repeatCount = 0
                         }
                     }
                 })
@@ -192,13 +208,15 @@ class MainFragment : Fragment() {
             when (isNetWorkAvailable) {
                 false -> {
                     binding.btnLocation.isEnabled = false
-                    binding.btnPanic.isEnabled = false
+//                    binding.btnPanic.isEnabled = false
+                    binding.ltAnimation.visible(false)
                     snack.show()
                 }
                 true -> {
                     snack.dismiss()
                     binding.btnLocation.isEnabled = true
-                    binding.btnPanic.isEnabled = true
+//                    binding.btnPanic.isEnabled = true
+                    binding.ltAnimation.visible(true)
                 }
             }
         }
