@@ -103,6 +103,8 @@ dependencies {
     //GoogleMaps
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation "com.google.android.gms:play-services-location:18.0.0"
+    //HuaweiLocation
+    implementation 'com.huawei.hms:location:5.0.5.300'
     //Lottie
     implementation "com.airbnb.android:lottie:3.4.0"
 }

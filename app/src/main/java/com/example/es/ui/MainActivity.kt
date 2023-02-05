@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         } else {
             // example of handling 'Deny & don't ask again' user choice
             if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                askUserForOpeningAppSettings()
+                 askUserForOpeningAppSettings()
             } else {
                 Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show()
             }
@@ -187,10 +187,18 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
     @RequiresApi(Build.VERSION_CODES.M)
     override fun check() {
         requestLocationPermissionsLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+//            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+//            } else {
+//                arrayOf(
+//                    Manifest.permission.ACCESS_FINE_LOCATION,
+//                    Manifest.permission.ACCESS_COARSE_LOCATION,
+//                    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+//                )
+//            }
         )
     }
 }

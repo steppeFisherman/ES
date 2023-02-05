@@ -21,7 +21,7 @@ object DoesNetworkHaveInternet {
             Log.d("AAAA", "PING success.")
             true
         } catch (e: IOException) {
-            Log.e("AAAA", "No internet connection. $e")
+            Log.e("CCC", "No internet connection. $e")
             false
         }
     }

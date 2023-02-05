@@ -9,6 +9,7 @@ import com.example.es.data.repository.*
 import com.example.es.data.room.AppRoomDao
 import com.example.es.data.room.AppRoomDatabase
 import com.example.es.domain.Repository
+import com.example.es.utils.DateTimeFormat
 import com.example.es.utils.connectivity.ConnectionLiveData
 import com.example.es.utils.SnackBuilder
 import dagger.Module
@@ -21,6 +22,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
+
+    @Provides
+    @Singleton
+    fun provideDateTimeFormat(): DateTimeFormat = DateTimeFormat.Base()
 
     @Provides
     @Singleton

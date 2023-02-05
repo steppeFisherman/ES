@@ -21,6 +21,7 @@ class HistoryFragmentAdapter(private val listener: Listener) :
         val user = v.tag as DataUi
         when (v.id) {
             R.id.btn_location_history -> listener.toLocation(user)
+            R.id.btn_location_comment -> listener.toLocation(user)
         }
     }
 

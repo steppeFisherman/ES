@@ -9,6 +9,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,12 +28,13 @@ import com.example.es.databinding.FragmentMainBinding
 import com.example.es.ui.model.MapDomainToUi
 import com.example.es.utils.*
 import com.example.es.utils.connectivity.ConnectivityManager
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.huawei.hms.api.HuaweiApiAvailability
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -46,33 +48,53 @@ class MainFragment : Fragment() {
     @Inject
     lateinit var snackTopBuilder: SnackBuilder
 
+    @Inject
+    lateinit var format: DateTimeFormat
+
     private var _binding: FragmentMainBinding? = null
     private val binding get() = checkNotNull(_binding)
     private val vm by activityViewModels<MainFragmentViewModel>()
     private var phoneOperator = ""
     private var statusAnimation = false
-    private var gpsStatus = false
+    private var gpsEnabled = false
     private var userId = ""
     private val formatUiPhoneNumber = FormatUiPhoneNumber.Base()
     private val requestLocationUpdate = RequestLocationUpdate.Base()
-    private val fusedLocationResult = FusedLocationResult.Base(DateTimeFormat.Base())
+
+    //    private val fusedLocationResult = FusedLocationResult.Base(DateTimeFormat.Base())
     private val animation = Animation.Base()
     private val mapCloudToDomain = MapCloudToDomain.Base()
     private val mapDomainToUi = MapDomainToUi.Base()
-    private lateinit var preferences: SharedPreferences
+    private var googleApi = false
+    private var huaweiApi = false
 
     private lateinit var snack: Snackbar
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var preferences: SharedPreferences
+    private lateinit var googleFusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var locationHandle: LocationHandle
     private lateinit var locationManager: LocationManager
     private lateinit var geoCoder: Geocoder
+
+    private lateinit var huaweiFusedLocationProviderClient: com.huawei.hms.location.FusedLocationProviderClient
+    private lateinit var huaweiSettingsClient: com.huawei.hms.location.SettingsClient
+    private var huaweiLocationCallback: com.huawei.hms.location.LocationCallback? = null
+
+    //    private var huaweiLocationRequest: com.huawei.hms.location.LocationRequest? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+        if (checkGMS()) googleApi = true else if (checkHMS()) huaweiApi = true
+
+        googleFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
         locationManager =
             context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         geoCoder = Geocoder(context, Locale.getDefault())
+//        locationResult = LocationResult.Base(format)
+        huaweiFusedLocationProviderClient =
+            com.huawei.hms.location.LocationServices.getFusedLocationProviderClient(context)
+        huaweiSettingsClient = com.huawei.hms.location.LocationServices.getSettingsClient(context)
     }
 
     override fun onCreateView(
@@ -135,21 +157,18 @@ class MainFragment : Fragment() {
             ContextCompat.startActivity(view.context, intent, null)
         }
 
-//        binding.btnPanic.setOnClickListener {
-//            postAlarmUpdates()
-//        }
-
         binding.ltAnimation.setOnClickListener {
             postAlarmUpdates()
         }
 
         if (userId.isNotBlank()) {
-            REF_DATABASE_ROOT.child(NODE_USERS).child(userId)
-                .addValueEventListener(SnapShotListener {
-                    val dataCloud = it.getValue(DataCloud::class.java) ?: DataCloud()
-                    val dataDomain = mapCloudToDomain.mapCloudToDomain(dataCloud)
-                    val dataUi = mapDomainToUi.mapDomainToUi(dataDomain)
-                    statusAnimation = dataUi.alarm
+            try {
+                REF_DATABASE_ROOT.child(NODE_USERS).child(userId)
+                    .addValueEventListener(SnapShotListener {
+                        val dataCloud = it.getValue(DataCloud::class.java) ?: DataCloud()
+                        val dataDomain = mapCloudToDomain.mapCloudToDomain(dataCloud)
+                        val dataUi = mapDomainToUi.mapDomainToUi(dataDomain)
+                        statusAnimation = dataUi.alarm
 
 //                    lifecycleScope.launch(exceptionHandler) {
 //                        while (statusAnimation) {
@@ -157,65 +176,80 @@ class MainFragment : Fragment() {
 //                                animation.animate(binding.imgAnimation1, binding.imgAnimation2)
 //                        }
 //                    }
-/**
-Using lottie instead of ViewPropertyAnimator
- */
-                    lifecycleScope.launch(exceptionHandler) {
-                        if (statusAnimation) {
-                            binding.ltAnimation.playAnimation()
-                            binding.ltAnimation.repeatCount = LottieDrawable.INFINITE
-                        } else{
-                            binding.ltAnimation.repeatCount = 0
+                        /**
+                        Using lottie instead of ViewPropertyAnimator
+                         */
+                        lifecycleScope.launch(exceptionHandler) {
+                            if (statusAnimation) {
+                                binding.ltAnimation.playAnimation()
+                                binding.ltAnimation.repeatCount = LottieDrawable.INFINITE
+                            } else {
+                                binding.ltAnimation.repeatCount = 0
+                            }
                         }
-                    }
-                })
+                    })
+            } catch (e: Exception) {
+                showToast(requireActivity(), e.message.toString())
+            }
         }
     }
 
-    private fun postLocationUpdates(alarm: Boolean = false, locationFlagOnly: Boolean = true) {
+    private fun postLocationUpdates() {
         (requireActivity() as PermissionHandle).check()
-        gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
-        if (!gpsStatus) dialogShow() else
-            fusedLocationResult.result(fusedLocationClient, geoCoder) {
-                it[CHILD_ALARM] = alarm
-                it[CHILD_LOCATION_FLAG_ONLY] = locationFlagOnly
-                vm.postLocationUpdates(id = userId, it)
+        if (!gpsEnabled) dialogShow() else {
+
+            if (googleApi) {
+                locationHandle = LocationHandle.Google(googleFusedLocationProviderClient)
+                (locationHandle as LocationHandle.Google).handle(format, geoCoder) { map ->
+                    map[CHILD_ALARM] = false
+                    map[CHILD_LOCATION_FLAG_ONLY] = true
+                    vm.postLocationUpdates(id = userId, map)
+                }
+            } else if (huaweiApi) {
+                locationHandle = LocationHandle.Huawei(
+                    huaweiFusedLocationProviderClient,
+                    huaweiSettingsClient,
+                    huaweiLocationCallback
+                )
+
+                (locationHandle as LocationHandle.Huawei).handle(format, geoCoder) { map ->
+                    map[CHILD_ALARM] = false
+                    map[CHILD_LOCATION_FLAG_ONLY] = true
+                    vm.postLocationUpdates(id = userId, map)
+                }
             }
+        }
     }
 
-    private fun postAlarmUpdates(
-        alarm: Boolean = true,
-        locationFlagOnly: Boolean = false,
-    ) {
+    private fun postAlarmUpdates() {
         (requireActivity() as PermissionHandle).check()
-        gpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
-        if (!gpsStatus) dialogShow() else
-            fusedLocationResult.result(fusedLocationClient, geoCoder) {
-                it[CHILD_ALARM] = alarm
-                it[CHILD_LOCATION_FLAG_ONLY] = locationFlagOnly
-                it[CHILD_COMMENT] = ""
-                vm.postAlarmUpdates(id = userId, it)
-            }
+        if (!gpsEnabled) dialogShow() else
+            locationHandle = LocationHandle.Google(googleFusedLocationProviderClient)
+        (locationHandle as LocationHandle.Google).handle(format, geoCoder) { map ->
+            map[CHILD_ALARM] = true
+            map[CHILD_LOCATION_FLAG_ONLY] = false
+            map[CHILD_COMMENT] = ""
+            vm.postAlarmUpdates(id = userId, map)
+        }
     }
 
-    @SuppressLint("MissingPermission")
     override fun onStart() {
         super.onStart()
-        requestLocationUpdate.update(fusedLocationClient)
+        requestLocationUpdate.update(googleFusedLocationProviderClient)
         checkNetworks(connectivityManager) { isNetWorkAvailable ->
             when (isNetWorkAvailable) {
                 false -> {
                     binding.btnLocation.isEnabled = false
-//                    binding.btnPanic.isEnabled = false
                     binding.ltAnimation.visible(false)
                     snack.show()
                 }
                 true -> {
                     snack.dismiss()
                     binding.btnLocation.isEnabled = true
-//                    binding.btnPanic.isEnabled = true
                     binding.ltAnimation.visible(true)
                 }
             }
@@ -233,6 +267,27 @@ Using lottie instead of ViewPropertyAnimator
     override fun onPause() {
         super.onPause()
         snack.dismiss()
+
+        try {
+            huaweiFusedLocationProviderClient.removeLocationUpdates(huaweiLocationCallback)
+                .addOnSuccessListener {
+                    Log.i(
+                        "HHH",
+                        "removeLocationUpdatesWithCallback onSuccess"
+                    )
+                }
+                .addOnFailureListener { e ->
+                    Log.e(
+                        "HHH",
+                        "removeLocationUpdatesWithCallback onFailure:${e.message}"
+                    )
+                }
+        } catch (e: Exception) {
+            Log.e(
+                "HHH",
+                "removeLocationUpdatesWithCallback exception:${e.message}"
+            )
+        }
     }
 
     private fun initialise(view: View) {
@@ -263,6 +318,19 @@ Using lottie instead of ViewPropertyAnimator
             }
             .create()
             .show()
+    }
+
+    private fun checkGMS(): Boolean {
+        val gApi = GoogleApiAvailability.getInstance()
+        val resultCode = gApi.isGooglePlayServicesAvailable(requireContext())
+        return resultCode ==
+                com.google.android.gms.common.ConnectionResult.SUCCESS
+    }
+
+    private fun checkHMS(): Boolean {
+        val hApi = HuaweiApiAvailability.getInstance()
+        val resultCode = hApi.isHuaweiMobileServicesAvailable(requireContext())
+        return resultCode == com.huawei.hms.api.ConnectionResult.SUCCESS
     }
 
     companion object {

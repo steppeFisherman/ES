@@ -12,7 +12,5 @@ class SnapShotListener(private val listener: Listener) : ValueEventListener {
         listener(snapshot)
     }
 
-    override fun onCancelled(error: DatabaseError) {
-        TODO("Not yet implemented")
-    }
+    override fun onCancelled(error: DatabaseError) {}
 }
