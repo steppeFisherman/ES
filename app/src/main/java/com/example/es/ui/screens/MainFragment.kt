@@ -82,7 +82,7 @@ class MainFragment : Fragment() {
 
     private lateinit var huaweiFusedLocationProviderClient: com.huawei.hms.location.FusedLocationProviderClient
     private lateinit var huaweiSettingsClient: com.huawei.hms.location.SettingsClient
-    private var huaweiLocationCallback: com.huawei.hms.location.LocationCallback? = null
+//    private  var huaweiLocationCallback: com.huawei.hms.location.LocationCallback? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
 
     override fun onAttach(context: Context) {
@@ -150,6 +150,7 @@ class MainFragment : Fragment() {
         }
 
         binding.btnLocation.setOnClickListener {
+//            binding.progressBar.visible(true)
             postLocationUpdates()
         }
 
@@ -203,19 +204,17 @@ class MainFragment : Fragment() {
         if (!gpsEnabled) dialogShow() else {
 
             if (googleApi) {
-                val result = mutableMapOf<String, Any>()
                 location = LocationHandle.Google(googleFusedLocationProviderClient)
-                location.handle(format, geoCoder) { map ->
+                location.handle(format, geoCoder) { map->
                     map[CHILD_ALARM] = false
                     map[CHILD_LOCATION_FLAG_ONLY] = true
-                    vm.postLocationUpdates(id = userId, result)
+                    vm.postLocationUpdates(id = userId, map)
                 }
 
             } else if (huaweiApi) {
                 location = LocationHandle.Huawei(
                     huaweiFusedLocationProviderClient,
-                    huaweiSettingsClient,
-                    huaweiLocationCallback
+                    huaweiSettingsClient
                 )
                 location.handle(format, geoCoder) { map ->
                     map[CHILD_ALARM] = false
@@ -244,7 +243,6 @@ class MainFragment : Fragment() {
                 location = LocationHandle.Huawei(
                     huaweiFusedLocationProviderClient,
                     huaweiSettingsClient,
-                    huaweiLocationCallback
                 )
 
                 location.handle(format, geoCoder) { map ->

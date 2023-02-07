@@ -12,8 +12,6 @@ import com.huawei.hms.location.LocationSettingsRequest
 import com.huawei.hms.location.LocationSettingsResponse
 import java.util.*
 
-typealias ListenerApi = (MutableMap<String, Any>) -> Unit
-
 interface LocationHandle {
 
     fun handle(
@@ -59,9 +57,9 @@ interface LocationHandle {
     class Huawei(
         private val client: com.huawei.hms.location.FusedLocationProviderClient,
         private val huaweiSettingsClient: com.huawei.hms.location.SettingsClient,
-        private var huaweiLocationCallback: com.huawei.hms.location.LocationCallback?
     ) : LocationHandle {
 
+        private var huaweiLocationCallback: com.huawei.hms.location.LocationCallback? = null
         private var huaweiLocationRequest: com.huawei.hms.location.LocationRequest? = null
 
         override fun handle(
