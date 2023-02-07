@@ -2,9 +2,13 @@
     <string name="app_name">ES</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="profile">Профиль</string>
+    <string name="profile_title">профиль</string>
     <string name="history">История</string>
+    <string name="history_title">история</string>
     <string name="main">Главный экран</string>
+    <string name="main_title">главный</string>
     <string name="location">локация</string>
+    <string name="search_title">поиск</string>
     <string name="success_update">Данные успешно обновлены</string>
     <string name="no_data_for_selected_period">Данных за данный период нет</string>
     <string name="failure_update">Не удалось обновить данные</string>

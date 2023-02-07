@@ -65,7 +65,7 @@ interface CloudSource {
             id: String,
             map: MutableMap<String, Any>
         ): ResultUser {
-            REF_DATABASE_ROOT.child(NODE_USERS).child(id).updateChildren(map).await()
+             REF_DATABASE_ROOT.child(NODE_USERS).child(id).updateChildren(map).await()
             REF_DATABASE_ROOT.child(NODE_USERS).child(id).get()
                 .addOnCompleteListener { task ->
                     result = if (task.isSuccessful) {

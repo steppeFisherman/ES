@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Geocoder
+import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,6 +35,10 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.huawei.hms.api.HuaweiApiAvailability
+import com.huawei.hms.location.LocationAvailability
+import com.huawei.hms.location.LocationRequest
+import com.huawei.hms.location.LocationSettingsRequest
+import com.huawei.hms.location.LocationSettingsResponse
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -61,7 +67,6 @@ class MainFragment : Fragment() {
     private val formatUiPhoneNumber = FormatUiPhoneNumber.Base()
     private val requestLocationUpdate = RequestLocationUpdate.Base()
 
-    //    private val fusedLocationResult = FusedLocationResult.Base(DateTimeFormat.Base())
     private val animation = Animation.Base()
     private val mapCloudToDomain = MapCloudToDomain.Base()
     private val mapDomainToUi = MapDomainToUi.Base()
@@ -71,15 +76,13 @@ class MainFragment : Fragment() {
     private lateinit var snack: Snackbar
     private lateinit var preferences: SharedPreferences
     private lateinit var googleFusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var locationHandle: LocationHandle
+    private lateinit var location: LocationHandle
     private lateinit var locationManager: LocationManager
     private lateinit var geoCoder: Geocoder
 
     private lateinit var huaweiFusedLocationProviderClient: com.huawei.hms.location.FusedLocationProviderClient
     private lateinit var huaweiSettingsClient: com.huawei.hms.location.SettingsClient
     private var huaweiLocationCallback: com.huawei.hms.location.LocationCallback? = null
-
-    //    private var huaweiLocationRequest: com.huawei.hms.location.LocationRequest? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
 
     override fun onAttach(context: Context) {
@@ -91,7 +94,6 @@ class MainFragment : Fragment() {
         locationManager =
             context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         geoCoder = Geocoder(context, Locale.getDefault())
-//        locationResult = LocationResult.Base(format)
         huaweiFusedLocationProviderClient =
             com.huawei.hms.location.LocationServices.getFusedLocationProviderClient(context)
         huaweiSettingsClient = com.huawei.hms.location.LocationServices.getSettingsClient(context)
@@ -201,20 +203,21 @@ class MainFragment : Fragment() {
         if (!gpsEnabled) dialogShow() else {
 
             if (googleApi) {
-                locationHandle = LocationHandle.Google(googleFusedLocationProviderClient)
-                (locationHandle as LocationHandle.Google).handle(format, geoCoder) { map ->
+                val result = mutableMapOf<String, Any>()
+                location = LocationHandle.Google(googleFusedLocationProviderClient)
+                location.handle(format, geoCoder) { map ->
                     map[CHILD_ALARM] = false
                     map[CHILD_LOCATION_FLAG_ONLY] = true
-                    vm.postLocationUpdates(id = userId, map)
+                    vm.postLocationUpdates(id = userId, result)
                 }
+
             } else if (huaweiApi) {
-                locationHandle = LocationHandle.Huawei(
+                location = LocationHandle.Huawei(
                     huaweiFusedLocationProviderClient,
                     huaweiSettingsClient,
                     huaweiLocationCallback
                 )
-
-                (locationHandle as LocationHandle.Huawei).handle(format, geoCoder) { map ->
+                location.handle(format, geoCoder) { map ->
                     map[CHILD_ALARM] = false
                     map[CHILD_LOCATION_FLAG_ONLY] = true
                     vm.postLocationUpdates(id = userId, map)
@@ -227,13 +230,30 @@ class MainFragment : Fragment() {
         (requireActivity() as PermissionHandle).check()
         gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
-        if (!gpsEnabled) dialogShow() else
-            locationHandle = LocationHandle.Google(googleFusedLocationProviderClient)
-        (locationHandle as LocationHandle.Google).handle(format, geoCoder) { map ->
-            map[CHILD_ALARM] = true
-            map[CHILD_LOCATION_FLAG_ONLY] = false
-            map[CHILD_COMMENT] = ""
-            vm.postAlarmUpdates(id = userId, map)
+        if (!gpsEnabled) dialogShow() else {
+            if (googleApi) {
+                location = LocationHandle.Google(googleFusedLocationProviderClient)
+                location.handle(format, geoCoder) { map ->
+                    map[CHILD_ALARM] = true
+                    map[CHILD_LOCATION_FLAG_ONLY] = false
+                    map[CHILD_COMMENT] = ""
+                    vm.postAlarmUpdates(id = userId, map)
+                }
+
+            } else if (huaweiApi) {
+                location = LocationHandle.Huawei(
+                    huaweiFusedLocationProviderClient,
+                    huaweiSettingsClient,
+                    huaweiLocationCallback
+                )
+
+                location.handle(format, geoCoder) { map ->
+                    map[CHILD_ALARM] = true
+                    map[CHILD_LOCATION_FLAG_ONLY] = false
+                    map[CHILD_COMMENT] = ""
+                    vm.postAlarmUpdates(id = userId, map)
+                }
+            }
         }
     }
 
@@ -268,26 +288,26 @@ class MainFragment : Fragment() {
         super.onPause()
         snack.dismiss()
 
-        try {
-            huaweiFusedLocationProviderClient.removeLocationUpdates(huaweiLocationCallback)
-                .addOnSuccessListener {
-                    Log.i(
-                        "HHH",
-                        "removeLocationUpdatesWithCallback onSuccess"
-                    )
-                }
-                .addOnFailureListener { e ->
-                    Log.e(
-                        "HHH",
-                        "removeLocationUpdatesWithCallback onFailure:${e.message}"
-                    )
-                }
-        } catch (e: Exception) {
-            Log.e(
-                "HHH",
-                "removeLocationUpdatesWithCallback exception:${e.message}"
-            )
-        }
+//        try {
+//            huaweiFusedLocationProviderClient.removeLocationUpdates(huaweiLocationCallback)
+//                .addOnSuccessListener {
+//                    Log.i(
+//                        "HHH",
+//                        "removeLocationUpdatesWithCallback onSuccess"
+//                    )
+//                }
+//                .addOnFailureListener { e ->
+//                    Log.e(
+//                        "HHH",
+//                        "removeLocationUpdatesWithCallback onFailure:${e.message}"
+//                    )
+//                }
+//        } catch (e: Exception) {
+//            Log.e(
+//                "HHH",
+//                "removeLocationUpdatesWithCallback exception:${e.message}"
+//            )
+//        }
     }
 
     private fun initialise(view: View) {

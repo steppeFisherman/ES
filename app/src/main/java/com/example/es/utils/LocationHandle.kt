@@ -12,6 +12,8 @@ import com.huawei.hms.location.LocationSettingsRequest
 import com.huawei.hms.location.LocationSettingsResponse
 import java.util.*
 
+typealias ListenerApi = (MutableMap<String, Any>) -> Unit
+
 interface LocationHandle {
 
     fun handle(
@@ -60,9 +62,7 @@ interface LocationHandle {
         private var huaweiLocationCallback: com.huawei.hms.location.LocationCallback?
     ) : LocationHandle {
 
-        //        private var huaweiLocationCallback: com.huawei.hms.location.LocationCallback? = null
         private var huaweiLocationRequest: com.huawei.hms.location.LocationRequest? = null
-
 
         override fun handle(
             format: DateTimeFormat,
@@ -73,6 +73,7 @@ interface LocationHandle {
             huaweiLocationRequest = com.huawei.hms.location.LocationRequest().apply {
 //                    interval = 10000
                 needAddress = true
+                numUpdates = 1
                 priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                 Log.d("HHH", "  huaweiApi:")
             }
@@ -100,8 +101,8 @@ interface LocationHandle {
                                         map[CHILD_TIME] =
                                             format.longToStringDateFormat(dateDate)
                                         map[CHILD_TIME_LONG] = dateDate
-                                        map[CHILD_LATITUDE] = location.latitude
-                                        map[CHILD_LONGITUDE] = location.longitude
+                                        map[CHILD_LATITUDE] = location.latitude.toString()
+                                        map[CHILD_LONGITUDE] = location.longitude.toString()
                                         map[CHILD_LOCATION_ADDRESS] = address
                                         Log.i("HHH", "address:$address")
                                         result(map)
