@@ -48,8 +48,8 @@ class MainFragmentViewModel @Inject constructor(
     }
 
     fun postLocationUpdates(id: String, map: MutableMap<String, Any>) {
+        mLoading.value = true
         viewModelScope.launch(exceptionHandler) {
-            mLoading.value = true
             when (val result = postUseCase.postLocationUpdates(id, map)) {
                 is ResultUser.Success -> {
                     mUser.value = mapperToUi.mapDomainToUi(result.user)
@@ -65,8 +65,8 @@ class MainFragmentViewModel @Inject constructor(
     }
 
     fun postAlarmUpdates(id: String, map: MutableMap<String, Any>) {
+        mLoading.value = true
         viewModelScope.launch(exceptionHandler) {
-            mLoading.value = true
             when (val result = postUseCase.postAlarmUpdates(id, map)) {
                 is ResultUser.Success -> {
                     mUser.value = mapperToUi.mapDomainToUi(result.user)

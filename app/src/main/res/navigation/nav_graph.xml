@@ -18,6 +18,11 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <argument android:name="mainFragmentArgs" />
+        <action
+            android:id="@+id/action_mainFragment_to_userPhotoFragment"
+            app:destination="@id/userPhotoFragment"
+            app:popUpTo="@id/userPhotoFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <dialog
         android:id="@+id/profileFragment"
@@ -56,4 +61,9 @@
         android:name="com.example.es.ui.screens.SearchFragment"
         android:label="SearchFragment"
         tools:layout="@layout/fragment_search"/>
+    <dialog
+        android:id="@+id/userPhotoFragment"
+        android:name="com.example.es.ui.screens.UserPhotoFragment"
+        android:label="UserPhotoFragment"
+        tools:layout="@layout/fragment_user_photo"/>
 </navigation>

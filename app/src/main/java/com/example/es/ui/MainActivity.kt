@@ -24,16 +24,17 @@ import com.example.es.R
 import com.example.es.databinding.ActivityMainBinding
 import com.example.es.ui.screens.MainFragment
 import com.example.es.ui.screens.ProfileFragment
-import com.example.es.utils.APP_PREFERENCES
+import com.example.es.utils.*
 import com.example.es.utils.connectivity.ConnectivityManager
-import com.example.es.utils.PREF_BOOLEAN_VALUE
-import com.example.es.utils.REF_DATABASE_ROOT
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
             NavController.OnDestinationChangedListener
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var preferences: SharedPreferences
+    private lateinit var photoStorage: SavePhotoStorage
 
     @RequiresApi(Build.VERSION_CODES.M)
     private val requestLocationPermissionsLauncher = registerForActivityResult(
@@ -82,12 +84,14 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
 
     private fun initialise() {
         REF_DATABASE_ROOT = FirebaseDatabase.getInstance().reference
+        REF_STORAGE = FirebaseStorage.getInstance().reference
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navControllerMain = navHostFragment.navController
         bottomNavigationView = binding.bottomNavigation
         bottomNavigationView.setupWithNavController(navControllerMain)
         preferences = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+        photoStorage = SavePhotoStorage.Base(this)
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
@@ -136,8 +140,11 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         connectivityManager.unregisterConnectionObserver(this)
     }
 
-    override fun photoListener(photo: String) {
-        MainFragment.newInstance(photo)
+    override fun photoListener(uri: Uri?, id: String) {
+        if (uri != null) {
+            photoStorage.save(uri = uri, id = id)
+            MainFragment.newInstance(uri.path!!)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -148,7 +155,7 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         } else {
             // example of handling 'Deny & don't ask again' user choice
             if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                 askUserForOpeningAppSettings()
+                askUserForOpeningAppSettings()
             } else {
                 Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show()
             }
@@ -188,10 +195,10 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
     override fun check() {
         requestLocationPermissionsLauncher.launch(
 //            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            )
 //            } else {
 //                arrayOf(
 //                    Manifest.permission.ACCESS_FINE_LOCATION,

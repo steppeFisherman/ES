@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,12 +16,15 @@ import com.example.es.databinding.FragmentProfileBinding
 import com.example.es.utils.*
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.io.File
+
 
 class ProfileFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = checkNotNull(_binding)
     private lateinit var preferences: SharedPreferences
+    private var id: String = ""
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -44,6 +48,8 @@ class ProfileFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val uri = preferences.getString(PREF_URI_VALUE, "")
+        id = preferences.getString(PREF_ID_VALUE, "").toString()
+
         if (uri?.isBlank() == true) binding.profileImage
             .setImageResource(R.drawable.inset_holder_camera)
         else binding.profileImage.setImageURI(uri?.toUri())
@@ -57,7 +63,7 @@ class ProfileFragment : BottomSheetDialogFragment() {
 
         binding.profileImage.setOnClickListener {
             ImagePicker.with(this)
-                .crop()
+                .cropSquare()
                 .compress(1024)
                 .maxResultSize(1080, 1080)
                 .start()
@@ -69,9 +75,7 @@ class ProfileFragment : BottomSheetDialogFragment() {
         val homeAddress = getString(
             R.string.home_address, preferences.getString(PREF_HOME_ADDRESS_VALUE, "")
         )
-        val id = getString(
-            R.string.your_id, preferences.getString(PREF_ID_VALUE, "")
-        )
+        val id = getString(R.string.your_id, id)
 
         binding.txtCompanyName.text = company
         binding.txtHomeAddress.text = homeAddress
@@ -84,19 +88,17 @@ class ProfileFragment : BottomSheetDialogFragment() {
 
         when (resultCode) {
             Activity.RESULT_OK -> {
-                val uri = data?.data?.path
-                binding.profileImage.setImageURI(uri?.toUri())
-                preferences.edit().putString(PREF_URI_VALUE, uri).apply()
-                (requireActivity() as PhotoListener).photoListener(uri.toString())
+                val uri = data?.data
+                binding.profileImage.setImageURI(uri)
+                preferences.edit().putString(PREF_URI_VALUE, uri?.path).apply()
+                (requireActivity() as PhotoListener).photoListener(uri, id)
             }
             ImagePicker.RESULT_ERROR -> binding.root.snackLongTop(ImagePicker.getError(data))
             else -> binding.root.snackLongTop(R.string.cancel)
         }
     }
 
-    interface PhotoListener {
-        fun photoListener(photo: String)
-    }
+    interface PhotoListener { fun photoListener(uri: Uri?, id: String) }
 
     override fun onDestroyView() {
         super.onDestroyView()

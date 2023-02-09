@@ -5,19 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Geocoder
-import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -35,10 +33,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.huawei.hms.api.HuaweiApiAvailability
-import com.huawei.hms.location.LocationAvailability
-import com.huawei.hms.location.LocationRequest
-import com.huawei.hms.location.LocationSettingsRequest
-import com.huawei.hms.location.LocationSettingsResponse
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -64,6 +58,7 @@ class MainFragment : Fragment() {
     private var statusAnimation = false
     private var gpsEnabled = false
     private var userId = ""
+    private var userPhoto = ""
     private val formatUiPhoneNumber = FormatUiPhoneNumber.Base()
     private val requestLocationUpdate = RequestLocationUpdate.Base()
 
@@ -82,7 +77,8 @@ class MainFragment : Fragment() {
 
     private lateinit var huaweiFusedLocationProviderClient: com.huawei.hms.location.FusedLocationProviderClient
     private lateinit var huaweiSettingsClient: com.huawei.hms.location.SettingsClient
-//    private  var huaweiLocationCallback: com.huawei.hms.location.LocationCallback? = null
+
+    //    private  var huaweiLocationCallback: com.huawei.hms.location.LocationCallback? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
 
     override fun onAttach(context: Context) {
@@ -123,13 +119,11 @@ class MainFragment : Fragment() {
             binding.txtName.text = dataUi.fullName
             binding.txtLocationAddress.text = dataUi.locationAddress
             binding.txtTime.text = dataUi.time
-            binding.txtPhone.text = formatUiPhoneNumber
-                .modify(dataUi.phoneUser)
+            binding.txtPhone.text = formatUiPhoneNumber.modify(dataUi.phoneUser)
 
             if (userPhone != dataUi.phoneUser) {
                 preferences.edit().clear().apply()
-                findNavController()
-                    .navigate(R.id.action_mainFragment_to_splashFragment)
+                findNavController().navigate(R.id.action_mainFragment_to_splashFragment)
             }
         }
 
@@ -150,7 +144,7 @@ class MainFragment : Fragment() {
         }
 
         binding.btnLocation.setOnClickListener {
-//            binding.progressBar.visible(true)
+            binding.progressBar.visible(true)
             postLocationUpdates()
         }
 
@@ -161,6 +155,7 @@ class MainFragment : Fragment() {
         }
 
         binding.ltAnimation.setOnClickListener {
+            binding.progressBar.visible(true)
             postAlarmUpdates()
         }
 
@@ -205,7 +200,7 @@ class MainFragment : Fragment() {
 
             if (googleApi) {
                 location = LocationHandle.Google(googleFusedLocationProviderClient)
-                location.handle(format, geoCoder) { map->
+                location.handle(format, geoCoder) { map ->
                     map[CHILD_ALARM] = false
                     map[CHILD_LOCATION_FLAG_ONLY] = true
                     vm.postLocationUpdates(id = userId, map)
@@ -279,33 +274,19 @@ class MainFragment : Fragment() {
         val uri = preferences.getString(PREF_URI_VALUE, "")
         if (uri?.isBlank() == true) binding.imgPhoto
             .setImageResource(R.drawable.inset_holder_camera)
-        else binding.imgPhoto.setImageURI(uri?.toUri())
+        else {
+            binding.imgPhoto.setImageURI(uri?.toUri())
+            binding.imgPhoto.setOnClickListener{
+                val bundle = bundleOf(USER_PHOTO to uri)
+                findNavController().navigate(R.id.action_mainFragment_to_userPhotoFragment, bundle)
+            }
+        }
     }
 
     override fun onPause() {
         super.onPause()
         snack.dismiss()
-
-//        try {
-//            huaweiFusedLocationProviderClient.removeLocationUpdates(huaweiLocationCallback)
-//                .addOnSuccessListener {
-//                    Log.i(
-//                        "HHH",
-//                        "removeLocationUpdatesWithCallback onSuccess"
-//                    )
-//                }
-//                .addOnFailureListener { e ->
-//                    Log.e(
-//                        "HHH",
-//                        "removeLocationUpdatesWithCallback onFailure:${e.message}"
-//                    )
-//                }
-//        } catch (e: Exception) {
-//            Log.e(
-//                "HHH",
-//                "removeLocationUpdatesWithCallback exception:${e.message}"
-//            )
-//        }
+        binding.imgPhoto.setOnClickListener(null)
     }
 
     private fun initialise(view: View) {
@@ -341,23 +322,13 @@ class MainFragment : Fragment() {
     private fun checkGMS(): Boolean {
         val gApi = GoogleApiAvailability.getInstance()
         val resultCode = gApi.isGooglePlayServicesAvailable(requireContext())
-        return resultCode ==
-                com.google.android.gms.common.ConnectionResult.SUCCESS
+        return resultCode == com.google.android.gms.common.ConnectionResult.SUCCESS
     }
 
     private fun checkHMS(): Boolean {
         val hApi = HuaweiApiAvailability.getInstance()
         val resultCode = hApi.isHuaweiMobileServicesAvailable(requireContext())
         return resultCode == com.huawei.hms.api.ConnectionResult.SUCCESS
-    }
-
-    companion object {
-        const val ARGS = "MAIN_FRAGMENT_ARGS"
-        fun newInstance(message: String): MainFragment {
-            val fragment = MainFragment()
-            fragment.arguments?.putString(ARGS, message)
-            return fragment
-        }
     }
 
     interface PermissionHandle {
@@ -367,6 +338,16 @@ class MainFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    companion object {
+        const val USER_PHOTO = "userPhoto"
+        const val ARGS = "MAIN_FRAGMENT_ARGS"
+        fun newInstance(message: String): MainFragment {
+            val fragment = MainFragment()
+            fragment.arguments?.putString(ARGS, message)
+            return fragment
+        }
     }
 }
 

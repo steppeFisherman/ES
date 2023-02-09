@@ -27,6 +27,7 @@
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_history.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_history_outlined.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_holder_camera.xml" value="0.135" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_holder_camera_black.xml" value="0.1945" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_holder_camera_grey.xml" value="0.1775" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/ic_location.xml" value="0.1" />
@@ -45,6 +46,7 @@
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/inset_holder.xml" value="0.141" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/inset_holder_camer.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/inset_holder_camera.xml" value="0.141" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/inset_holder_camera_black.xml" value="0.1945" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/inset_holder_camera_grey.xml" value="0.1775" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/profile_bottom_sheet_shape.xml" value="0.1" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/drawable/rectangle_8.xml" value="0.28" />
@@ -61,6 +63,7 @@
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_profile.xml" value="0.22" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_search.xml" value="0.2073170731707317" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_splash.xml" value="0.1" />
+        <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/fragment_user_photo.xml" value="0.370018115942029" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/history_comment_item_raw.xml" value="0.33" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/history_item_raw.xml" value="0.22" />
         <entry key="..\:/Users/redfo/AndroidStudioProjects/ES/app/src/main/res/layout/notification.xml" value="0.5" />

@@ -45,6 +45,8 @@
     <string name="home_address">Домашний адрес: %s</string>
     <string name="your_id">Ваш ID: %s</string>
     <string name="comments_template">Комментарий: %s</string>
+    <string name="couldnt_save_photo">Не удалось сохранить фото</string>
+    <string name="photo_saved">Фото сохранено</string>
 
     <string-array name="list_affine_formats">
         <item>+1 ([000]) [000]-[00]-[00]</item>

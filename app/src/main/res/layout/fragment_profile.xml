@@ -59,4 +59,11 @@
         style="@style/profileImageShape"
         app:shapeAppearance="@style/ShapeAppearanceOverlay.CircularBorder"
         app:srcCompat="@drawable/inset_holder_camera" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/camera_icon"
+        style="@style/cameraIconShape"
+        app:shapeAppearance="@style/ShapeAppearanceOverlay.CircularBorder"
+        app:srcCompat="@drawable/inset_holder_camera_black" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

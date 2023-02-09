@@ -3,8 +3,10 @@ package com.example.es.utils
 import com.example.es.ui.model.DataUi
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.StorageReference
 
 lateinit var REF_DATABASE_ROOT: DatabaseReference
+lateinit var REF_STORAGE: StorageReference
 lateinit var USER: DataUi
 
 const val DATABASE_LOCATION =
