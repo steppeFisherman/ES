@@ -22,6 +22,8 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_photo"
         style="@style/img_mainFragment"
+        android:clickable="true"
+        android:focusable="true"
         android:layout_marginTop="@dimen/size_8"
         app:layout_constraintStart_toStartOf="@id/left_guideline_vertical"
         app:layout_constraintTop_toTopOf="parent"
