@@ -28,7 +28,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
+
+        Log.d("MessagingService", "remoteMessage: ${message.data}")
+
+
         if (message.notification != null) {
+            Log.d("MessagingService", "remoteMessage is not Null: ${message.notification!!.body}")
+
             createNotification(
                 message.notification!!.title.toString(),
                 message.notification!!.body.toString()
@@ -44,6 +50,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val pendingIntent = PendingIntent
             .getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        Log.d("MessagingService", "pendingIntent:")
 
         val builder = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(R.drawable.ic_elite_logo)
@@ -63,9 +70,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         enableLights(true)
                     }
             manager.createNotificationChannel(channel)
+            Log.d("MessagingService", " createNotificationChannel:")
+
         }
 
         manager.notify(0, builder.build())
+        Log.d("MessagingService", " manager.notify:")
+
     }
 
     private fun getRemoteView(title: String, message: String): RemoteViews {
