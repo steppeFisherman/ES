@@ -79,7 +79,7 @@ interface LocationHandle {
             if (null == huaweiLocationCallback) {
                 huaweiLocationCallback = object : com.huawei.hms.location.LocationCallback() {
                     override fun onLocationResult(huaweiResult: com.huawei.hms.location.LocationResult?) {
-                        if (huaweiResult != null) {
+                        huaweiResult?.let {
                             val locations: List<Location> = huaweiResult.locations
                             if (locations.isNotEmpty()) {
                                 for (location in locations) {
