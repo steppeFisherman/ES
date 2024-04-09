@@ -1,6 +1,5 @@
 package com.example.es.map
 
-import android.annotation.SuppressLint
 import android.location.Geocoder
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -51,20 +50,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    @SuppressLint("MissingPermission")
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.setOnMarkerClickListener(this)
 
-        val currentLatLong = LatLng(user.latitude.toDouble(), user.longitude.toDouble())
+        val currentLatLong = LatLng(user.latitude, user.longitude)
         placeMarkerOnMap(currentLatLong)
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 18f))
     }
 
     private fun placeMarkerOnMap(currentLatLong: LatLng) {
         val locationAddress = geoCoder
-            .getFromLocation(currentLatLong.latitude, currentLatLong.longitude, 2)
+            .getFromLocation(currentLatLong.latitude, currentLatLong.longitude, 2)?: emptyList()
 
         if (locationAddress.isNotEmpty() && locationAddress.size > 1) {
             val address = locationAddress[1].getAddressLine(0)

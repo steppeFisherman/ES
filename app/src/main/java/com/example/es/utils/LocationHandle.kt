@@ -1,54 +1,144 @@
 package com.example.es.utils
 
-import android.annotation.SuppressLint
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import android.os.Looper
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.Priority
 import com.huawei.hms.location.LocationAvailability
 import com.huawei.hms.location.LocationRequest
 import com.huawei.hms.location.LocationSettingsRequest
 import com.huawei.hms.location.LocationSettingsResponse
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+
+typealias Result = (map: MutableMap<String, Any>) -> Unit
 
 interface LocationHandle {
 
     fun handle(
+        context: Context,
         format: DateTimeFormat,
         geocoder: Geocoder,
-        result: (MutableMap<String, Any>) -> Unit
+        result: Result
     )
 
     class Google(private val client: FusedLocationProviderClient) : LocationHandle {
 
-        @SuppressLint("MissingPermission")
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         override fun handle(
+            context: Context,
             format: DateTimeFormat,
             geocoder: Geocoder,
-            result: (MutableMap<String, Any>) -> Unit
+            result: Result
         ) {
+
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+
             client.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
-                    Log.d("AAA", "  client.lastLocation isNOT null")
-                    val locationAddress = geocoder
-                        .getFromLocation(location.latitude, location.longitude, 2)
 
-                    if (locationAddress.isNotEmpty() && locationAddress.size > 1) {
+                val map = mutableMapOf<String, Any>()
 
-                        val address = locationAddress[1].getAddressLine(0)
-                        val dateDate = Calendar.getInstance(Locale.getDefault()).time.time
+                if (location != null && location.accuracy < 50) {
 
-                        val map = mutableMapOf<String, Any>()
-                        map[CHILD_TIME] = format.longToStringDateFormat(dateDate)
-                        map[CHILD_TIME_LONG] = dateDate
-                        map[CHILD_LATITUDE] = location.latitude.toString()
-                        map[CHILD_LONGITUDE] = location.longitude.toString()
-                        map[CHILD_LOCATION_ADDRESS] = address
-                        result(map)
+                    val mLocationCallback = object : LocationCallback() {
+                        override fun onLocationResult(locationResult: LocationResult) {
+
+                            val latitude = locationResult.lastLocation?.latitude
+                            val longitude = locationResult.lastLocation?.longitude
+
+                            if (latitude != null && longitude != null) {
+
+                                val locationAddress =
+                                    geocoder.getFromLocation(latitude, longitude, 2)
+                                        ?: emptyList()
+
+                                if (locationAddress.isNotEmpty() && locationAddress.size > 1) {
+
+                                    val address = locationAddress[1].getAddressLine(0)
+                                    val dateDate =
+                                        Calendar.getInstance(Locale.getDefault()).time.time
+
+                                    map[CHILD_TIME] = format.longToStringDateFormat(dateDate)
+                                    map[CHILD_TIME_LONG] = dateDate
+                                    map[CHILD_LATITUDE] = latitude
+                                    map[CHILD_LONGITUDE] = longitude
+                                    map[CHILD_LOCATION_ADDRESS] = address
+                                    result.invoke(map)
+                                    client.removeLocationUpdates(this)
+                                }
+                            }
+                        }
                     }
+
+                    val locationRequest = com.google.android.gms.location.LocationRequest
+                        .Builder(2000L).setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                        .build()
+
+                    client.requestLocationUpdates(
+                        locationRequest,
+                        mLocationCallback,
+                        null
+                    )
                 } else {
-                    Log.d("AAA", "  client.lastLocation is null")
+
+                    val mLocationCallback = object : LocationCallback() {
+                        override fun onLocationResult(locationResult: LocationResult) {
+
+                            val latitude = locationResult.lastLocation?.latitude
+                            val longitude = locationResult.lastLocation?.longitude
+
+                            if (latitude != null && longitude != null) {
+
+                                val locationAddress =
+                                    geocoder.getFromLocation(latitude, longitude, 2)
+                                        ?: emptyList()
+
+                                if (locationAddress.isNotEmpty() && locationAddress.size > 1) {
+
+                                    val address = locationAddress[1].getAddressLine(0)
+                                    val dateDate =
+                                        Calendar.getInstance(Locale.getDefault()).time.time
+
+                                    map[CHILD_TIME] = format.longToStringDateFormat(dateDate)
+                                    map[CHILD_TIME_LONG] = dateDate
+                                    map[CHILD_LATITUDE] = latitude
+                                    map[CHILD_LONGITUDE] = longitude
+                                    map[CHILD_LOCATION_ADDRESS] = address
+                                    result.invoke(map)
+                                    client.removeLocationUpdates(this)
+                                }
+                            }
+                        }
+                    }
+
+                    val locationRequest = com.google.android.gms.location.LocationRequest
+                        .Builder(2000L).setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                        .build()
+
+                    client.requestLocationUpdates(
+                        locationRequest,
+                        mLocationCallback,
+                        null
+                    )
                 }
             }
         }
@@ -63,10 +153,13 @@ interface LocationHandle {
         private var huaweiLocationRequest: com.huawei.hms.location.LocationRequest? = null
 
         override fun handle(
+            context: Context,
             format: DateTimeFormat,
             geocoder: Geocoder,
-            result: (MutableMap<String, Any>) -> Unit
+            result: Result
         ) {
+
+            val map = mutableMapOf<String, Any>()
 
             huaweiLocationRequest = com.huawei.hms.location.LocationRequest().apply {
 //                    interval = 10000
@@ -77,6 +170,7 @@ interface LocationHandle {
             }
 
             if (null == huaweiLocationCallback) {
+
                 huaweiLocationCallback = object : com.huawei.hms.location.LocationCallback() {
                     override fun onLocationResult(huaweiResult: com.huawei.hms.location.LocationResult?) {
                         huaweiResult?.let {
@@ -88,14 +182,13 @@ interface LocationHandle {
                                             location.latitude,
                                             location.longitude,
                                             2
-                                        )
-                                    locationAddress.size
-                                    if (locationAddress.isNotEmpty() && locationAddress.size > 0) {
+                                        ) ?: emptyList()
+
+                                    if (locationAddress.isNotEmpty()) {
                                         val address = locationAddress[0].getAddressLine(0)
                                         val dateDate =
                                             Calendar.getInstance(Locale.getDefault()).time.time
 
-                                        val map = mutableMapOf<String, Any>()
                                         map[CHILD_TIME] =
                                             format.longToStringDateFormat(dateDate)
                                         map[CHILD_TIME_LONG] = dateDate
@@ -103,7 +196,7 @@ interface LocationHandle {
                                         map[CHILD_LONGITUDE] = location.longitude.toString()
                                         map[CHILD_LOCATION_ADDRESS] = address
                                         Log.i("HHH", "address:$address")
-                                        result(map)
+
                                     }
                                     Log.i(
                                         "HHH",

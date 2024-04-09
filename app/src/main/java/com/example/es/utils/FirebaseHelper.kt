@@ -2,17 +2,18 @@ package com.example.es.utils
 
 import com.example.es.ui.model.DataUi
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.StorageReference
 
 lateinit var REF_DATABASE_ROOT: DatabaseReference
 lateinit var REF_STORAGE: StorageReference
 lateinit var USER: DataUi
 
+lateinit var API_TYPE: ApiType
+
 const val DATABASE_LOCATION =
     "//https://user-location-71197-default-rtdb.europe-west1.firebasedatabase.app/"
 
-const val NODE_USERS = "users"
+const val NODE_USERS = "members"
 const val CHILD_ID = "id"
 const val CHILD_ID_CACHE = "idCache"
 const val CHILD_FULL_NAME = "fullName"

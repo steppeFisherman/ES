@@ -10,6 +10,6 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Firebase.database.setPersistenceEnabled(true)
+        Firebase.database.setPersistenceEnabled(false)
     }
 }

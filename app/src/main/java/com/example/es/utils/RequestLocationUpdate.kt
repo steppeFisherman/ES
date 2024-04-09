@@ -1,28 +1,58 @@
 package com.example.es.utils
 
-import android.annotation.SuppressLint
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.Priority
 
 interface RequestLocationUpdate {
 
-    fun update(client: FusedLocationProviderClient)
+    fun update(context: Context, client: FusedLocationProviderClient)
 
-    class Base : RequestLocationUpdate {
-        @SuppressLint("MissingPermission")
-        override fun update(client: FusedLocationProviderClient) {
-            val locationRequest = LocationRequest.create() // Create location request.
-            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY // Set priority.
-            locationRequest.interval = 2 * 1000
-            locationRequest.fastestInterval = 1 * 1000
+    class GoogleLocationUpdate : RequestLocationUpdate {
+
+        override fun update(context: Context, client: FusedLocationProviderClient) {
+
+          val locationRequest = LocationRequest.Builder(1000L)
+              .setPriority(Priority.PRIORITY_HIGH_ACCURACY).build()
+
 
             val locationCallback: LocationCallback = object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {}
+                override fun onLocationResult(locationResult: LocationResult) {
+                    locationResult.locations.forEach {
+                        val latitude = it.latitude
+                        latitude
+
+                        val longitude = it.longitude
+                        longitude
+                    }
+                }
             }
 
-            client.requestLocationUpdates(locationRequest, locationCallback, null)
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
+            client.requestLocationUpdates(locationRequest,locationCallback, null)
+            client.removeLocationUpdates(locationCallback)
         }
     }
 }

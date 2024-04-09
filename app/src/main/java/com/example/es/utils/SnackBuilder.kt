@@ -9,41 +9,103 @@ import com.google.android.material.snackbar.Snackbar
 
 interface SnackBuilder {
 
-    fun buildSnackTopIndefinite(view: View): Snackbar
-    fun buildSnackBottomIndefinite(view: View): Snackbar
+    fun snackBarDefault(
+        view: View,
+        message: Int,
+        snackShape: Int = R.drawable.snack_background_shape_default,
+    ): Snackbar
 
-    class Base : SnackBuilder {
+    fun snackBarWithPadding(
+        view: View,
+        message: Int,
+        snackShape: Int = R.drawable.snack_background_shape_padding,
+    ): Snackbar
 
-        override fun buildSnackTopIndefinite(view: View): Snackbar {
-            val snack = Snackbar.make(
-                view,
-                R.string.check_internet_connection,
-                Snackbar.LENGTH_INDEFINITE
-            )
-            val layoutParams = FrameLayout.LayoutParams(snack.view.layoutParams)
-            layoutParams.bottomMargin = 110
-            layoutParams.gravity = Gravity.TOP
-            snack.view.setPadding(0, 0, 0, 0)
-            snack.view.setBackgroundResource(R.drawable.snack_background_shape)
-            snack.view.layoutParams = layoutParams
-            snack.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
-            return snack
+    fun buildSnack(
+        view: View,
+        message: Int,
+        duration: Int,
+        gravity: Int,
+        snackShape: Int,
+    ): Snackbar =
+        Snackbar.make(view, message, duration).apply {
+            val layoutParams = FrameLayout.LayoutParams(this.view.layoutParams)
+            layoutParams.gravity = gravity
+            this.view.layoutParams = layoutParams
+            this.view.setBackgroundResource(snackShape)
         }
 
-        override fun buildSnackBottomIndefinite(view: View): Snackbar {
-            val snack = Snackbar.make(
-                view,
-                R.string.check_internet_connection,
-                Snackbar.LENGTH_INDEFINITE
-            )
-            val layoutParams = FrameLayout.LayoutParams(snack.view.layoutParams)
-            layoutParams.bottomMargin = 110
-            layoutParams.gravity = Gravity.BOTTOM
-            snack.view.setPadding(0, 0, 0, 0)
-            snack.view.setBackgroundResource(R.drawable.snack_background_shape)
-            snack.view.layoutParams = layoutParams
-            snack.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
-            return snack
-        }
+    class SnackIndefiniteFadeMode(private val durationIndefinite: Int = Snackbar.LENGTH_INDEFINITE) :
+        SnackBuilder {
+        override fun snackBarDefault(
+            view: View,
+            message: Int,
+            snackShape: Int,
+        ): Snackbar =
+            buildSnack(view, message, durationIndefinite, Gravity.CENTER, snackShape).apply {
+                this.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
+            }
+
+        override fun snackBarWithPadding(
+            view: View,
+            message: Int,
+            snackShape: Int,
+        ): Snackbar =
+            buildSnack(view, message, durationIndefinite, Gravity.CENTER, snackShape).apply {
+                this.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
+            }
+    }
+
+    class SnackIndefiniteSlideMode(private val durationIndefinite: Int = Snackbar.LENGTH_INDEFINITE) :
+        SnackBuilder {
+        override fun snackBarDefault(
+            view: View,
+            message: Int,
+            snackShape: Int,
+        ): Snackbar =
+            buildSnack(view, message, durationIndefinite, Gravity.CENTER, snackShape).apply {
+                this.animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
+            }
+
+        override fun snackBarWithPadding(
+            view: View,
+            message: Int,
+            snackShape: Int,
+        ): Snackbar =
+            buildSnack(view, message, durationIndefinite, Gravity.CENTER, snackShape).apply {
+                this.animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
+            }
+    }
+
+    class SnackLong(private val durationLong: Int = Snackbar.LENGTH_LONG) : SnackBuilder {
+        override fun snackBarDefault(
+            view: View,
+            message: Int,
+            snackShape: Int,
+        ): Snackbar =
+            buildSnack(view, message, durationLong, Gravity.BOTTOM, snackShape)
+
+        override fun snackBarWithPadding(
+            view: View,
+            message: Int,
+            snackShape: Int,
+        ): Snackbar =
+            buildSnack(view, message, durationLong, Gravity.BOTTOM, snackShape)
+    }
+
+    class SnackShort(private val durationShort: Int = Snackbar.LENGTH_SHORT) : SnackBuilder {
+        override fun snackBarDefault(
+            view: View,
+            message: Int,
+            snackShape: Int,
+        ): Snackbar =
+            buildSnack(view, message, durationShort, Gravity.BOTTOM, snackShape)
+
+        override fun snackBarWithPadding(
+            view: View,
+            message: Int,
+            snackShape: Int,
+        ): Snackbar =
+            buildSnack(view, message, durationShort, Gravity.BOTTOM, snackShape)
     }
 }

@@ -7,12 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.es.R
 import com.example.es.databinding.FragmentSplashBinding
 import com.example.es.ui.BaseFragment
-import com.example.es.utils.*
-import com.example.es.utils.connectivity.ConnectivityManager
+import com.example.es.utils.APP_PREFERENCES
+import com.example.es.utils.InputMaskHandle
+import com.example.es.utils.PREF_BOOLEAN_VALUE
+import com.example.es.utils.PREF_COMPANY_VALUE
+import com.example.es.utils.PREF_HOME_ADDRESS_VALUE
+import com.example.es.utils.PREF_ID_VALUE
+import com.example.es.utils.PREF_PHONE_VALUE
+import com.example.es.utils.SnackBuilder
+import com.example.es.utils.ValueListener
+import com.example.es.utils.connectivity.NetworkProvider
+import com.example.es.utils.snackLong
+import com.example.es.utils.snackLongTop
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -21,16 +32,16 @@ import javax.inject.Inject
 class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
     @Inject
-    lateinit var connectivityManager: ConnectivityManager
+    lateinit var networkProvider: NetworkProvider
 
-    @Inject
-    lateinit var snackTopBuilder: SnackBuilder
+    private var snackBuilder = SnackBuilder.SnackIndefiniteFadeMode()
 
     private var extracted = ""
     private var idEntered = ""
     private var phoneEntered = ""
     private lateinit var preferences: SharedPreferences
     private lateinit var snack: Snackbar
+    private lateinit var observer: Observer<Boolean>
 
     private val vm by activityViewModels<SplashFragmentViewModel>()
 
@@ -59,8 +70,6 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
                 bundle.putParcelable(MainFragment.ARGS, dataUi)
                 findNavController()
                     .navigate(R.id.action_splashFragment_to_mainFragment, bundle)
-            } else {
-                view.snackLongTop(R.string.enter_correct_phone_password)
             }
         }
 
@@ -75,12 +84,13 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
                 5 -> view.snackLongTop(R.string.generic_exception_message)
             }
         }
+    }
 
-        connectivityManager.isNetworkAvailable.observe(viewLifecycleOwner) { isNetworkAvailable ->
-            if (isNetworkAvailable == false) {
-                binding.btnLogin.isEnabled = false
-                snack.show()
-            } else {
+    override fun onStart() {
+        super.onStart()
+
+        observer = Observer { isConnected ->
+            if (isConnected) {
                 snack.dismiss()
                 binding.btnLogin.isEnabled = true
                 binding.btnLogin.setOnClickListener {
@@ -95,13 +105,18 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
                         binding.progressBar.visibility = View.VISIBLE
                     }
                 }
+            } else {
+                binding.btnLogin.isEnabled = false
+                snack.show()
             }
         }
+
+        networkProvider.liveData.observe(this, observer)
     }
 
     private fun initialise() {
         preferences = binding.root.context.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
-        snack = snackTopBuilder.buildSnackTopIndefinite(binding.root)
+        snack = snackBuilder.snackBarDefault(binding.root.rootView, R.string.check_internet_connection)
     }
 
     private fun inputMaskSetUp() {

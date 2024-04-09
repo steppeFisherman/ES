@@ -1,15 +1,27 @@
 package com.example.es.utils
 
 import android.content.Context
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
+import android.provider.Settings
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.startActivity
+import com.example.es.R
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
 fun showToast(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+}
+
+fun showToast(context: Context, message: Int) {
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 
@@ -20,6 +32,12 @@ fun View.snackLong(@StringRes message: Int) {
 }
 
 fun View.snackIndefinite(@StringRes message: Int = 0) {
+    val snack = Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
+    this.textAlignment = View.TEXT_ALIGNMENT_CENTER
+    snack.show()
+}
+
+fun View.snackIndefinite(message: String) {
     val snack = Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
     this.textAlignment = View.TEXT_ALIGNMENT_CENTER
     snack.show()
@@ -63,6 +81,7 @@ fun View.snowSnackIndefiniteTop(snack: Snackbar, @StringRes message: Int) {
     snack.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
     snack.show()
 }
+
 fun View.visible(show: Boolean) =
     if (show) this.visibility = View.VISIBLE else this.visibility = View.GONE
 
@@ -70,4 +89,60 @@ fun longToStringDateFormat(time: Long) {
 //    val dateString = DateFormat.getDateTimeInstance().format(time)
 //    val format = SimpleDateFormat("HH:mm:ss, dd.MM.yyyy", Locale.getDefault())
 //    return format.format(time).toString()
+}
+
+fun dialogLocationShow(
+    context: Context,
+    title: Int = R.string.location_mode_disabled,
+    message: Int = R.string.location_enable_all_sources_message,
+) {
+    AlertDialog.Builder(context)
+        .setTitle(title)
+        .setMessage(message)
+        .setPositiveButton(R.string.yes) { _, _ ->
+            val intent =
+                Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(context, intent, null)
+        }
+        .create()
+        .show()
+}
+
+//Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+//Uri.fromParts("package", context.packageName, null)
+
+fun dialogShow(
+    context: Context,
+    title: String = "",
+    message: String = "",
+    positiveButton: () -> Unit
+) {
+    AlertDialog.Builder(context)
+        .setTitle(title)
+        .setMessage(message)
+        .setPositiveButton(R.string.yes) { _, _ ->
+            positiveButton()
+        }
+        .create()
+        .show()
+}
+
+fun View.customLongClickListener(
+    duration: Long,
+    listener: () -> Unit
+) {
+    setOnTouchListener(object : View.OnTouchListener {
+
+        private val handler = Handler(Looper.getMainLooper())
+
+        override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+            view?.performClick()
+            if (event?.action == MotionEvent.ACTION_DOWN) {
+                handler.postDelayed({ listener.invoke() }, duration)
+            } else if (event?.action == MotionEvent.ACTION_UP) {
+                handler.removeCallbacksAndMessages(null)
+            }
+            return true
+        }
+    })
 }

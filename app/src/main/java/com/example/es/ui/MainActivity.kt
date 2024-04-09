@@ -6,17 +6,16 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -24,14 +23,18 @@ import com.example.es.R
 import com.example.es.databinding.ActivityMainBinding
 import com.example.es.ui.screens.MainFragment
 import com.example.es.ui.screens.ProfileFragment
-import com.example.es.utils.*
-import com.example.es.utils.connectivity.ConnectivityManager
+import com.example.es.utils.API_TYPE
+import com.example.es.utils.APP_PREFERENCES
+import com.example.es.utils.ApiCheck
+import com.example.es.utils.PREF_BOOLEAN_VALUE
+import com.example.es.utils.REF_DATABASE_ROOT
+import com.example.es.utils.REF_STORAGE
+import com.example.es.utils.SavePhotoStorage
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -41,23 +44,21 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
     MainFragment.PermissionHandle {
 
     @Inject
-    lateinit var connectivityManager: ConnectivityManager
+    lateinit var api: ApiCheck.Base
 
     private lateinit var binding: ActivityMainBinding
-    lateinit var navControllerMain: NavController
+    private lateinit var navControllerMain: NavController
     private lateinit var destinationChangedListener:
             NavController.OnDestinationChangedListener
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var preferences: SharedPreferences
     private lateinit var photoStorage: SavePhotoStorage
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private val requestLocationPermissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),   // contract for requesting more than 1 permission
         ::onGotLocationPermissionsResult
     )
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_ES)
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         requestLocationPermissionsLauncher.launch(
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_COARSE_LOCATION,
             )
         )
 
@@ -101,6 +102,8 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
             val token = task.result
             Log.d("AAA", "token: $token")
         })
+
+        API_TYPE = api.apiCheck()
     }
 
     private fun checkUserLoggedIn() {
@@ -120,11 +123,6 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
             }
     }
 
-    override fun onStart() {
-        super.onStart()
-        connectivityManager.registerConnectionObserver(this)
-    }
-
     override fun onResume() {
         super.onResume()
         navControllerMain.addOnDestinationChangedListener(destinationChangedListener)
@@ -135,11 +133,6 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         navControllerMain.removeOnDestinationChangedListener(destinationChangedListener)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        connectivityManager.unregisterConnectionObserver(this)
-    }
-
     override fun photoListener(uri: Uri?, id: String) {
         if (uri != null) {
             photoStorage.save(uri = uri, id = id)
@@ -147,18 +140,24 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun onGotLocationPermissionsResult(grantResults: Map<String, Boolean>) {
 
         if (grantResults.entries.all { it.value }) {
-//            onLocationPermissionsGranted()
+//            showToast(this, R.string.location_permissions_granted)
         } else {
-            // example of handling 'Deny & don't ask again' user choice
-            if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                askUserForOpeningAppSettings()
-            } else {
-                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show()
-            }
+
+            val appSettingsIntent = Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", packageName, null)
+            )
+            AlertDialog.Builder(this)
+                .setTitle(R.string.permission_denied)
+                .setMessage(R.string.permission_denied_forever_message)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    startActivity(appSettingsIntent)
+                }
+                .create()
+                .show()
         }
     }
 
@@ -168,10 +167,9 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             Uri.fromParts("package", packageName, null)
         )
-        if (packageManager.resolveActivity(
-                appSettingsIntent,
-                PackageManager.MATCH_DEFAULT_ONLY
-            ) == null
+
+        if (packageManager
+                .resolveActivity(appSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY) == null
         ) {
             Toast.makeText(this, R.string.permissions_denied_forever, Toast.LENGTH_SHORT).show()
         } else {
@@ -186,26 +184,12 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         }
     }
 
-    private fun onLocationPermissionsGranted() {
-        Toast.makeText(this, R.string.location_permissions_granted, Toast.LENGTH_SHORT)
-            .show()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun check() {
         requestLocationPermissionsLauncher.launch(
-//            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             )
-//            } else {
-//                arrayOf(
-//                    Manifest.permission.ACCESS_FINE_LOCATION,
-//                    Manifest.permission.ACCESS_COARSE_LOCATION,
-//                    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-//                )
-//            }
         )
     }
 }

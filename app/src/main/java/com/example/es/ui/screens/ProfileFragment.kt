@@ -16,7 +16,6 @@ import com.example.es.databinding.FragmentProfileBinding
 import com.example.es.utils.*
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.io.File
 
 
 class ProfileFragment : BottomSheetDialogFragment() {
@@ -82,7 +81,6 @@ class ProfileFragment : BottomSheetDialogFragment() {
         binding.txtId.text = id
     }
 
-    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 

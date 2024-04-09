@@ -11,20 +11,19 @@
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_16"
         android:visibility="gone"
         app:indicatorColor="@color/deep_sky_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/barrier_horizontal_top"
-        android:layout_marginTop="@dimen/size_16"
-        />
+        app:layout_constraintTop_toTopOf="@+id/barrier_horizontal_top" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_photo"
         style="@style/img_mainFragment"
+        android:layout_marginTop="@dimen/size_8"
         android:clickable="true"
         android:focusable="true"
-        android:layout_marginTop="@dimen/size_8"
         app:layout_constraintStart_toStartOf="@id/left_guideline_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.CircularBorder"
@@ -35,6 +34,8 @@
     <TextView
         android:id="@+id/txt_name"
         style="@style/textView"
+        android:layout_width="77dp"
+        android:layout_height="33dp"
         android:fontFamily="casual"
         app:layout_constraintStart_toStartOf="@id/left_guideline_vertical"
         app:layout_constraintTop_toBottomOf="@+id/img_photo"
@@ -70,79 +71,88 @@
 
     <Button
         android:id="@+id/btn_location"
-        style="@style/btn_mainFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_18dp"
         android:layout_marginBottom="@dimen/margin_14dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:text="@string/location"
-        android:textColor="@color/grey_category_textView"
         android:textAppearance="?attr/textAppearanceButton"
+        android:textColor="@color/grey_category_textView"
         android:textSize="12sp"
+        android:theme="@style/location_ripple_style"
         app:icon="@drawable/ic_location"
         app:iconGravity="textTop"
         app:iconPadding="@dimen/size_4"
-        app:iconSize="48dp"
-        app:iconTint= "@color/btn_location_icon_color_selector"
+        app:iconSize="56dp"
+        app:iconTint="@color/btn_location_icon_color_selector"
         app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal_bottom"
         app:layout_constraintEnd_toEndOf="@+id/center_guideline_vertical"
         tools:ignore="SpeakableTextPresentCheck" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/imgAnimation1"-->
-<!--        android:layout_width="70dp"-->
-<!--        android:layout_height="70dp"-->
-<!--        android:src="@drawable/circle"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/btn_location"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/btn_dial"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/btn_dial"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/btn_location"-->
-<!--        tools:ignore="ContentDescription" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/imgAnimation1"-->
+    <!--        android:layout_width="70dp"-->
+    <!--        android:layout_height="70dp"-->
+    <!--        android:src="@drawable/circle"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@+id/btn_location"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/btn_dial"-->
+    <!--        app:layout_constraintStart_toEndOf="@+id/btn_dial"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/btn_location"-->
+    <!--        tools:ignore="ContentDescription" />-->
 
-<!--    <ImageView-->
-<!--        android:id="@+id/imgAnimation2"-->
-<!--        android:layout_width="70dp"-->
-<!--        android:layout_height="70dp"-->
-<!--        android:src="@drawable/circle_red"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/btn_location"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/btn_dial"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/btn_dial"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/btn_location"-->
-<!--        tools:ignore="ContentDescription" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/imgAnimation2"-->
+    <!--        android:layout_width="70dp"-->
+    <!--        android:layout_height="70dp"-->
+    <!--        android:src="@drawable/circle_red"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@+id/btn_location"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/btn_dial"-->
+    <!--        app:layout_constraintStart_toEndOf="@+id/btn_dial"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/btn_location"-->
+    <!--        tools:ignore="ContentDescription" />-->
 
-<!--    <Button-->
-<!--        android:id="@+id/btn_panic"-->
-<!--        style="@style/btnAlarm_MainFragment"-->
-<!--        app:backgroundTint="@null"-->
-<!--        app:icon="@drawable/ic_panic"-->
-<!--        app:iconGravity="textEnd"-->
-<!--        app:iconPadding="@dimen/size_0"-->
-<!--        app:iconSize="56dp"-->
-<!--        app:iconTint="@color/btn_panic_icon_color_selector"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/btn_location"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/btn_dial"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/btn_dial"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/btn_location"-->
-<!--        tools:ignore="SpeakableTextPresentCheck" />-->
+    <!--    <Button-->
+    <!--        android:id="@+id/btn_panic"-->
+    <!--        style="@style/btnAlarm_MainFragment"-->
+    <!--        app:backgroundTint="@null"-->
+    <!--        app:icon="@drawable/ic_panic"-->
+    <!--        app:iconGravity="textEnd"-->
+    <!--        app:iconPadding="@dimen/size_0"-->
+    <!--        app:iconSize="56dp"-->
+    <!--        app:iconTint="@color/btn_panic_icon_color_selector"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@+id/btn_location"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/btn_dial"-->
+    <!--        app:layout_constraintStart_toEndOf="@+id/btn_dial"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/btn_location"-->
+    <!--        tools:ignore="SpeakableTextPresentCheck" />-->
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id = "@+id/ltAnimation"
+        android:id="@+id/ltAnimation"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        app:lottie_rawRes="@raw/punic_button"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:theme="@style/lt_ripple_style"
         app:layout_constraintBottom_toBottomOf="@+id/btn_location"
         app:layout_constraintEnd_toEndOf="@+id/btn_dial"
         app:layout_constraintStart_toEndOf="@+id/btn_dial"
         app:layout_constraintTop_toTopOf="@+id/btn_location"
-        />
+        app:lottie_rawRes="@raw/punic_button" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dial"
-        style="@style/btn_mainFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:theme="@style/dial_ripple_style"
         app:icon="@drawable/ic_phone"
         app:iconGravity="textEnd"
         app:iconPadding="@dimen/size_0"
-        app:iconSize="48dp"
-        app:iconTint="@color/dark_green"
+        app:iconSize="56dp"
+        app:iconTint="@color/btn_dial_icon_color_selector"
         app:layout_constraintEnd_toEndOf="@+id/center_guideline_vertical"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="@+id/center_guideline_vertical"
@@ -154,8 +164,7 @@
         android:layout_width="@dimen/size_0"
         android:layout_height="@dimen/size_0"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="txt_location_address"
-        />
+        app:constraint_referenced_ids="txt_location_address" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_horizontal_bottom"

@@ -52,7 +52,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
         Log.d("MessagingService", "pendingIntent:")
 
-        val builder = NotificationCompat.Builder(applicationContext, channelId)
+        val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_elite_logo)
             .setAutoCancel(true)
             .setVibrate(longArrayOf(1000, 1000, 1000, 1000))
@@ -64,7 +64,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel =
-                NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
+                NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH)
                     .apply {
                         enableVibration(true)
                         enableLights(true)
@@ -88,7 +88,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     companion object {
-        private const val channelId = "CHANNEL_ID"
-        private const val channelName = "com.example.es"
+        private const val CHANNEL_ID = "CHANNEL_ID"
+        private const val CHANNEL_NAME = "com.example.es"
     }
 }

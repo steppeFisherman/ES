@@ -17,6 +17,7 @@
     <color name="red_light">#99F08080</color>
     <color name="transparent">#000000FF</color>
     <color name="black_textView">#010035</color>
+    <color name="dark_blue">#010035</color>
     <color name="stroke_color">#222831</color>
     <color name="grey_category_textView">#C3C4C9</color>
     <color name="deepBlue">#2460A7FF</color>
@@ -26,7 +27,8 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="grey_light">#1E000000</color>
     <color name="eliteColor">#13436b</color>
-    <color name="dark_green">#006400</color>
+    <color name="green">#006400</color>
+    <color name="dark_green">#002800</color>
     <color name="deep_sky_blue">#00BFFF</color>
     <color name="light_sky_blue">#5600BFFF</color>
     <color name="dark_red">#800000</color>

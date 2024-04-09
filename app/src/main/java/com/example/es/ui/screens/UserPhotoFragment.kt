@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.es.R
 import com.example.es.databinding.FragmentUserPhotoBinding
-import com.example.es.ui.model.DataUi
 import com.example.es.utils.LoadImage
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -34,7 +33,7 @@ class UserPhotoFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val userPhoto = arguments?.getString(MainFragment.USER_PHOTO).toString()
-        loadImage.load(requireContext(), binding.personImgLarge, userPhoto)
+        loadImage.load(binding.personImgLarge, userPhoto)
     }
 
     override fun onDestroyView() {

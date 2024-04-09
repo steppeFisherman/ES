@@ -39,8 +39,9 @@
     <string name="permission_denied">Разрешения геолокации не предоставлены</string>
     <string name="permission_denied_forever_message">Перейти в режим настроек предоставления данных?</string>
     <string name="yes">да</string>
-    <string name="location_mode">Доступ к местоположению отключен</string>
-    <string name="location_mode_denied_message">Перейти в режим включения доступа?</string>
+    <string name="no">нет</string>
+    <string name="location_mode_disabled">Доступ к местоположению отключен.</string>
+    <string name="location_enable_all_sources_message">Для корректной работы приложения разрешите <b><i>\"Доступ к местоположению\"</i></b> а также выберите пункт <b><i>\"По всем источникам\"</i></b> либо <b><i>\"Геолокация Google\"</i></b> .\nПерейти в режим включения доступа?</string>
     <string name="location_permissions_granted">предоставлены разрешения для геолокации</string>
     <string name="home_address">Домашний адрес: %s</string>
     <string name="your_id">Ваш ID: %s</string>

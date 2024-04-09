@@ -6,18 +6,21 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.es.R
 import java.text.DateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 interface DatePickerDialogProvide {
 
     fun provide(textView: TextView, block: (Date) -> Unit)
 
-    class Base(val context: Context) :
-        DatePickerDialogProvide {
+    class Base(val context: Context) : DatePickerDialogProvide {
+
         private val currentDateTime: Calendar = Calendar.getInstance()
+
         private val startYear = currentDateTime.get(Calendar.YEAR)
         private val startMonth = currentDateTime.get(Calendar.MONTH)
         private val startDay = currentDateTime.get(Calendar.DAY_OF_MONTH)
+
         override fun provide(textView: TextView, block: (Date) -> Unit) {
             DatePickerDialog(
                 context,

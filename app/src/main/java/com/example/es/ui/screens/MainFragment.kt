@@ -1,6 +1,5 @@
 package com.example.es.ui.screens
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,16 +7,18 @@ import android.location.Geocoder
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieDrawable
@@ -26,74 +27,87 @@ import com.example.es.data.model.MapCloudToDomain
 import com.example.es.data.model.cloudModel.DataCloud
 import com.example.es.databinding.FragmentMainBinding
 import com.example.es.ui.model.MapDomainToUi
-import com.example.es.utils.*
-import com.example.es.utils.connectivity.ConnectivityManager
-import com.google.android.gms.common.GoogleApiAvailability
+import com.example.es.utils.API_TYPE
+import com.example.es.utils.APP_PREFERENCES
+import com.example.es.utils.Animation
+import com.example.es.utils.ApiType
+import com.example.es.utils.CHILD_ALARM
+import com.example.es.utils.CHILD_COMMENT
+import com.example.es.utils.CHILD_LOCATION_FLAG_ONLY
+import com.example.es.utils.DateTimeFormat
+import com.example.es.utils.FormatUiPhoneNumber
+import com.example.es.utils.LocationHandle
+import com.example.es.utils.NODE_USERS
+import com.example.es.utils.PREF_ID_VALUE
+import com.example.es.utils.PREF_PHONE_VALUE
+import com.example.es.utils.PREF_URI_VALUE
+import com.example.es.utils.REF_DATABASE_ROOT
+import com.example.es.utils.SnackBuilder
+import com.example.es.utils.SnapShotListener
+import com.example.es.utils.connectivity.NetworkProvider
+import com.example.es.utils.dialogLocationShow
+import com.example.es.utils.showToast
+import com.example.es.utils.snackLong
+import com.example.es.utils.visible
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.SettingsClient
 import com.google.android.material.snackbar.Snackbar
-import com.huawei.hms.api.HuaweiApiAvailability
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
 
     @Inject
-    lateinit var connectivityManager: ConnectivityManager
+    lateinit var locationManager: LocationManager
 
     @Inject
-    lateinit var snackTopBuilder: SnackBuilder
+    lateinit var googleLocationClient: FusedLocationProviderClient
 
     @Inject
-    lateinit var format: DateTimeFormat
+    lateinit var googleSettingsLocationClient: SettingsClient
+
+    @Inject
+    lateinit var huaweiLocationClient: com.huawei.hms.location.FusedLocationProviderClient
+
+    @Inject
+    lateinit var huaweiSettingsClient: com.huawei.hms.location.SettingsClient
+
+    @Inject
+    lateinit var networkProvider: NetworkProvider
+
+    @Inject
+    lateinit var format: DateTimeFormat.Base
+
+    @Inject
+    lateinit var geoCoder: Geocoder
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = checkNotNull(_binding)
+
     private val vm by activityViewModels<MainFragmentViewModel>()
+    private val snackBuilder = SnackBuilder.SnackIndefiniteFadeMode()
+
     private var phoneOperator = ""
     private var statusAnimation = false
     private var gpsEnabled = false
+    private var networkEnabled = false
+    private var isBtnPressed = false
     private var userId = ""
-    private var userPhoto = ""
     private val formatUiPhoneNumber = FormatUiPhoneNumber.Base()
-    private val requestLocationUpdate = RequestLocationUpdate.Base()
 
     private val animation = Animation.Base()
     private val mapCloudToDomain = MapCloudToDomain.Base()
     private val mapDomainToUi = MapDomainToUi.Base()
-    private var googleApi = false
-    private var huaweiApi = false
 
     private lateinit var snack: Snackbar
+    private lateinit var observer: Observer<Boolean>
     private lateinit var preferences: SharedPreferences
-    private lateinit var googleFusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var location: LocationHandle
-    private lateinit var locationManager: LocationManager
-    private lateinit var geoCoder: Geocoder
 
-    private lateinit var huaweiFusedLocationProviderClient: com.huawei.hms.location.FusedLocationProviderClient
-    private lateinit var huaweiSettingsClient: com.huawei.hms.location.SettingsClient
-
-    //    private  var huaweiLocationCallback: com.huawei.hms.location.LocationCallback? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, _ -> }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        if (checkGMS()) googleApi = true else if (checkHMS()) huaweiApi = true
-
-        googleFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-        locationManager =
-            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        geoCoder = Geocoder(context, Locale.getDefault())
-        huaweiFusedLocationProviderClient =
-            com.huawei.hms.location.LocationServices.getFusedLocationProviderClient(context)
-        huaweiSettingsClient = com.huawei.hms.location.LocationServices.getSettingsClient(context)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -103,7 +117,6 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -144,8 +157,7 @@ class MainFragment : Fragment() {
         }
 
         binding.btnLocation.setOnClickListener {
-            binding.progressBar.visible(true)
-            postLocationUpdates()
+//            postLocationUpdates()
         }
 
         binding.btnDial.setOnClickListener {
@@ -154,8 +166,7 @@ class MainFragment : Fragment() {
             ContextCompat.startActivity(view.context, intent, null)
         }
 
-        binding.ltAnimation.setOnClickListener {
-            binding.progressBar.visible(true)
+        binding.ltAnimation.customLongClickListener(duration = 2000L) {
             postAlarmUpdates()
         }
 
@@ -179,10 +190,17 @@ class MainFragment : Fragment() {
                          */
                         lifecycleScope.launch(exceptionHandler) {
                             if (statusAnimation) {
-                                binding.ltAnimation.playAnimation()
-                                binding.ltAnimation.repeatCount = LottieDrawable.INFINITE
+                                binding.ltAnimation.apply {
+                                    playAnimation()
+                                    repeatCount = LottieDrawable.INFINITE
+                                    isClickable = false
+                                }
                             } else {
-                                binding.ltAnimation.repeatCount = 0
+                                isBtnPressed = false
+                                binding.ltAnimation.apply {
+                                    repeatCount = 0
+                                    isClickable = true
+                                }
                             }
                         }
                     })
@@ -192,79 +210,119 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun postLocationUpdates() {
-        (requireActivity() as PermissionHandle).check()
-        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+//    private fun postLocationUpdates() {
+//        (requireActivity() as PermissionHandle).check()
+//        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+//
+//        if (!gpsEnabled) dialogShow() else {
+//
+//            if (googleApi) {
+//                location = LocationHandle.Google(googleLocationClient)
+//                location.handle(format, geoCoder) { map ->
+//                    map[CHILD_ALARM] = false
+//                    map[CHILD_LOCATION_FLAG_ONLY] = true
+//                    vm.postLocationUpdates(id = userId, map)
+//                }
+//
+//            } else if (huaweiApi) {
+//                location = LocationHandle.Huawei(
+//                    huaweiLocationClient,
+//                    huaweiSettingsClient
+//                )
+//                location.handle(format, geoCoder) { map ->
+//                    map[CHILD_ALARM] = false
+//                    map[CHILD_LOCATION_FLAG_ONLY] = true
+//                    vm.postLocationUpdates(id = userId, map)
+//                }
+//            }
+//        }
+//    }
 
-        if (!gpsEnabled) dialogShow() else {
-
-            if (googleApi) {
-                location = LocationHandle.Google(googleFusedLocationProviderClient)
-                location.handle(format, geoCoder) { map ->
-                    map[CHILD_ALARM] = false
-                    map[CHILD_LOCATION_FLAG_ONLY] = true
-                    vm.postLocationUpdates(id = userId, map)
-                }
-
-            } else if (huaweiApi) {
-                location = LocationHandle.Huawei(
-                    huaweiFusedLocationProviderClient,
-                    huaweiSettingsClient
-                )
-                location.handle(format, geoCoder) { map ->
-                    map[CHILD_ALARM] = false
-                    map[CHILD_LOCATION_FLAG_ONLY] = true
-                    vm.postLocationUpdates(id = userId, map)
-                }
+    private fun postAlarmUpdates() {
+        when (API_TYPE) {
+            ApiType.GOOGLE -> {
+                location = LocationHandle.Google(googleLocationClient)
+                sendAlarm()
             }
+
+            ApiType.HUAWEI -> {
+                location = LocationHandle.Huawei(huaweiLocationClient, huaweiSettingsClient)
+                sendAlarm()
+            }
+
+            ApiType.OTHERS -> {}
         }
     }
 
-    private fun postAlarmUpdates() {
-        (requireActivity() as PermissionHandle).check()
-        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-
-        if (!gpsEnabled) dialogShow() else {
-            if (googleApi) {
-                location = LocationHandle.Google(googleFusedLocationProviderClient)
-                location.handle(format, geoCoder) { map ->
-                    map[CHILD_ALARM] = true
-                    map[CHILD_LOCATION_FLAG_ONLY] = false
-                    map[CHILD_COMMENT] = ""
-                    vm.postAlarmUpdates(id = userId, map)
-                }
-
-            } else if (huaweiApi) {
-                location = LocationHandle.Huawei(
-                    huaweiFusedLocationProviderClient,
-                    huaweiSettingsClient,
-                )
-
-                location.handle(format, geoCoder) { map ->
-                    map[CHILD_ALARM] = true
-                    map[CHILD_LOCATION_FLAG_ONLY] = false
-                    map[CHILD_COMMENT] = ""
-                    vm.postAlarmUpdates(id = userId, map)
-                }
-            }
+    private fun sendAlarm() {
+        location.handle(requireContext(), format, geoCoder) { map ->
+            map[CHILD_ALARM] = true
+            map[CHILD_LOCATION_FLAG_ONLY] = false
+            map[CHILD_COMMENT] = ""
+            vm.postAlarmUpdates(id = userId, map)
         }
+    }
+
+    private fun com.airbnb.lottie.LottieAnimationView.customLongClickListener(
+        duration: Long,
+        listener: () -> Unit
+    ) {
+        setOnTouchListener(object : View.OnTouchListener {
+
+            private val handler = Handler(Looper.getMainLooper())
+
+            override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+                view?.performClick()
+                if (event?.action == MotionEvent.ACTION_DOWN) {
+
+                    view?.isPressed = true
+
+                    (requireActivity() as PermissionHandle).check()
+
+                    gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                    networkEnabled =
+                        locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                    isBtnPressed = true
+
+                    if (!gpsEnabled || !networkEnabled) {
+                        dialogLocationShow(requireActivity())
+                    } else {
+                        handler.postDelayed({ listener.invoke() }, duration)
+                    }
+
+                } else if (event?.action == MotionEvent.ACTION_UP) {
+                    view?.isPressed = false
+                    handler.removeCallbacksAndMessages(null)
+                }
+                return true
+            }
+        })
     }
 
     override fun onStart() {
         super.onStart()
-        requestLocationUpdate.update(googleFusedLocationProviderClient)
-        checkNetworks(connectivityManager) { isNetWorkAvailable ->
-            when (isNetWorkAvailable) {
-                false -> {
-                    binding.btnLocation.isEnabled = false
-                    binding.ltAnimation.visible(false)
-                    snack.show()
-                }
-                true -> {
-                    snack.dismiss()
-                    binding.btnLocation.isEnabled = true
-                    binding.ltAnimation.visible(true)
-                }
+        observer = Observer { isConnected ->
+            if (isConnected) {
+                snack.dismiss()
+            } else {
+                snack.show()
+            }
+        }
+        networkProvider.liveData.observe(this, observer)
+
+        val settings = com.google.android.gms.location.LocationSettingsRequest.Builder()
+            .build()
+        val task = googleSettingsLocationClient.checkLocationSettings(settings)
+
+        task.addOnSuccessListener { locationSettingsResponse ->
+            val state = locationSettingsResponse.locationSettingsStates
+            val isGpsUsable = state?.isGpsUsable
+            val isNetworkLocationUsable = state?.isNetworkLocationUsable
+            val allSourcesLocation = isGpsUsable == true && isNetworkLocationUsable == true
+
+            if (isBtnPressed && allSourcesLocation) {
+                location = LocationHandle.Google(googleLocationClient)
+                sendAlarm()
             }
         }
     }
@@ -276,7 +334,7 @@ class MainFragment : Fragment() {
             .setImageResource(R.drawable.inset_holder_camera)
         else {
             binding.imgPhoto.setImageURI(uri?.toUri())
-            binding.imgPhoto.setOnClickListener{
+            binding.imgPhoto.setOnClickListener {
                 val bundle = bundleOf(USER_PHOTO to uri)
                 findNavController().navigate(R.id.action_mainFragment_to_userPhotoFragment, bundle)
             }
@@ -291,63 +349,32 @@ class MainFragment : Fragment() {
 
     private fun initialise(view: View) {
         preferences = view.context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-        snack = snackTopBuilder.buildSnackTopIndefinite(view)
-    }
-
-    private fun checkNetworks(
-        connectivityManager: ConnectivityManager,
-        connected: (Boolean) -> Unit
-    ): Boolean {
-        var isNetWorkAvailable = true
-        connectivityManager.isNetworkAvailable.observe(viewLifecycleOwner) {
-            isNetWorkAvailable = it
-            connected(isNetWorkAvailable)
-        }
-        return isNetWorkAvailable
-    }
-
-    private fun dialogShow() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.location_mode)
-            .setMessage(R.string.location_mode_denied_message)
-            .setPositiveButton(R.string.yes) { _, _ ->
-                val intent =
-                    Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
-            }
-            .create()
-            .show()
-    }
-
-    private fun checkGMS(): Boolean {
-        val gApi = GoogleApiAvailability.getInstance()
-        val resultCode = gApi.isGooglePlayServicesAvailable(requireContext())
-        return resultCode == com.google.android.gms.common.ConnectionResult.SUCCESS
-    }
-
-    private fun checkHMS(): Boolean {
-        val hApi = HuaweiApiAvailability.getInstance()
-        val resultCode = hApi.isHuaweiMobileServicesAvailable(requireContext())
-        return resultCode == com.huawei.hms.api.ConnectionResult.SUCCESS
+        snack = snackBuilder.snackBarWithPadding(
+            binding.root.rootView,
+            R.string.check_internet_connection
+        )
     }
 
     interface PermissionHandle {
         fun check()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 
     companion object {
         const val USER_PHOTO = "userPhoto"
         const val ARGS = "MAIN_FRAGMENT_ARGS"
-        fun newInstance(message: String): MainFragment {
-            val fragment = MainFragment()
-            fragment.arguments?.putString(ARGS, message)
-            return fragment
-        }
+
+        @JvmStatic
+        fun newInstance(message: String) =
+            MainFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARGS, message)
+                }
+            }
     }
 }
 
