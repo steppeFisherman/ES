@@ -8,6 +8,7 @@
     <string name="main">Главный экран</string>
     <string name="main_title">главный</string>
     <string name="location">локация</string>
+    <string name="duty_officer">дежурный</string>
     <string name="search_title">поиск</string>
     <string name="success_update">Данные успешно обновлены</string>
     <string name="no_data_for_selected_period">Данных за данный период нет</string>

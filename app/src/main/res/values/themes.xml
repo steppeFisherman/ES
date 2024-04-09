@@ -36,8 +36,8 @@
     </style>
 
     <style name="img_mainFragment" parent="ShapeAppearanceOverlay.CircularBorder">
-        <item name="android:layout_width">@dimen/size_48</item>
-        <item name="android:layout_height">@dimen/size_48</item>
+        <item name="android:layout_width">@dimen/size_64</item>
+        <item name="android:layout_height">@dimen/size_64</item>
         <item name="android:padding">@dimen/size_1</item>
         <item name="android:scaleType">centerCrop</item>
     </style>

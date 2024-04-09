@@ -34,11 +34,13 @@
     <TextView
         android:id="@+id/txt_name"
         style="@style/textView"
-        android:layout_width="77dp"
-        android:layout_height="33dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:fontFamily="casual"
         app:layout_constraintStart_toStartOf="@id/left_guideline_vertical"
+        app:layout_constraintEnd_toStartOf="@id/barrier"
         app:layout_constraintTop_toBottomOf="@+id/img_photo"
+        app:layout_constraintBottom_toTopOf="@+id/barrier_horizontal_top"
         tools:text="full_name" />
 
     <TextView
@@ -46,7 +48,7 @@
         style="@style/textView"
         android:fontFamily="sans-serif-smallcaps"
         app:layout_constraintStart_toStartOf="@id/left_guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/txt_name"
+        app:layout_constraintTop_toBottomOf="@+id/barrier_horizontal_top"
         tools:text="phone_number" />
 
     <TextView
@@ -56,8 +58,8 @@
         android:layout_marginTop="@dimen/size_8"
         android:fontFamily="casual"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/right_guideline_vertical"
         app:layout_constraintStart_toEndOf="@+id/barrier"
+        app:layout_constraintEnd_toStartOf="@+id/right_guideline_vertical"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -65,16 +67,16 @@
         style="@style/textView"
         android:layout_marginStart="@dimen/margin_20dp"
         android:fontFamily="casual"
-        app:layout_constraintEnd_toStartOf="@+id/right_guideline_vertical"
         app:layout_constraintStart_toEndOf="@+id/barrier"
-        app:layout_constraintTop_toBottomOf="@+id/txt_time" />
+        app:layout_constraintEnd_toStartOf="@+id/right_guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/txt_time"
+        app:layout_constraintBottom_toTopOf="@+id/barrier_txt_location_address"
+        />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_18dp"
-        android:layout_marginBottom="@dimen/margin_14dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:text="@string/location"
         android:textAppearance="?attr/textAppearanceButton"
@@ -83,11 +85,12 @@
         android:theme="@style/location_ripple_style"
         app:icon="@drawable/ic_location"
         app:iconGravity="textTop"
-        app:iconPadding="@dimen/size_4"
         app:iconSize="56dp"
         app:iconTint="@color/btn_location_icon_color_selector"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/center_guideline_vertical"
+        app:layout_constraintStart_toStartOf="@+id/left_guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal_bottom"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <!--    <ImageView-->
@@ -129,38 +132,47 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/ltAnimation"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
         android:theme="@style/lt_ripple_style"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_location"
-        app:layout_constraintEnd_toEndOf="@+id/btn_dial"
-        app:layout_constraintStart_toEndOf="@+id/btn_dial"
-        app:layout_constraintTop_toTopOf="@+id/btn_location"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/left_guideline_vertical"
+        app:layout_constraintEnd_toEndOf="@+id/right_guideline_vertical"
         app:lottie_rawRes="@raw/punic_button" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:text="@string/duty_officer"
+        android:textAppearance="?attr/textAppearanceButton"
+        android:textColor="@color/grey_category_textView"
+        android:textSize="12sp"
         android:theme="@style/dial_ripple_style"
         app:icon="@drawable/ic_phone"
-        app:iconGravity="textEnd"
-        app:iconPadding="@dimen/size_0"
+        app:iconGravity="textTop"
         app:iconSize="56dp"
         app:iconTint="@color/btn_dial_icon_color_selector"
-        app:layout_constraintEnd_toEndOf="@+id/center_guideline_vertical"
-        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/right_guideline_vertical"
         app:layout_constraintStart_toStartOf="@+id/center_guideline_vertical"
         app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal_bottom"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_horizontal_top"
+        android:layout_width="@dimen/size_0"
+        android:layout_height="@dimen/size_0"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="txt_name" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_txt_location_address"
         android:layout_width="@dimen/size_0"
         android:layout_height="@dimen/size_0"
         app:barrierDirection="bottom"
@@ -200,4 +212,5 @@
         android:layout_height="@dimen/size_0"
         app:barrierDirection="end"
         app:constraint_referenced_ids="txt_name, txt_phone" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
