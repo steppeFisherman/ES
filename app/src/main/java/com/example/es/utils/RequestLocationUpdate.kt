@@ -23,15 +23,7 @@ interface RequestLocationUpdate {
 
 
             val locationCallback: LocationCallback = object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    locationResult.locations.forEach {
-                        val latitude = it.latitude
-                        latitude
-
-                        val longitude = it.longitude
-                        longitude
-                    }
-                }
+                override fun onLocationResult(locationResult: LocationResult) {}
             }
 
             if (ActivityCompat.checkSelfPermission(
