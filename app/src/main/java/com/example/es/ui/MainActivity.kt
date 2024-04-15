@@ -219,34 +219,5 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
     override fun check() {
         checkPermissions()
     }
-
-    fun canRWFilePermission(context: Context?): Boolean {
-        var checkPermission: Boolean
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            checkPermission =
-                (ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_MEDIA_AUDIO)
-                        == PackageManager.PERMISSION_GRANTED
-                        &&
-                        ContextCompat.checkSelfPermission(
-                            context!!,
-                            Manifest.permission.READ_MEDIA_IMAGES
-                        )
-                        == PackageManager.PERMISSION_GRANTED)
-        } else {
-            checkPermission = (ContextCompat.checkSelfPermission(
-                context!!,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-                    == PackageManager.PERMISSION_GRANTED)
-            if (!checkPermission) {
-                checkPermission = (ContextCompat.checkSelfPermission(
-                    context!!,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                        == PackageManager.PERMISSION_GRANTED)
-            }
-        }
-        return checkPermission
-    }
 }
 
