@@ -167,8 +167,15 @@ class MainFragment : Fragment() {
         }
 
         binding.ltAnimation.customLongClickListener(duration = 2000L) {
-            postAlarmUpdates()
+            if (!statusAnimation) {
+                postAlarmUpdates()
+            }
         }
+
+
+//        binding.ltAnimation.setOnClickListener {
+//            postAlarmUpdates()
+//        }
 
         if (userId.isNotBlank()) {
             try {
@@ -193,13 +200,11 @@ class MainFragment : Fragment() {
                                 binding.ltAnimation.apply {
                                     playAnimation()
                                     repeatCount = LottieDrawable.INFINITE
-                                    isClickable = false
                                 }
                             } else {
-                                isBtnPressed = false
+//                                isBtnPressed = false
                                 binding.ltAnimation.apply {
                                     repeatCount = 0
-                                    isClickable = true
                                 }
                             }
                         }
@@ -263,13 +268,13 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun com.airbnb.lottie.LottieAnimationView.customLongClickListener(
+    private fun View.customLongClickListener(
         duration: Long,
         listener: () -> Unit
     ) {
         setOnTouchListener(object : View.OnTouchListener {
 
-            private val handler = Handler(Looper.getMainLooper())
+            private val mHandler = Handler(Looper.getMainLooper())
 
             override fun onTouch(view: View?, event: MotionEvent?): Boolean {
                 view?.performClick()
@@ -282,17 +287,16 @@ class MainFragment : Fragment() {
                     gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                     networkEnabled =
                         locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-                    isBtnPressed = true
 
                     if (!gpsEnabled || !networkEnabled) {
                         dialogLocationShow(requireActivity())
                     } else {
-                        handler.postDelayed({ listener.invoke() }, duration)
+                        mHandler.postDelayed({ listener.invoke() }, duration)
                     }
 
                 } else if (event?.action == MotionEvent.ACTION_UP) {
                     view?.isPressed = false
-                    handler.removeCallbacksAndMessages(null)
+                    mHandler.removeCallbacksAndMessages(null)
                 }
                 return true
             }

@@ -1,11 +1,19 @@
 package com.example.es.ui
 
 import android.Manifest
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.READ_MEDIA_VIDEO
+import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -14,6 +22,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -29,6 +38,7 @@ import com.example.es.utils.PREF_BOOLEAN_VALUE
 import com.example.es.utils.REF_DATABASE_ROOT
 import com.example.es.utils.REF_STORAGE
 import com.example.es.utils.SavePhotoStorage
+import com.example.es.utils.dialogShow
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.FirebaseDatabase
@@ -36,7 +46,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
@@ -53,7 +62,7 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
     private lateinit var preferences: SharedPreferences
     private lateinit var photoStorage: SavePhotoStorage
 
-    private val requestLocationPermissionsLauncher = registerForActivityResult(
+    private val permissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),   // contract for requesting more than 1 permission
         ::onGotLocationPermissionsResult
     )
@@ -70,13 +79,7 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
             .isAppearanceLightStatusBars = true
         setContentView(binding.root)
 
-        requestLocationPermissionsLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-            )
-        )
-
+        checkPermissions()
         initialise()
         checkUserLoggedIn()
         displayBottomNav()
@@ -139,9 +142,43 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
         }
     }
 
+    private fun checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            permissionRequest.launch(
+                arrayOf(
+                    READ_MEDIA_IMAGES,
+                    READ_MEDIA_VIDEO,
+                    READ_MEDIA_VISUAL_USER_SELECTED,
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION
+                )
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionRequest.launch(
+                arrayOf(
+                    READ_MEDIA_IMAGES,
+                    READ_MEDIA_VIDEO,
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION
+                )
+            )
+        } else {
+            permissionRequest.launch(
+                arrayOf(
+                    READ_EXTERNAL_STORAGE,
+                    WRITE_EXTERNAL_STORAGE,
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
     private fun onGotLocationPermissionsResult(grantResults: Map<String, Boolean>) {
 
-        if (grantResults.entries.all { it.value }) {
+        if (grantResults.entries.all {
+                it.value
+            }) {
 //            showToast(this, R.string.location_permissions_granted)
         } else {
 
@@ -149,14 +186,10 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
                 Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", packageName, null)
             )
-            AlertDialog.Builder(this)
-                .setTitle(R.string.permission_denied)
-                .setMessage(R.string.permission_denied_forever_message)
-                .setPositiveButton(R.string.yes) { _, _ ->
-                    startActivity(appSettingsIntent)
-                }
-                .create()
-                .show()
+
+            dialogShow(this, R.string.permissions_denied, R.string.permissions_denied_message) {
+                startActivity(appSettingsIntent)
+            }
         }
     }
 
@@ -173,8 +206,8 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
             Toast.makeText(this, R.string.permissions_denied_forever, Toast.LENGTH_SHORT).show()
         } else {
             AlertDialog.Builder(this)
-                .setTitle(R.string.permission_denied)
-                .setMessage(R.string.permission_denied_forever_message)
+                .setTitle(R.string.permissions_denied)
+                .setMessage(R.string.permissions_denied_message)
                 .setPositiveButton(R.string.yes) { _, _ ->
                     startActivity(appSettingsIntent)
                 }
@@ -184,12 +217,36 @@ class MainActivity : AppCompatActivity(), ProfileFragment.PhotoListener,
     }
 
     override fun check() {
-        requestLocationPermissionsLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+        checkPermissions()
+    }
+
+    fun canRWFilePermission(context: Context?): Boolean {
+        var checkPermission: Boolean
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkPermission =
+                (ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_MEDIA_AUDIO)
+                        == PackageManager.PERMISSION_GRANTED
+                        &&
+                        ContextCompat.checkSelfPermission(
+                            context!!,
+                            Manifest.permission.READ_MEDIA_IMAGES
+                        )
+                        == PackageManager.PERMISSION_GRANTED)
+        } else {
+            checkPermission = (ContextCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
-        )
+                    == PackageManager.PERMISSION_GRANTED)
+            if (!checkPermission) {
+                checkPermission = (ContextCompat.checkSelfPermission(
+                    context!!,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                        == PackageManager.PERMISSION_GRANTED)
+            }
+        }
+        return checkPermission
     }
 }
 

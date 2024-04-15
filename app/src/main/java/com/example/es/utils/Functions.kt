@@ -108,20 +108,33 @@ fun dialogLocationShow(
         .show()
 }
 
-//Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-//Uri.fromParts("package", context.packageName, null)
-
 fun dialogShow(
     context: Context,
     title: String = "",
     message: String = "",
-    positiveButton: () -> Unit
+    positiveButtonBlock: () -> Unit
 ) {
     AlertDialog.Builder(context)
         .setTitle(title)
         .setMessage(message)
         .setPositiveButton(R.string.yes) { _, _ ->
-            positiveButton()
+            positiveButtonBlock()
+        }
+        .create()
+        .show()
+}
+
+fun dialogShow(
+    context: Context,
+    title: Int,
+    message: Int,
+    positiveButtonBlock: () -> Unit
+) {
+    AlertDialog.Builder(context)
+        .setTitle(title)
+        .setMessage(message)
+        .setPositiveButton(R.string.yes) { _, _ ->
+            positiveButtonBlock()
         }
         .create()
         .show()

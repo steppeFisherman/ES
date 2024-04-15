@@ -99,7 +99,7 @@ dependencies {
     implementation("com.github.dhaval2404:imagepicker:1.8")
     //Glide
     implementation("com.github.bumptech.glide:glide:4.13.0")
-    ksp ("com.github.bumptech.glide:compiler:4.13.0")
+    ksp("com.github.bumptech.glide:compiler:4.13.0")
 
     //GoogleMaps
     implementation("com.google.android.gms:play-services-maps:18.2.0")
@@ -109,6 +109,11 @@ dependencies {
 
     //Lottie
     implementation("com.airbnb.android:lottie:3.4.0")
+
+    //ImagePicker
+    implementation "androidx.activity:activity-ktx:1.8.2"
+    implementation "androidx.fragment:fragment-ktx:1.6.2"
+    implementation 'com.github.dhaval2404:imagepicker:2.1'
 }
 
 kapt {
