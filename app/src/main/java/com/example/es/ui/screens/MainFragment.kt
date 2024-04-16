@@ -172,11 +172,6 @@ class MainFragment : Fragment() {
             }
         }
 
-
-//        binding.ltAnimation.setOnClickListener {
-//            postAlarmUpdates()
-//        }
-
         if (userId.isNotBlank()) {
             try {
                 REF_DATABASE_ROOT.child(NODE_USERS).child(userId)
